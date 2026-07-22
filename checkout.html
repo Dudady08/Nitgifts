@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+ <!-- SEO Meta Tags -->
+ <title>Nit Gifts | Finalizar Compra</title>
+ <meta name="description" content="Finalize seu pedido com segurança.">
+ <meta name="author" content="Nit Gifts">
+
+ <!-- Google Fonts -->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link
+  href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap"
+  rel="stylesheet">
+
+ <!-- CSS Stylesheet -->
+ <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+ <main class="category-page-container">
+  <div class="category-main-content">
+
+   <!-- Back Link -->
+   <a href="cart.html" class="cart-back-link">
+    <i data-lucide="chevron-left" class="icon-sm"></i>
+    Voltar ao carrinho
+   </a>
+
+   <!-- Page Title -->
+   <h1 class="cart-page-title">Checkout</h1>
+
+   <!-- Checkout Form -->
+   <form id="checkout-form">
+    <div class="cart-layout-grid">
+
+     <!-- Left Column: Inputs Form -->
+     <div class="space-y-8">
+
+      <!-- Dados Pessoais -->
+      <div class="form-section">
+       <h3 class="form-section-title">
+        <i data-lucide="credit-card" class="icon-sm" style="color: var(--color-primary);"></i>
+        Dados Pessoais
+       </h3>
+       <div class="form-grid grid-contact">
+        <div class="col-span-full">
+         <input required placeholder="Nome completo" class="form-input" id="form-name">
+        </div>
+        <div>
+         <input required type="email" placeholder="E-mail" class="form-input" id="form-email">
+        </div>
+        <div>
+         <input required placeholder="Telefone" class="form-input" id="form-phone">
+        </div>
+       </div>
+      </div>
+
+      <!-- Endereço de Entrega -->
+      <div class="form-section">
+       <h3 class="form-section-title">
+        <i data-lucide="truck" class="icon-sm" style="color: var(--color-primary);"></i>
+        Endereço de Entrega
+       </h3>
+       <div class="form-grid grid-address">
+        <div>
+         <input required placeholder="CEP" class="form-input" id="form-cep">
+        </div>
+        <div class="col-span-2-md">
+         <input required placeholder="Endereço" class="form-input" id="form-address">
+        </div>
+        <div>
+         <input required placeholder="Número" class="form-input" id="form-number">
+        </div>
+        <div>
+         <input placeholder="Complemento" class="form-input" id="form-complement">
+        </div>
+        <div>
+         <input required placeholder="Cidade" class="form-input" id="form-city">
+        </div>
+        <div>
+         <input required placeholder="Estado" class="form-input" id="form-state">
+        </div>
+       </div>
+      </div>
+
+     </div>
+
+     <!-- Right Column: Sticky Summary Panel -->
+     <div class="summary-sticky">
+      <div class="summary-panel">
+       <h3 class="summary-title">Seu Pedido</h3>
+
+       <!-- Compact items list wrapper -->
+       <div class="checkout-summary-list" id="checkout-items-list">
+        <!-- Rendered dynamically by checkout.js -->
+       </div>
+
+       <!-- Price Breakdown -->
+       <div class="summary-details" style="border-top: 1px solid rgba(26, 26, 26, 0.1); padding-top: 16px;">
+        <div class="summary-row">
+         <span class="summary-label">Subtotal</span>
+         <span class="summary-value" id="summary-subtotal">R$ 0,00</span>
+        </div>
+        <div class="summary-row">
+         <span class="summary-label">Frete</span>
+         <span class="summary-value" id="summary-shipping">R$ 0,00</span>
+        </div>
+       </div>
+
+       <!-- Grand Total -->
+       <div class="summary-divider">
+        <span class="summary-total-label">Total</span>
+        <span class="summary-total-value" id="summary-total">R$ 0,00</span>
+       </div>
+
+       <!-- Submit button with lock and hidden spinner -->
+       <button type="submit" class="checkout-btn" id="submit-order-btn">
+        <div class="spinner animate-spin" id="submit-spinner" style="display: none;"></div>
+        <span id="submit-btn-text" style="display: flex; align-items: center; gap: 8px;">
+         <i data-lucide="lock" class="icon-sm"></i>
+         Finalizar Pedido
+        </span>
+       </button>
+
+       <p class="summary-badge-footer"
+        style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+        <i data-lucide="lock" class="icon-sm" style="width: 10px; height: 10px;"></i>
+        Pagamento seguro e criptografado
+       </p>
+      </div>
+     </div>
+
+    </div>
+   </form>
+
+  </div>
+ </main>
+
+ <!-- TOAST ALERTS CONTAINER -->
+ <div class="toast-container" id="toast-container"></div>
+
+ <!-- Lucide Icons CDN -->
+ <script src="https://unpkg.com/lucide@latest"></script>
+ <!-- JS Scripts -->
+ <script src="layout.js"></script>
+ <script src="checkout.js"></script>
+</body>
+
+</html>

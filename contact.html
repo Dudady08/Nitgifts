@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+ <!-- SEO Meta Tags -->
+ <title>Nit Gifts | Fale Conosco</title>
+ <meta name="description"
+  content="Entre em contato com a equipe Nitgift. Dúvidas, parcerias ou pedidos personalizados.">
+ <meta name="author" content="Nit Gifts">
+
+ <!-- Google Fonts -->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link
+  href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap"
+  rel="stylesheet">
+
+ <!-- CSS Stylesheet -->
+ <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+ <main class="category-page-container">
+  <div class="category-main-content">
+
+   <!-- PAGE HEADER -->
+   <header class="category-header" style="padding: 0; margin-bottom: 48px;">
+    <p class="category-tag"></p>
+    <h1 class="category-title">Fale Conosco</h1>
+    <p class="category-desc">
+     Dúvidas sobre pedidos, personalizações ou parcerias? Estamos aqui para ajudar.
+    </p>
+   </header>
+
+   <!-- CONTACT MAIN GRID -->
+   <div class="contact-layout-grid">
+
+    <!-- LEFT: Contact Form -->
+    <form id="contact-form" style="display: flex; flex-direction: column; gap: 20px;">
+
+     <div class="form-grid grid-contact">
+      <div>
+       <input required placeholder="Seu nome" class="form-input" id="contact-name">
+      </div>
+      <div>
+       <input required type="email" placeholder="Seu e-mail" class="form-input" id="contact-email">
+      </div>
+     </div>
+
+     <div>
+      <input required placeholder="Assunto" class="form-input" id="contact-subject">
+     </div>
+
+     <div>
+      <textarea required rows="6" placeholder="Sua mensagem..." class="form-input"
+       id="contact-message"></textarea>
+     </div>
+
+     <!-- Submit Button -->
+     <button type="submit" class="btn btn-primary" id="submit-contact-btn" style="align-self: start;">
+      <div class="spinner animate-spin" id="submit-spinner" style="display: none; margin-right: 8px;"></div>
+      <span id="submit-btn-text" style="display: flex; align-items: center; gap: 8px;">
+       <i data-lucide="send" class="icon-sm"></i>
+       Enviar Mensagem
+      </span>
+     </button>
+
+    </form>
+
+    <!-- RIGHT: Contact Info sidebar -->
+    <aside class="contact-info-panel">
+
+     <!-- White Card Info -->
+     <div class="contact-info-card">
+
+      <div class="contact-info-item">
+       <i data-lucide="message-circle" class="contact-info-icon" style="width: 18px; height: 18px;"></i>
+       <div>
+        <h4 class="contact-info-title">WhatsApp</h4>
+        <a href="https://wa.me/5511974962380" target="_blank" rel="noopener noreferrer"
+         class="contact-info-link">
+         (11) 97496-2380
+        </a>
+       </div>
+      </div>
+
+      <div class="contact-info-item">
+       <i data-lucide="mail" class="contact-info-icon" style="width: 18px; height: 18px;"></i>
+       <div>
+        <h4 class="contact-info-title">E-mail</h4>
+        <a href="mailto:nifgifts.empresa@gmail.com" class="contact-info-link">
+         nifgifts.empresa@gmail.com
+        </a>
+       </div>
+      </div>
+
+      <div class="contact-info-item">
+       <i data-lucide="instagram" class="contact-info-icon" style="width: 18px; height: 18px;"></i>
+       <div>
+        <h4 class="contact-info-title">Instagram</h4>
+        <a href="https://instagram.com/nitgift" target="_blank" rel="noopener noreferrer"
+         class="contact-info-link">
+         @nitgift
+        </a>
+       </div>
+      </div>
+
+      <div class="contact-info-item">
+       <i data-lucide="clock" class="contact-info-icon" style="width: 18px; height: 18px;"></i>
+       <div>
+        <h4 class="contact-info-title">Horário</h4>
+        <p class="contact-info-text">Seg-Sex: 9h–18h</p>
+       </div>
+      </div>
+
+     </div>
+
+     <!-- Dark Personalization Card -->
+     <div class="contact-dark-card">
+      <h4 class="contact-dark-card-title">Quer personalizar?</h4>
+      <p class="contact-dark-card-desc">
+       Envie sua arte ou ideia diretamente pelo WhatsApp e receba um orçamento em até 24h.
+      </p>
+      <a href="https://wa.me/5511974962380?text=Olá! Quero fazer um pedido personalizado." target="_blank"
+       rel="noopener noreferrer" class="contact-dark-card-btn">
+       <i data-lucide="message-circle" class="icon-sm" style="width: 14px; height: 14px;"></i>
+       Enviar no WhatsApp
+      </a>
+     </div>
+
+    </aside>
+
+   </div>
+
+  </div>
+ </main>
+
+ <!-- TOAST ALERTS CONTAINER -->
+ <div class="toast-container" id="toast-container"></div>
+
+ <!-- Lucide Icons CDN -->
+ <script src="https://unpkg.com/lucide@latest"></script>
+ <!-- JS Scripts -->
+ <script src="layout.js"></script>
+ <script src="contact.js"></script>
+</body>
+
+</html>

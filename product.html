@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+ <!-- SEO Meta Tags -->
+ <title>Nit Gifts | Carregando Produto...</title>
+ <meta name="description" content="Detalhes do produto Nitgift.">
+ <meta name="author" content="Nit Gifts">
+
+ <!-- Google Fonts -->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link
+  href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap"
+  rel="stylesheet">
+
+ <!-- CSS Stylesheet -->
+ <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+ <main class="category-page-container">
+  <div class="category-main-content">
+
+   <!-- 1. SKELETON LOADER STATE (Visible by default) -->
+   <section id="detail-skeleton-loader" style="margin-top: 16px;">
+    <div class="product-detail-grid animate-pulse">
+     <!-- Left: Big Gray Square -->
+     <div class="skeleton-square"></div>
+     <!-- Right: Horizontal Text Blocks -->
+     <div class="space-y-4" style="padding-top: 32px; display: flex; flex-direction: column; gap: 16px;">
+      <div class="skeleton-text" style="width: 25%;"></div>
+      <div class="skeleton-text" style="width: 75%; height: 32px;"></div>
+      <div class="skeleton-text" style="width: 35%; height: 24px;"></div>
+      <div class="skeleton-text" style="width: 90%; height: 80px;"></div>
+     </div>
+    </div>
+   </section>
+
+   <!-- 2. ERROR STATE (Hidden by default) -->
+   <section id="detail-error-state" style="display: none; text-align: center; padding: 80px 0;">
+    <p style="color: var(--color-dark-translucent); font-size: 16px;">Produto não encontrado.</p>
+    <a href="index.html" class="contact-info-link"
+     style="font-size: 14px; font-weight: 700; margin-top: 16px; display: inline-block;">
+     Voltar à loja
+    </a>
+   </section>
+
+   <!-- 3. MAIN PRODUCT CONTENT CARD (Hidden initially) -->
+   <section id="detail-product-content" style="display: none;">
+
+    <!-- Back Arrow Navigation -->
+    <a href="#" class="cart-back-link" id="detail-back-link" style="margin-bottom: 32px;">
+     <i data-lucide="chevron-left" class="icon-sm"></i>
+     <span id="detail-back-text">Voltar</span>
+    </a>
+
+    <div class="product-detail-grid">
+
+     <!-- LEFT: Image gallery -->
+     <div class="space-y-4" style="display: flex; flex-direction: column; gap: 16px;">
+      <div class="product-main-image">
+       <img src="" alt="" id="detail-main-img">
+      </div>
+      <!-- Thumbnails List (Will only show if product has gallery urls) -->
+      <div class="product-thumbs-list" id="detail-thumbs-list">
+       <!-- Rendered dynamically -->
+      </div>
+     </div>
+
+     <!-- RIGHT: Sticky Product Info specs -->
+     <div class="summary-sticky" style="display: flex; flex-direction: column; gap: 24px;">
+
+      <!-- Category and Title Header -->
+      <div>
+       <span class="badge-limited-detail" id="detail-limited-badge" style="display: none;">
+        Edição Limitada
+       </span>
+       <p id="detail-category-label"
+        style="font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-dark-translucent); margin-bottom: 4px;">
+       </p>
+       <h1 class="font-display text-2xl md:text-3xl font-extrabold text-[#1A1A1A]" id="detail-product-name"
+        style="margin: 0;"></h1>
+       <p id="detail-sku" style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(26,26,26,0.4); margin-top: 4px;"></p>
+      </div>
+
+      <!-- Pricing Row -->
+      <div style="display: flex; align-items: baseline; gap: 12px;">
+       <span id="detail-original-price"
+        style="display: none; font-size: 18px; text-decoration: line-through; color: var(--color-dark-translucent);"></span>
+       <span id="detail-current-price"
+        style="font-size: 30px; font-weight: 800; color: var(--color-dark);"></span>
+      </div>
+
+      <!-- Description body text -->
+      <p id="detail-description" style="font-size: 14px; line-height: 1.6; color: rgba(26,26,26,0.6); margin: 0;">
+      </p>
+
+      <!-- Colors Variant Picker (Rendered dynamically if available) -->
+      <div id="detail-colors-section" style="display: none;">
+       <h4 class="variant-title">
+        Cor: <span id="selected-color-span"></span>
+       </h4>
+       <div class="variant-options" id="detail-colors-list">
+        <!-- Buttons rendered dynamically -->
+       </div>
+      </div>
+
+      <!-- Sizes Variant Picker (Rendered dynamically if available) -->
+      <div id="detail-sizes-section" style="display: none;">
+       <div class="variant-title">
+        <span>Tamanho: <span id="selected-size-span"></span></span>
+        <button class="ruler-link-btn" id="size-chart-toggle-btn">
+         <i data-lucide="ruler" style="width: 12px; height: 12px;"></i>
+         Tabela de Medidas
+        </button>
+       </div>
+       <div class="variant-options" id="detail-sizes-list">
+        <!-- Buttons rendered dynamically -->
+       </div>
+       <!-- Size table sheet drawer -->
+       <div class="size-chart-card" id="detail-size-chart-card" style="display: none;">
+        <table class="size-chart-table">
+         <thead>
+          <tr id="size-chart-headers">
+           <!-- Dynamically rendered th -->
+          </tr>
+         </thead>
+         <tbody id="size-chart-rows">
+          <!-- Dynamically rendered tr/td -->
+         </tbody>
+        </table>
+       </div>
+      </div>
+
+      <!-- Quantity selector & Add to cart button row -->
+      <div style="display: flex; gap: 12px; margin-top: 8px;">
+       <div
+        style="display: flex; align-items: center; border: 1px solid rgba(26,26,26,0.1); border-radius: 6px; overflow: hidden; background-color: var(--color-white);">
+        <button class="p-3" id="qty-minus"
+         style="background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 12px 16px;">
+         <i data-lucide="minus" style="width: 16px; height: 16px;"></i>
+        </button>
+        <span id="qty-val" style="width: 40px; text-align: center; font-size: 14px; font-weight: 700;">1</span>
+        <button class="p-3" id="qty-plus"
+         style="background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 12px 16px;">
+         <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+        </button>
+       </div>
+       <button class="btn btn-primary" id="add-to-cart-btn"
+        style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; height: 48px;">
+        <i data-lucide="shopping-bag" class="icon-sm"></i>
+        Adicionar ao Carrinho
+       </button>
+      </div>
+
+      <!-- Customization Info CTA Panel (Rendered dynamically if personalized type) -->
+      <div id="detail-customization-section" style="display: none;">
+       <div
+        style="padding: 20px; background-color: var(--color-dark); color: var(--color-white); border-radius: 12px; display: flex; align-items: flex-start; gap: 12px; box-shadow: var(--shadow-md);">
+        <i data-lucide="upload"
+         style="color: var(--color-accent); flex-shrink: 0; margin-top: 2px; width: 20px; height: 20px;"></i>
+        <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
+         <h4 class="contact-dark-card-title" style="margin: 0;">Personalize este produto</h4>
+         <p class="contact-dark-card-desc" style="margin: 0 0 12px 0;">
+          Envie sua arte, logo ou ideia e nós criamos o produto perfeito para você. Aceitamos imagens em alta
+          resolução (PNG, JPG).
+         </p>
+         <a href="#" target="_blank" rel="noopener noreferrer" class="contact-dark-card-btn"
+          id="customization-whatsapp-btn">
+          Enviar Minha Arte via WhatsApp
+         </a>
+        </div>
+       </div>
+      </div>
+
+      <!-- Materials technical feature blocks grid -->
+      <div class="tech-specs-grid">
+
+       <div class="tech-spec-item" id="spec-material-item" style="display: none;">
+        <i data-lucide="droplets" class="tech-spec-icon" style="width: 16px; height: 16px;"></i>
+        <div>
+         <p class="tech-spec-label">Material</p>
+         <p class="tech-spec-val" id="spec-material-val"></p>
+        </div>
+       </div>
+
+       <div class="tech-spec-item" id="spec-weight-item" style="display: none;">
+        <i data-lucide="box" class="tech-spec-icon" style="width: 16px; height: 16px;"></i>
+        <div>
+         <p class="tech-spec-label">Gramatura</p>
+         <p class="tech-spec-val" id="spec-weight-val"></p>
+        </div>
+       </div>
+
+       <div class="tech-spec-item" id="spec-dimensions-item" style="display: none;">
+        <i data-lucide="ruler" class="tech-spec-icon" style="width: 16px; height: 16px;"></i>
+        <div>
+         <p class="tech-spec-label">Dimensões</p>
+         <p class="tech-spec-val" id="spec-dimensions-val"></p>
+        </div>
+       </div>
+
+       <div class="tech-spec-item">
+        <i data-lucide="leaf" class="tech-spec-icon" style="width: 16px; height: 16px;"></i>
+        <div>
+         <p class="tech-spec-label">Eco</p>
+         <p class="tech-spec-val">Produção sustentável</p>
+        </div>
+       </div>
+
+      </div>
+
+     </div>
+
+    </div>
+
+   </section>
+
+  </div>
+ </main>
+
+ <!-- TOAST ALERTS CONTAINER -->
+ <div class="toast-container" id="toast-container"></div>
+
+ <!-- Lucide Icons CDN -->
+ <script src="https://unpkg.com/lucide@latest"></script>
+ <!-- JS Scripts -->
+ <script src="layout.js"></script>
+ <script src="products-data.js"></script>
+ <script src="product.js"></script>
+</body>
+
+</html>
