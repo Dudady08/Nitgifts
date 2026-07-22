@@ -84,17 +84,20 @@ function initContactForm() {
   formData.append('assunto', subjectInput.value);
   formData.append('mensagem', messageInput.value);
 
+  console.log("Enviando para o Google Apps Script...", formData.toString());
+
   // Envia os dados sem esperar pela resposta (dispare e esqueça)
   fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
-      mode: 'cors',
+      mode: 'no-cors',
       cache: 'no-cache',
       headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
       },
       redirect: 'follow',
       body: formData.toString()
-  });
+  }).then(() => console.log("Fetch enviado."))
+    .catch(err => console.error("Erro no fetch:", err));
 
   // Simulate async server delivery response (1.5 seconds)
   setTimeout(() => {
