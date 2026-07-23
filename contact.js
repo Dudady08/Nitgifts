@@ -79,6 +79,7 @@ function initContactForm() {
 
   // Prepara os dados (x-www-form-urlencoded)
   const formData = new URLSearchParams();
+  formData.append('tipo_formulario', 'contato');
   formData.append('nome', nameInput.value);
   formData.append('email', emailInput.value);
   formData.append('assunto', subjectInput.value);
@@ -89,7 +90,7 @@ function initContactForm() {
   // Envia os dados sem esperar pela resposta (dispare e esqueça)
   fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
-      mode: 'no-cors',
+      mode: 'cors',
       cache: 'no-cache',
       headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

@@ -108,24 +108,77 @@ function loadCheckoutSummary() {
  }
 }
 
-// 3. Form Submission Handler (simulating checkout pipeline)
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMOV8P62wf8zmQuAG_3rDXpHEfdVCP16PhZUQtda5m3yEXyt3YQtCcD_ftjLHlHSaryg/exec";
+
+// 3. Form Submission Handler (Google Apps Script Integration)
 function initCheckoutForm() {
  const form = document.getElementById('checkout-form');
  const submitBtn = document.getElementById('submit-order-btn');
  const spinner = document.getElementById('submit-spinner');
  const btnText = document.getElementById('submit-btn-text');
 
+ // Dados Pessoais
+ const nameInput = document.getElementById('form-name');
+ const emailInput = document.getElementById('form-email');
+ const phoneInput = document.getElementById('form-phone');
+ // Endereço
+ const cepInput = document.getElementById('form-cep');
+ const addressInput = document.getElementById('form-address');
+ const numberInput = document.getElementById('form-number');
+ const complementInput = document.getElementById('form-complement');
+ const cityInput = document.getElementById('form-city');
+ const stateInput = document.getElementById('form-state');
+
  if (!form || !submitBtn) return;
 
  form.addEventListener('submit', (e) => {
   e.preventDefault();
+
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  if (cart.length === 0) return; // Prevent empty checkout submission
 
   // Trigger submitting visual states
   submitBtn.disabled = true;
   if (spinner) spinner.style.display = 'inline-block';
   if (btnText) btnText.style.display = 'none';
 
-  // Simulating backend pipeline processing
+  // Processar Itens e Total
+  let cartText = cart.map(item => `${item.qty}x ${item.name} (R$ ${item.price.toFixed(2).replace('.', ',')})`).join('\n');
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const shipping = subtotal > 200 ? 0 : 19.90;
+  const formattedTotal = `R$ ${(subtotal + shipping).toFixed(2).replace('.', ',')}`;
+
+  // Prepara os dados (x-www-form-urlencoded)
+  const formData = new URLSearchParams();
+  formData.append('tipo_formulario', 'checkout');
+  formData.append('nome', nameInput.value);
+  formData.append('email', emailInput.value);
+  formData.append('telefone', phoneInput.value);
+  formData.append('cep', cepInput.value);
+  formData.append('endereco', addressInput.value);
+  formData.append('numero', numberInput.value);
+  formData.append('complemento', complementInput.value);
+  formData.append('cidade', cityInput.value);
+  formData.append('estado', stateInput.value);
+  formData.append('itens', cartText);
+  formData.append('total', formattedTotal);
+
+  console.log("Enviando Pedido para o Google Apps Script...", formData.toString());
+
+  // Envia os dados sem esperar pela resposta (dispare e esqueça)
+  fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: 'follow',
+      body: formData.toString()
+  }).then(() => console.log("Fetch de Pedido enviado."))
+    .catch(err => console.error("Erro no fetch de Pedido:", err));
+
+  // Simulando atraso de resposta visual antes de redirecionar
   setTimeout(() => {
    // Clear Cart Data
    localStorage.setItem('cart', '[]');
