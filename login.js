@@ -1,6 +1,52 @@
-/* ==========================================================================
-  Nit Gifts - Login Process Controller
-  ========================================================================== */
+import { auth, signInWithEmailAndPassword } from './firebase-config.js';
+
+function showToast(title, description = "") {
+ let container = document.getElementById('toast-container');
+ if (!container) {
+  container = document.createElement('div');
+  container.id = 'toast-container';
+  container.className = 'toast-container';
+  document.body.appendChild(container);
+ }
+
+ const toastCard = document.createElement('div');
+ toastCard.className = 'toast-card';
+ toastCard.style.flexDirection = 'column';
+ toastCard.style.alignItems = 'flex-start';
+ toastCard.style.gap = '4px';
+
+ let descHTML = '';
+ if (description) {
+  descHTML = `<span style="font-size: 12px; color: rgba(255,255,255,0.7); font-weight: 400;">${description}</span>`;
+ }
+
+ toastCard.innerHTML = `
+  <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
+   <i data-lucide="check" class="icon-sm" style="color: var(--color-accent);"></i>
+   <span style="font-weight: 700;">${title}</span>
+  </div>
+  ${descHTML}
+ `;
+
+ container.appendChild(toastCard);
+
+ if (window.lucide) {
+  window.lucide.createIcons();
+ }
+
+ setTimeout(() => {
+  toastCard.classList.add('show');
+ }, 10);
+
+ setTimeout(() => {
+  toastCard.classList.remove('show');
+  toastCard.classList.add('hide');
+
+  toastCard.addEventListener('transitionend', () => {
+   toastCard.remove();
+  });
+ }, 4000);
+}
 
 function initLoginForm() {
  const form = document.getElementById('login-form');
@@ -10,63 +56,55 @@ function initLoginForm() {
  const spinner = document.getElementById('submit-spinner');
  const btnText = document.getElementById('submit-btn-text');
 
- // 1. Google OAuth Provider Login Simulation
  if (googleBtn) {
   googleBtn.addEventListener('click', () => {
-   // Direct redirection to the homepage
-   window.location.replace('index.html');
+   showToast("Aviso", "O Login com Google precisa ser habilitado no painel do Firebase.");
   });
  }
 
- // 2. Email & Password Login Submittal Pipeline
  if (form && submitBtn) {
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
    e.preventDefault();
 
-   // Clear any active error card alerts
    if (errorBox) errorBox.style.display = 'none';
 
    const email = document.getElementById('email').value;
    const password = document.getElementById('password').value;
 
-   // Enable submit loading states
    submitBtn.disabled = true;
    if (spinner) spinner.style.display = 'inline-block';
    if (btnText) btnText.textContent = 'Entrando...';
 
-   // Simulate async credentials check against base44 database (1.2 seconds)
-   setTimeout(() => {
-    // Validation Rule: demo@nitgift.com.br / 12345678 (Standard mock testing credentials)
-    if (email === 'demo@nitgift.com.br' && password === '12345678') {
-     // Success redirection
-     window.location.replace('index.html');
-    } else {
-     // Restore button visual states
-     submitBtn.disabled = false;
-     if (spinner) spinner.style.display = 'none';
-     if (btnText) btnText.textContent = 'Entrar';
+   try {
+    await signInWithEmailAndPassword(auth, email, password);
+    // Sucesso, redireciona para a home ou pro checkout se veio do carrinho
+    window.location.replace('index.html');
+   } catch (error) {
+    submitBtn.disabled = false;
+    if (spinner) spinner.style.display = 'none';
+    if (btnText) btnText.textContent = 'Entrar';
 
-     // Display credentials error banner
-     if (errorBox) {
-      errorBox.style.display = 'block';
-
-      // Re-trigger shake animation if already displayed
-      errorBox.style.animation = 'none';
-      errorBox.offsetHeight; /* trigger reflow */
-      errorBox.style.animation = 'shakeAlert 0.4s ease-out';
+    if (errorBox) {
+     let errorMsg = "E-mail ou senha inválidos.";
+     if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+      errorMsg = "E-mail ou senha inválidos.";
+     } else if (error.code === 'auth/too-many-requests') {
+      errorMsg = "Muitas tentativas falhas. Tente novamente mais tarde.";
      }
+     
+     errorBox.textContent = errorMsg;
+     errorBox.style.display = 'block';
+     errorBox.style.animation = 'none';
+     errorBox.offsetHeight; 
+     errorBox.style.animation = 'shakeAlert 0.4s ease-out';
     }
-   }, 1200);
+   }
   });
  }
 }
 
-// Initializer Lifecycle
 document.addEventListener('DOMContentLoaded', () => {
- // Bind form and OAuth actions
  initLoginForm();
-
- // Render static Lucide icons
  if (window.lucide) {
   window.lucide.createIcons();
  }

@@ -1,36 +1,30 @@
-/* ==========================================================================
-  Nit Gifts - Checkout Process Controllers
-  ========================================================================== */
+import { auth, db, doc, getDoc, onAuthStateChanged } from './firebase-config.js';
 
-// Immediately check security condition (before DOM parses to avoid flash of empty checkout page)
-const initialCart = JSON.parse(localStorage.getItem('cart') || '[]');
-if (initialCart.length === 0) {
-  window.location.replace('cart.html');
-}
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUrmbaRzwqRku-QT7j_V1tqNMuheBB4zkNDJynJy7iV7bnF3FJ4JE6hgeZ2vTuN5bDfA/exec";
+let userData = null;
 
-// 1. Dynamic Toast Notification System (Self-correcting: creates container if missing)
+// 1. Dynamic Toast Notification System
 function showToast(title, description = "") {
-  let container = document.getElementById('toast-container');
-  if (!container) {
-    container = document.createElement('div');
-    container.id = 'toast-container';
-    container.className = 'toast-container';
-    document.body.appendChild(container);
-  }
+ let container = document.getElementById('toast-container');
+ if (!container) {
+  container = document.createElement('div');
+  container.id = 'toast-container';
+  container.className = 'toast-container';
+  document.body.appendChild(container);
+ }
 
-  const toastCard = document.createElement('div');
-  toastCard.className = 'toast-card';
-  toastCard.style.flexDirection = 'column';
-  toastCard.style.alignItems = 'flex-start';
-  toastCard.style.gap = '4px';
+ const toastCard = document.createElement('div');
+ toastCard.className = 'toast-card';
+ toastCard.style.flexDirection = 'column';
+ toastCard.style.alignItems = 'flex-start';
+ toastCard.style.gap = '4px';
 
-  // Toast inner content compiling (title and description)
-  let descHTML = '';
-  if (description) {
-    descHTML = `<span style="font-size: 12px; color: rgba(255,255,255,0.7); font-weight: 400;">${description}</span>`;
-  }
+ let descHTML = '';
+ if (description) {
+  descHTML = `<span style="font-size: 12px; color: rgba(255,255,255,0.7); font-weight: 400;">${description}</span>`;
+ }
 
-  toastCard.innerHTML = `
+ toastCard.innerHTML = `
   <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
    <i data-lucide="check" class="icon-sm" style="color: var(--color-accent);"></i>
    <span style="font-weight: 700;">${title}</span>
@@ -38,45 +32,43 @@ function showToast(title, description = "") {
   ${descHTML}
  `;
 
-  container.appendChild(toastCard);
+ container.appendChild(toastCard);
 
-  if (window.lucide) {
-    window.lucide.createIcons();
-  }
+ if (window.lucide) {
+  window.lucide.createIcons();
+ }
 
-  // Trigger visual slide-in
-  setTimeout(() => {
-    toastCard.classList.add('show');
-  }, 10);
+ setTimeout(() => {
+  toastCard.classList.add('show');
+ }, 10);
 
-  // Trigger dismissal and cleanup after 4 seconds
-  setTimeout(() => {
-    toastCard.classList.remove('show');
-    toastCard.classList.add('hide');
+ setTimeout(() => {
+  toastCard.classList.remove('show');
+  toastCard.classList.add('hide');
 
-    toastCard.addEventListener('transitionend', () => {
-      toastCard.remove();
-    });
-  }, 4000);
+  toastCard.addEventListener('transitionend', () => {
+   toastCard.remove();
+  });
+ }, 4000);
 }
 
 // 2. Render Checkout Summary Content
 function loadCheckoutSummary() {
-  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-  const listContainer = document.getElementById('checkout-items-list');
-  const subtotalEl = document.getElementById('summary-subtotal');
-  const shippingEl = document.getElementById('summary-shipping');
-  const totalEl = document.getElementById('summary-total');
+ const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+ const listContainer = document.getElementById('checkout-items-list');
+ const subtotalEl = document.getElementById('summary-subtotal');
+ const shippingEl = document.getElementById('summary-shipping');
+ const totalEl = document.getElementById('summary-total');
 
-  if (!listContainer) return;
+ if (!listContainer) return;
 
-  listContainer.innerHTML = '';
+ listContainer.innerHTML = '';
 
-  cart.forEach(item => {
-    const itemRow = document.createElement('div');
-    itemRow.className = 'checkout-summary-item';
+ cart.forEach(item => {
+  const itemRow = document.createElement('div');
+  itemRow.className = 'checkout-summary-item';
 
-    itemRow.innerHTML = `
+  itemRow.innerHTML = `
    <div class="checkout-summary-item-img-wrapper">
     <img src="${item.image}" alt="${item.name}" class="checkout-summary-item-img">
    </div>
@@ -87,122 +79,138 @@ function loadCheckoutSummary() {
    <span class="checkout-summary-item-price">R$ ${(item.price * item.qty).toFixed(2).replace('.', ',')}</span>
   `;
 
-    listContainer.appendChild(itemRow);
-  });
+  listContainer.appendChild(itemRow);
+ });
 
-  // Calculate Prices Breakdown
-  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-  const shipping = subtotal > 200 ? 0 : 19.90;
-  const total = subtotal + shipping;
+ // Calculate Prices Breakdown
+ const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+ const shipping = subtotal > 200 ? 0 : 19.90;
+ const total = subtotal + shipping;
 
-  if (subtotalEl) {
-    subtotalEl.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
-  }
+ if (subtotalEl) {
+  subtotalEl.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+ }
 
-  if (shippingEl) {
-    shippingEl.textContent = shipping === 0 ? 'Grátis' : `R$ ${shipping.toFixed(2).replace('.', ',')}`;
-  }
+ if (shippingEl) {
+  shippingEl.textContent = shipping === 0 ? 'Grátis' : `R$ ${shipping.toFixed(2).replace('.', ',')}`;
+ }
 
-  if (totalEl) {
-    totalEl.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
-  }
+ if (totalEl) {
+  totalEl.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+ }
 }
 
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUrmbaRzwqRku-QT7j_V1tqNMuheBB4zkNDJynJy7iV7bnF3FJ4JE6hgeZ2vTuN5bDfA/exec";
-
-// 3. Form Submission Handler (Google Apps Script Integration)
+// 3. Form Submission Handler
 function initCheckoutForm() {
-  const form = document.getElementById('checkout-form');
-  const submitBtn = document.getElementById('submit-order-btn');
-  const spinner = document.getElementById('submit-spinner');
-  const btnText = document.getElementById('submit-btn-text');
+ const form = document.getElementById('checkout-form');
+ const submitBtn = document.getElementById('submit-order-btn');
+ const spinner = document.getElementById('submit-spinner');
+ const btnText = document.getElementById('submit-btn-text');
 
-  // Dados Pessoais
-  const nameInput = document.getElementById('form-name');
-  const emailInput = document.getElementById('form-email');
-  const phoneInput = document.getElementById('form-phone');
-  // Endereço
-  const cepInput = document.getElementById('form-cep');
-  const addressInput = document.getElementById('form-address');
-  const numberInput = document.getElementById('form-number');
-  const complementInput = document.getElementById('form-complement');
-  const cityInput = document.getElementById('form-city');
-  const stateInput = document.getElementById('form-state');
+ if (!form || !submitBtn) return;
 
-  if (!form || !submitBtn) return;
+ form.addEventListener('submit', (e) => {
+  e.preventDefault();
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
+  if (!userData) {
+   showToast("Aguarde", "Carregando dados do usuário...");
+   return;
+  }
 
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    if (cart.length === 0) return; // Prevent empty checkout submission
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  if (cart.length === 0) return; 
 
-    // Trigger submitting visual states
-    submitBtn.disabled = true;
-    if (spinner) spinner.style.display = 'inline-block';
-    if (btnText) btnText.style.display = 'none';
+  // Trigger submitting visual states
+  submitBtn.disabled = true;
+  if (spinner) spinner.style.display = 'inline-block';
+  if (btnText) btnText.style.display = 'none';
 
-    // Processar Itens e Total
-    let cartText = cart.map(item => `${item.qty}x ${item.name} (R$ ${item.price.toFixed(2).replace('.', ',')})`).join('\n');
-    const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-    const shipping = subtotal > 200 ? 0 : 19.90;
-    const formattedTotal = `R$ ${(subtotal + shipping).toFixed(2).replace('.', ',')}`;
+  // Processar Itens e Total
+  let cartText = cart.map(item => `${item.qty}x ${item.name} (R$ ${item.price.toFixed(2).replace('.', ',')})`).join('\\n');
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const shipping = subtotal > 200 ? 0 : 19.90;
+  const formattedTotal = `R$ ${(subtotal + shipping).toFixed(2).replace('.', ',')}`;
 
-    // Prepara os dados (x-www-form-urlencoded)
-    const formData = new URLSearchParams();
-    formData.append('tipo_formulario', 'checkout');
-    formData.append('nome', nameInput.value);
-    formData.append('email', emailInput.value);
-    formData.append('telefone', phoneInput.value);
-    formData.append('cep', cepInput.value);
-    formData.append('endereco', addressInput.value);
-    formData.append('numero', numberInput.value);
-    formData.append('complemento', complementInput.value);
-    formData.append('cidade', cityInput.value);
-    formData.append('estado', stateInput.value);
-    formData.append('itens', cartText);
-    formData.append('total', formattedTotal);
+  // Prepara os dados
+  const formData = new URLSearchParams();
+  formData.append('tipo_formulario', 'checkout');
+  formData.append('nome', userData.name || '');
+  formData.append('email', userData.email || '');
+  formData.append('telefone', userData.phone || '');
+  formData.append('cep', userData.address?.cep || '');
+  formData.append('endereco', userData.address?.street || '');
+  formData.append('numero', userData.address?.number || '');
+  formData.append('complemento', userData.address?.complement || '');
+  formData.append('cidade', userData.address?.city || '');
+  formData.append('estado', userData.address?.state || '');
+  formData.append('itens', cartText);
+  formData.append('total', formattedTotal);
 
-    console.log("Enviando Pedido para o Google Apps Script...", formData.toString());
+  console.log("Enviando Pedido para o Google Apps Script...");
 
-    // Envia os dados sem esperar pela resposta (dispare e esqueça)
-    fetch(GOOGLE_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'cors',
-      cache: 'no-cache',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: 'follow',
-      body: formData.toString()
-    }).then(() => console.log("Fetch de Pedido enviado."))
-      .catch(err => console.error("Erro no fetch de Pedido:", err));
+  fetch(GOOGLE_SCRIPT_URL, {
+   method: 'POST',
+   mode: 'cors',
+   cache: 'no-cache',
+   headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+   },
+   redirect: 'follow',
+   body: formData.toString()
+  }).then(() => console.log("Fetch de Pedido enviado."))
+    .catch(err => console.error("Erro no fetch de Pedido:", err));
 
-    // Simulando atraso de resposta visual antes de redirecionar
-    setTimeout(() => {
-      // Clear Cart Data
-      localStorage.setItem('cart', '[]');
-      window.dispatchEvent(new Event('cart-updated'));
-
-      // Set page-persistent success message flag to trigger on next homepage load
-      localStorage.setItem('orderSuccessToast', 'true');
-
-      // Navigate back to Homepage
-      window.location.replace('index.html');
-    }, 1500);
-  });
+  setTimeout(() => {
+   localStorage.setItem('cart', '[]');
+   window.dispatchEvent(new Event('cart-updated'));
+   localStorage.setItem('orderSuccessToast', 'true');
+   window.location.replace('index.html');
+  }, 1500);
+ });
 }
 
 // 4. Initializer Lifecycle
 document.addEventListener('DOMContentLoaded', () => {
-  // Populate summaries
-  loadCheckoutSummary();
+ const initialCart = JSON.parse(localStorage.getItem('cart') || '[]');
+ if (initialCart.length === 0) {
+  window.location.replace('cart.html');
+  return;
+ }
 
-  // Bind forms pipeline
-  initCheckoutForm();
+ loadCheckoutSummary();
+ initCheckoutForm();
 
-  // Render static Lucide icons
-  if (window.lucide) {
-    window.lucide.createIcons();
+ if (window.lucide) {
+  window.lucide.createIcons();
+ }
+
+ // Listen for Firebase Auth State
+ onAuthStateChanged(auth, async (user) => {
+  if (user) {
+   try {
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    if (userDoc.exists()) {
+     userData = userDoc.data();
+     
+     // Update UI
+     const skeleton = document.getElementById('user-address-skeleton');
+     const container = document.getElementById('user-address-container');
+     
+     if (skeleton) skeleton.style.display = 'none';
+     if (container) container.style.display = 'block';
+     
+     document.getElementById('display-name').textContent = userData.name;
+     document.getElementById('display-street').textContent = `${userData.address.street}, ${userData.address.number} ${userData.address.complement ? '(' + userData.address.complement + ')' : ''}`;
+     document.getElementById('display-city').textContent = `${userData.address.city} - ${userData.address.state} | CEP: ${userData.address.cep}`;
+     document.getElementById('display-phone').textContent = `Tel: ${userData.phone}`;
+    } else {
+     console.error("Usuário não tem documento no Firestore.");
+    }
+   } catch (error) {
+    console.error("Erro ao buscar endereço:", error);
+   }
+  } else {
+   window.location.replace('login.html');
   }
+ });
 });

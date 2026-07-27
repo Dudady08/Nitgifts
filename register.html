@@ -37,7 +37,7 @@
    </header>
 
    <!-- AUTH CARD CONTAINER -->
-   <section class="auth-card">
+   <section class="auth-card" style="width: 100%; max-width: 500px;">
 
     <!-- Error Alert box (Hidden by default) -->
     <div class="auth-error-alert" id="register-error-box" style="display: none;"></div>
@@ -73,81 +73,62 @@
       <div class="auth-divider-text-wrapper"><span class="auth-divider-text">ou</span></div>
      </div>
 
-     <!-- Email input -->
-     <div class="auth-form-group">
-      <label class="auth-label" for="email">E-mail</label>
-      <div class="input-icon-wrapper">
-       <span class="input-icon-left">
-        <i data-lucide="mail" style="width: 16px; height: 16px;"></i>
-       </span>
-       <input type="email" id="email" class="form-input auth-input" placeholder="seu@exemplo.com" required
-        autocomplete="email" autofocus>
+     <!-- Dados Pessoais -->
+     <div class="form-section" style="margin-top: 16px;">
+      <h3 class="form-section-title" style="font-size: 16px; margin-bottom: 12px; color: var(--color-dark);">Dados Pessoais</h3>
+      <div class="form-grid grid-contact" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+       <div style="grid-column: 1 / -1;">
+        <input required placeholder="Nome completo" class="form-input auth-input" id="name">
+       </div>
+       <div style="grid-column: 1 / -1;">
+        <input required type="email" placeholder="E-mail" class="form-input auth-input" id="email" autocomplete="email">
+       </div>
+       <div style="grid-column: 1 / -1;">
+        <input required placeholder="Telefone (WhatsApp)" class="form-input auth-input" id="phone">
+       </div>
+       <div>
+        <input required type="password" placeholder="Senha" class="form-input auth-input" id="password" autocomplete="new-password">
+       </div>
+       <div>
+        <input required type="password" placeholder="Confirmar Senha" class="form-input auth-input" id="confirm-password" autocomplete="new-password">
+       </div>
       </div>
      </div>
 
-     <!-- Password input -->
-     <div class="auth-form-group">
-      <label class="auth-label" for="password">Senha</label>
-      <div class="input-icon-wrapper">
-       <span class="input-icon-left">
-        <i data-lucide="lock" style="width: 16px; height: 16px;"></i>
-       </span>
-       <input type="password" id="password" class="form-input auth-input" placeholder="••••••••" required
-        autocomplete="new-password">
-      </div>
-     </div>
-
-     <!-- Confirm Password input -->
-     <div class="auth-form-group">
-      <label class="auth-label" for="confirm-password">Confirmar Senha</label>
-      <div class="input-icon-wrapper">
-       <span class="input-icon-left">
-        <i data-lucide="lock" style="width: 16px; height: 16px;"></i>
-       </span>
-       <input type="password" id="confirm-password" class="form-input auth-input" placeholder="••••••••" required
-        autocomplete="new-password">
+     <!-- Endereço de Entrega -->
+     <div class="form-section" style="margin-top: 24px; margin-bottom: 24px;">
+      <h3 class="form-section-title" style="font-size: 16px; margin-bottom: 12px; color: var(--color-dark);">Endereço de Entrega</h3>
+      <div class="form-grid grid-address" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+       <div>
+        <input required placeholder="CEP" class="form-input auth-input" id="cep">
+       </div>
+       <div style="grid-column: 1 / -1;">
+        <input required placeholder="Rua / Avenida" class="form-input auth-input" id="address">
+       </div>
+       <div>
+        <input required placeholder="Número" class="form-input auth-input" id="number">
+       </div>
+       <div>
+        <input placeholder="Complemento" class="form-input auth-input" id="complement">
+       </div>
+       <div>
+        <input required placeholder="Cidade" class="form-input auth-input" id="city">
+       </div>
+       <div>
+        <input required placeholder="Estado (UF)" class="form-input auth-input" id="state">
+       </div>
       </div>
      </div>
 
      <!-- Submit Button -->
-     <button type="submit" class="checkout-btn auth-btn" id="submit-btn">
+     <button type="submit" class="checkout-btn auth-btn" id="submit-btn" style="margin-top: 16px; width: 100%;">
       <div class="spinner animate-spin" id="submit-spinner" style="display: none; margin-right: 8px;"></div>
       <span id="submit-btn-text">Criar conta</span>
      </button>
 
     </form>
 
-    <!-- STAGE 2: OTP Verification Box (Hidden by default) -->
-    <div id="otp-verification-box" style="display: none;">
-
-     <!-- 6-slot input group -->
-     <div class="otp-group">
-      <input type="text" maxlength="1" class="otp-slot" pattern="[0-9]*" inputmode="numeric" id="otp-0" autofocus>
-      <input type="text" maxlength="1" class="otp-slot" pattern="[0-9]*" inputmode="numeric" id="otp-1">
-      <input type="text" maxlength="1" class="otp-slot" pattern="[0-9]*" inputmode="numeric" id="otp-2">
-      <input type="text" maxlength="1" class="otp-slot" pattern="[0-9]*" inputmode="numeric" id="otp-3">
-      <input type="text" maxlength="1" class="otp-slot" pattern="[0-9]*" inputmode="numeric" id="otp-4">
-      <input type="text" maxlength="1" class="otp-slot" pattern="[0-9]*" inputmode="numeric" id="otp-5">
-     </div>
-
-     <!-- Verify Button -->
-     <button type="button" class="checkout-btn auth-btn" id="verify-otp-btn" disabled>
-      <div class="spinner animate-spin" id="verify-spinner" style="display: none; margin-right: 8px;"></div>
-      <span id="verify-btn-text">Verificar</span>
-     </button>
-
-     <!-- Resend Action Link -->
-     <p class="auth-success-text" style="margin-top: 16px; font-size: 13px; color: var(--color-dark-translucent);">
-      Não recebeu o código?
-      <button type="button" class="ruler-link-btn" id="resend-otp-btn"
-       style="vertical-align: baseline; font-size: 13px; padding: 0;">
-       Reenviar
-      </button>
-     </p>
-
-    </div>
-
-   </section>
+    </section>
 
    <!-- FOOTER ACTION -->
    <footer class="auth-footer" id="auth-footer-container">
@@ -164,7 +145,7 @@
  <!-- Lucide Icons CDN -->
  <script src="https://unpkg.com/lucide@latest"></script>
  <!-- JS Script -->
- <script src="register.js"></script>
+ <script type="module" src="register.js"></script>
 </body>
 
 </html>

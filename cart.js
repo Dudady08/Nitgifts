@@ -2,6 +2,14 @@
   Nit Gifts - Shopping Cart & Toast Alerts Controllers
   ========================================================================== */
 
+import { auth, onAuthStateChanged } from './firebase-config.js';
+
+let currentUser = null;
+onAuthStateChanged(auth, (user) => {
+ currentUser = user;
+});
+
+
 // 1. Native Toast Notification System
 function showToast(message) {
  const container = document.getElementById('toast-container');
@@ -263,5 +271,19 @@ document.addEventListener('DOMContentLoaded', () => {
  // Initialize layout SVGs parsing
  if (window.lucide) {
   window.lucide.createIcons();
+ }
+
+ const checkoutBtn = document.getElementById('go-to-checkout-btn');
+ if (checkoutBtn) {
+  checkoutBtn.addEventListener('click', () => {
+   if (currentUser) {
+    window.location.href = 'checkout.html';
+   } else {
+    showToast("Login necessário", "Por favor, faça login ou cadastre-se para finalizar a compra.");
+    setTimeout(() => {
+     window.location.href = 'login.html';
+    }, 2000);
+   }
+  });
  }
 });

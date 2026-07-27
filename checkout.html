@@ -42,51 +42,26 @@
      <!-- Left Column: Inputs Form -->
      <div class="space-y-8">
 
-      <!-- Dados Pessoais -->
-      <div class="form-section">
-       <h3 class="form-section-title">
-        <i data-lucide="credit-card" class="icon-sm" style="color: var(--color-primary);"></i>
-        Dados Pessoais
-       </h3>
-       <div class="form-grid grid-contact">
-        <div class="col-span-full">
-         <input required placeholder="Nome completo" class="form-input" id="form-name">
-        </div>
-        <div>
-         <input required type="email" placeholder="E-mail" class="form-input" id="form-email">
-        </div>
-        <div>
-         <input required placeholder="Telefone" class="form-input" id="form-phone">
-        </div>
-       </div>
-      </div>
-
-      <!-- Endereço de Entrega -->
+      <!-- Dados de Entrega (Carregados do Firebase) -->
       <div class="form-section">
        <h3 class="form-section-title">
         <i data-lucide="truck" class="icon-sm" style="color: var(--color-primary);"></i>
-        Endereço de Entrega
+        Dados de Entrega
        </h3>
-       <div class="form-grid grid-address">
-        <div>
-         <input required placeholder="CEP" class="form-input" id="form-cep">
-        </div>
-        <div class="col-span-2-md">
-         <input required placeholder="Endereço" class="form-input" id="form-address">
-        </div>
-        <div>
-         <input required placeholder="Número" class="form-input" id="form-number">
-        </div>
-        <div>
-         <input placeholder="Complemento" class="form-input" id="form-complement">
-        </div>
-        <div>
-         <input required placeholder="Cidade" class="form-input" id="form-city">
-        </div>
-        <div>
-         <input required placeholder="Estado" class="form-input" id="form-state">
-        </div>
+       
+       <div id="user-address-skeleton" style="padding: 16px; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px;">
+        <div class="spinner animate-spin" style="display: block; margin: 0 auto;"></div>
+        <p style="text-align: center; margin-top: 8px; font-size: 14px;">Carregando seus dados...</p>
        </div>
+
+       <div id="user-address-container" style="display: none; padding: 16px; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; background: rgba(0,0,0,0.02);">
+        <p style="font-weight: 600; margin-bottom: 4px;" id="display-name"></p>
+        <p style="font-size: 14px; color: rgba(0,0,0,0.7); margin-bottom: 4px;" id="display-street"></p>
+        <p style="font-size: 14px; color: rgba(0,0,0,0.7); margin-bottom: 4px;" id="display-city"></p>
+        <p style="font-size: 14px; color: rgba(0,0,0,0.7);" id="display-phone"></p>
+       </div>
+       
+       <p style="font-size: 12px; color: rgba(0,0,0,0.5); margin-top: 12px;">Para alterar seu endereço, crie uma nova conta ou contate o suporte.</p>
       </div>
 
      </div>
@@ -149,7 +124,7 @@
  <script src="https://unpkg.com/lucide@latest"></script>
  <!-- JS Scripts -->
  <script src="layout.js"></script>
- <script src="checkout.js"></script>
+ <script type="module" src="checkout.js"></script>
 </body>
 
 </html>
