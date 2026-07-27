@@ -126,7 +126,7 @@ function initCheckoutForm() {
   if (btnText) btnText.style.display = 'none';
 
   // Processar Itens e Total
-  let cartText = cart.map(item => `${item.qty}x ${item.name} (R$ ${item.price.toFixed(2).replace('.', ',')})`).join('\\n');
+  let cartText = cart.map(item => `${item.qty}x ${item.name} (R$ ${item.price.toFixed(2).replace('.', ',')})`).join('\n');
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
   const shipping = subtotal > 200 ? 0 : 19.90;
   const formattedTotal = `R$ ${(subtotal + shipping).toFixed(2).replace('.', ',')}`;
@@ -169,7 +169,65 @@ function initCheckoutForm() {
  });
 }
 
-// 4. Initializer Lifecycle
+// 4. Load user data from Firestore
+function showAddressError(message) {
+ const skeleton = document.getElementById('user-address-skeleton');
+ if (skeleton) {
+  skeleton.innerHTML = `
+   <p style="text-align: center; color: #c0392b; font-size: 14px; font-weight: 600;">${message}</p>
+   <a href="register.html" style="display: block; text-align: center; margin-top: 8px; font-size: 13px; color: var(--color-primary);">Criar nova conta com endereço</a>
+  `;
+ }
+}
+
+function loadUserAddress(user) {
+ getDoc(doc(db, "users", user.uid))
+  .then((userDoc) => {
+   if (userDoc.exists()) {
+    userData = userDoc.data();
+
+    const skeleton = document.getElementById('user-address-skeleton');
+    const container = document.getElementById('user-address-container');
+
+    if (skeleton) skeleton.style.display = 'none';
+    if (container) container.style.display = 'block';
+
+    const nameEl = document.getElementById('display-name');
+    const streetEl = document.getElementById('display-street');
+    const cityEl = document.getElementById('display-city');
+    const phoneEl = document.getElementById('display-phone');
+
+    if (nameEl) nameEl.textContent = userData.name || 'Sem nome';
+    if (streetEl) {
+     const addr = userData.address || {};
+     streetEl.textContent = `${addr.street || 'Endereço não informado'}, ${addr.number || 's/n'} ${addr.complement ? '(' + addr.complement + ')' : ''}`;
+    }
+    if (cityEl) {
+     const addr = userData.address || {};
+     cityEl.textContent = `${addr.city || ''} - ${addr.state || ''} | CEP: ${addr.cep || ''}`;
+    }
+    if (phoneEl) phoneEl.textContent = `Tel: ${userData.phone || 'Não informado'}`;
+   } else {
+    console.error("Usuário não tem documento no Firestore.");
+    showAddressError("Seus dados de endereço não foram encontrados.");
+   }
+  })
+  .catch((error) => {
+   console.error("Erro ao buscar endereço:", error);
+   showAddressError("Erro ao carregar seus dados. Verifique sua conexão.");
+  });
+}
+
+// 5. Firebase Auth State Listener (module-level, fires immediately)
+onAuthStateChanged(auth, (user) => {
+ if (user) {
+  loadUserAddress(user);
+ } else {
+  window.location.replace('login.html');
+ }
+});
+
+// 6. Initializer Lifecycle
 document.addEventListener('DOMContentLoaded', () => {
  const initialCart = JSON.parse(localStorage.getItem('cart') || '[]');
  if (initialCart.length === 0) {
@@ -183,34 +241,4 @@ document.addEventListener('DOMContentLoaded', () => {
  if (window.lucide) {
   window.lucide.createIcons();
  }
-
- // Listen for Firebase Auth State
- onAuthStateChanged(auth, async (user) => {
-  if (user) {
-   try {
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (userDoc.exists()) {
-     userData = userDoc.data();
-     
-     // Update UI
-     const skeleton = document.getElementById('user-address-skeleton');
-     const container = document.getElementById('user-address-container');
-     
-     if (skeleton) skeleton.style.display = 'none';
-     if (container) container.style.display = 'block';
-     
-     document.getElementById('display-name').textContent = userData.name;
-     document.getElementById('display-street').textContent = `${userData.address.street}, ${userData.address.number} ${userData.address.complement ? '(' + userData.address.complement + ')' : ''}`;
-     document.getElementById('display-city').textContent = `${userData.address.city} - ${userData.address.state} | CEP: ${userData.address.cep}`;
-     document.getElementById('display-phone').textContent = `Tel: ${userData.phone}`;
-    } else {
-     console.error("Usuário não tem documento no Firestore.");
-    }
-   } catch (error) {
-    console.error("Erro ao buscar endereço:", error);
-   }
-  } else {
-   window.location.replace('login.html');
-  }
- });
 });

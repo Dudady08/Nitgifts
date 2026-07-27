@@ -279,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
    if (currentUser) {
     window.location.href = 'checkout.html';
    } else {
-    showToast("Login necessário", "Por favor, faça login ou cadastre-se para finalizar a compra.");
+    showToast("Faça login ou cadastre-se para finalizar a compra.");
     setTimeout(() => {
      window.location.href = 'login.html';
     }, 2000);
