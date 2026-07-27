@@ -1,4 +1,4 @@
-import { auth, db, createUserWithEmailAndPassword, doc, setDoc } from './firebase-config.js';
+import { auth, db, createUserWithEmailAndPassword, doc, setDoc, getDoc, GoogleAuthProvider, signInWithPopup } from './firebase-config.js';
 
 // 1. Dynamic Toast Notification System
 function showToast(title, description = "") {
@@ -58,10 +58,31 @@ function initRegisterForm() {
  const spinner = document.getElementById('submit-spinner');
  const btnText = document.getElementById('submit-btn-text');
 
- // Google Login redirect (Ainda não configurado no firebase-config)
+ // Google Login Flow
  if (googleBtn) {
-  googleBtn.addEventListener('click', () => {
-   showToast("Aviso", "O Login com Google precisa ser habilitado no painel do Firebase.");
+  googleBtn.addEventListener('click', async () => {
+   const provider = new GoogleAuthProvider();
+   try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    
+    // Check if user has a profile in Firestore
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    
+    if (userDoc.exists() && userDoc.data().address) {
+     // Usuário já completou o perfil anteriormente
+     window.location.replace('index.html');
+    } else {
+     // Primeiro acesso via Google (perfil incompleto)
+     window.location.replace('complete-profile.html');
+    }
+    
+   } catch (error) {
+    console.error("Erro no login com Google:", error);
+    if (error.code !== 'auth/popup-closed-by-user') {
+     showToast("Erro", "Falha ao fazer login com o Google.");
+    }
+   }
   });
  }
 

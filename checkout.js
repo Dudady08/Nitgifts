@@ -183,7 +183,7 @@ function showAddressError(message) {
 function loadUserAddress(user) {
  getDoc(doc(db, "users", user.uid))
   .then((userDoc) => {
-   if (userDoc.exists()) {
+   if (userDoc.exists() && userDoc.data().address) {
     userData = userDoc.data();
 
     const skeleton = document.getElementById('user-address-skeleton');
@@ -208,8 +208,8 @@ function loadUserAddress(user) {
     }
     if (phoneEl) phoneEl.textContent = `Tel: ${userData.phone || 'Não informado'}`;
    } else {
-    console.error("Usuário não tem documento no Firestore.");
-    showAddressError("Seus dados de endereço não foram encontrados.");
+    // Perfil incompleto (ex: logou pelo google e pulou) -> força preencher o endereço
+    window.location.replace('complete-profile.html');
    }
   })
   .catch((error) => {

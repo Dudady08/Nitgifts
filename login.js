@@ -1,4 +1,4 @@
-import { auth, signInWithEmailAndPassword } from './firebase-config.js';
+import { auth, db, doc, getDoc, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from './firebase-config.js';
 
 function showToast(title, description = "") {
  let container = document.getElementById('toast-container');
@@ -56,12 +56,35 @@ function initLoginForm() {
  const spinner = document.getElementById('submit-spinner');
  const btnText = document.getElementById('submit-btn-text');
 
+ // Google Login Flow
  if (googleBtn) {
-  googleBtn.addEventListener('click', () => {
-   showToast("Aviso", "O Login com Google precisa ser habilitado no painel do Firebase.");
+  googleBtn.addEventListener('click', async () => {
+   const provider = new GoogleAuthProvider();
+   try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    
+    // Check if user has a profile in Firestore
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    
+    if (userDoc.exists() && userDoc.data().address) {
+     // Usuário já completou o perfil anteriormente
+     window.location.replace('index.html');
+    } else {
+     // Primeiro acesso via Google (perfil incompleto)
+     window.location.replace('complete-profile.html');
+    }
+    
+   } catch (error) {
+    console.error("Erro no login com Google:", error);
+    if (error.code !== 'auth/popup-closed-by-user') {
+     showToast("Erro", "Falha ao fazer login com o Google.");
+    }
+   }
   });
  }
 
+ // Email/Password Flow
  if (form && submitBtn) {
   form.addEventListener('submit', async (e) => {
    e.preventDefault();
@@ -76,9 +99,18 @@ function initLoginForm() {
    if (btnText) btnText.textContent = 'Entrando...';
 
    try {
-    await signInWithEmailAndPassword(auth, email, password);
-    // Sucesso, redireciona para a home ou pro checkout se veio do carrinho
-    window.location.replace('index.html');
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    // Verificar se o perfil está completo (pode ser o caso de alguém que usou Google e depois cadastrou senha)
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    
+    if (userDoc.exists() && userDoc.data().address) {
+     window.location.replace('index.html');
+    } else {
+     window.location.replace('complete-profile.html');
+    }
+
    } catch (error) {
     submitBtn.disabled = false;
     if (spinner) spinner.style.display = 'none';
