@@ -7,7 +7,7 @@ const navbarHTML = `
  <header id="global-navbar" class="py-5 bg-transparent">
   <div class="max-w-[1400px] mx-auto px-5 md:px-10 flex items-center justify-between">
    <a href="index.html" class="font-display text-xl md:text-2xl font-extrabold tracking-tight text-[#1A1A1A]" style="font-family: var(--font-display); text-decoration: none;">
-    NIT GIFTS<span class="text-[#D4AF37]">.</span>
+    NIT GIFTS
    </a>
 
    <nav class="hidden lg:flex items-center gap-8">
@@ -35,7 +35,7 @@ const navbarHTML = `
  <div id="mobile-menu-drawer">
   <div class="flex items-center justify-between px-5 py-5">
    <span class="font-display text-xl font-extrabold text-[#1A1A1A]" style="font-family: var(--font-display);">
-    NIT GIFTS<span class="text-[#D4AF37]">.</span>
+    NIT GIFTS
    </span>
    <button class="p-2 flex items-center justify-center" id="mobile-menu-close" style="background: none; border: none; cursor: pointer;">
     <i data-lucide="x" style="width: 24px; height: 24px; stroke-width: 1.5; color: var(--color-dark);"></i>
@@ -71,7 +71,7 @@ const footerHTML = `
     <!-- Col 1: Brand details -->
     <div>
      <h3 class="font-display text-2xl font-extrabold mb-4" style="font-family: var(--font-display);">
-      NIT GIFTS<span class="opacity-60">.</span>
+      NIT GIFTS
      </h3>
      <p class="opacity-80 text-sm leading-relaxed max-w-xs" style="color: rgba(0, 0, 0, 0.8);">
       Presentes e decorações artísticas. Cada peça conta uma história.
