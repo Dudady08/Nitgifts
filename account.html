@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+ <!-- SEO Meta Tags -->
+ <title>Nit Gifts | Minha Conta</title>
+ <meta name="description" content="Gerencie sua conta Nit Gifts, veja seu perfil e histórico de pedidos.">
+ <meta name="author" content="Nit Gifts">
+
+ <!-- Google Fonts -->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link
+  href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap"
+  rel="stylesheet">
+
+ <!-- CSS Stylesheet -->
+ <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+ <main class="account-page-wrapper">
+
+  <!-- Page Header -->
+  <div class="account-page-header">
+   <h1 class="account-page-title">Minha Conta</h1>
+   <button class="account-logout-btn" id="logout-btn">
+    <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
+    Sair
+   </button>
+  </div>
+
+  <!-- Loading Skeleton (shown while data loads) -->
+  <div id="account-loading">
+   <div class="account-skeleton-card" style="margin-bottom: 40px;">
+    <div class="account-skeleton-line short"></div>
+    <div class="account-skeleton-line long"></div>
+    <div class="account-skeleton-line medium"></div>
+    <div class="account-skeleton-line short"></div>
+   </div>
+   <div class="account-skeleton-card">
+    <div class="account-skeleton-line short"></div>
+    <div class="account-skeleton-line long"></div>
+    <div class="account-skeleton-line medium"></div>
+   </div>
+  </div>
+
+  <!-- Account Content (hidden until data loads) -->
+  <div id="account-content" style="display: none;">
+
+   <!-- Profile Section -->
+   <section class="account-section">
+    <h2 class="account-section-title">
+     <i data-lucide="user" style="width: 20px; height: 20px;"></i>
+     Meu Perfil
+    </h2>
+    <div class="account-profile-card">
+     <div class="account-profile-grid">
+      <div class="account-profile-item" id="field-name">
+       <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="account-profile-label">Nome</span>
+        <button class="edit-icon-btn" onclick="window.toggleEdit('name')" title="Editar Nome" style="background:none; border:none; cursor:pointer; color:rgba(26,26,26,0.4); padding: 4px;"><i data-lucide="pencil" style="width:14px; height:14px;"></i></button>
+       </div>
+       <div class="display-mode"><span class="account-profile-value" id="profile-name">—</span></div>
+       <div class="edit-mode" style="display: none; margin-top: 8px;">
+        <input type="text" id="input-name" class="form-input" style="padding: 8px 12px; font-size: 14px; margin-bottom: 8px; width: 100%;">
+        <div style="display: flex; gap: 8px;">
+         <button onclick="window.saveField('name')" class="btn" style="padding: 6px 12px; font-size: 12px; background: var(--color-primary); color: #000;">Salvar</button>
+         <button onclick="window.toggleEdit('name')" class="btn" style="padding: 6px 12px; font-size: 12px; border: 1px solid rgba(26,26,26,0.2); background: transparent; color: var(--color-dark);">Cancelar</button>
+        </div>
+       </div>
+      </div>
+
+      <div class="account-profile-item">
+       <span class="account-profile-label">E-mail</span>
+       <span class="account-profile-value" id="profile-email">—</span>
+      </div>
+
+      <div class="account-profile-item" id="field-phone">
+       <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="account-profile-label">Telefone</span>
+        <button class="edit-icon-btn" onclick="window.toggleEdit('phone')" title="Editar Telefone" style="background:none; border:none; cursor:pointer; color:rgba(26,26,26,0.4); padding: 4px;"><i data-lucide="pencil" style="width:14px; height:14px;"></i></button>
+       </div>
+       <div class="display-mode"><span class="account-profile-value" id="profile-phone">—</span></div>
+       <div class="edit-mode" style="display: none; margin-top: 8px;">
+        <input type="text" id="input-phone" class="form-input" style="padding: 8px 12px; font-size: 14px; margin-bottom: 8px; width: 100%;" placeholder="(11) 99999-9999">
+        <div style="display: flex; gap: 8px;">
+         <button onclick="window.saveField('phone')" class="btn" style="padding: 6px 12px; font-size: 12px; background: var(--color-primary); color: #000;">Salvar</button>
+         <button onclick="window.toggleEdit('phone')" class="btn" style="padding: 6px 12px; font-size: 12px; border: 1px solid rgba(26,26,26,0.2); background: transparent; color: var(--color-dark);">Cancelar</button>
+        </div>
+       </div>
+      </div>
+
+      <div class="account-profile-item">
+       <span class="account-profile-label">Membro desde</span>
+       <span class="account-profile-value" id="profile-since">—</span>
+      </div>
+
+      <div class="account-profile-divider"></div>
+
+      <div class="account-profile-item full-width" id="field-address">
+       <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="account-profile-label">Endereço de entrega</span>
+        <button class="edit-icon-btn" onclick="window.toggleEdit('address')" title="Editar Endereço" style="background:none; border:none; cursor:pointer; color:rgba(26,26,26,0.4); padding: 4px;"><i data-lucide="pencil" style="width:14px; height:14px;"></i></button>
+       </div>
+       <div class="display-mode"><span class="account-profile-value" id="profile-address">—</span></div>
+       <div class="edit-mode" style="display: none; margin-top: 12px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+         <div>
+          <label style="font-size: 12px; color: rgba(26,26,26,0.6);">CEP</label>
+          <input type="text" id="input-cep" class="form-input" style="padding: 8px 12px; font-size: 14px; width: 100%;">
+         </div>
+         <div style="grid-column: 1 / -1;">
+          <label style="font-size: 12px; color: rgba(26,26,26,0.6);">Rua / Avenida</label>
+          <input type="text" id="input-street" class="form-input" style="padding: 8px 12px; font-size: 14px; width: 100%;">
+         </div>
+         <div>
+          <label style="font-size: 12px; color: rgba(26,26,26,0.6);">Número</label>
+          <input type="text" id="input-number" class="form-input" style="padding: 8px 12px; font-size: 14px; width: 100%;">
+         </div>
+         <div>
+          <label style="font-size: 12px; color: rgba(26,26,26,0.6);">Complemento</label>
+          <input type="text" id="input-complement" class="form-input" style="padding: 8px 12px; font-size: 14px; width: 100%;">
+         </div>
+         <div>
+          <label style="font-size: 12px; color: rgba(26,26,26,0.6);">Cidade</label>
+          <input type="text" id="input-city" class="form-input" style="padding: 8px 12px; font-size: 14px; width: 100%;">
+         </div>
+         <div>
+          <label style="font-size: 12px; color: rgba(26,26,26,0.6);">Estado (UF)</label>
+          <input type="text" id="input-state" class="form-input" style="padding: 8px 12px; font-size: 14px; width: 100%;">
+         </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+         <button onclick="window.saveField('address')" class="btn" style="padding: 6px 12px; font-size: 12px; background: var(--color-primary); color: #000;">Salvar Endereço</button>
+         <button onclick="window.toggleEdit('address')" class="btn" style="padding: 6px 12px; font-size: 12px; border: 1px solid rgba(26,26,26,0.2); background: transparent; color: var(--color-dark);">Cancelar</button>
+        </div>
+       </div>
+      </div>
+
+    </div>
+   </section>
+
+   <!-- Orders Section -->
+   <section class="account-section">
+    <h2 class="account-section-title">
+     <i data-lucide="package" style="width: 20px; height: 20px;"></i>
+     Meus Pedidos
+    </h2>
+    <div id="orders-container">
+     <!-- Rendered dynamically by account.js -->
+    </div>
+   </section>
+
+  </div>
+
+ </main>
+
+ <!-- Lucide Icons CDN -->
+ <script src="https://unpkg.com/lucide@latest"></script>
+ <!-- JS Scripts -->
+ <script src="layout.js"></script>
+ <script type="module" src="account.js"></script>
+</body>
+
+</html>

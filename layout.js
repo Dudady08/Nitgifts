@@ -17,6 +17,9 @@ const navbarHTML = `
     </nav>
 
    <div class="flex items-center gap-4">
+    <a href="account.html" class="relative p-2 hover:bg-[#1A1A1A]/5 rounded-full transition-colors flex items-center justify-center" id="navbar-account-btn" title="Minha Conta">
+     <i data-lucide="user" style="width: 20px; height: 20px; stroke-width: 1.5;"></i>
+    </a>
     <a href="cart.html" class="relative p-2 hover:bg-[#1A1A1A]/5 rounded-full transition-colors flex items-center justify-center" id="navbar-cart-btn">
      <i data-lucide="shopping-bag" style="width: 20px; height: 20px; stroke-width: 1.5;"></i>
      <span class="cart-badge" id="navbar-cart-count" style="display: none;">0</span>
@@ -42,7 +45,7 @@ const navbarHTML = `
    <div class="mobile-nav-item" style="transition-delay: 0.0s;"><a href="category.html?c=canecas" class="text-3xl md:text-5xl font-display font-extrabold text-[#1A1A1A] hover:text-[#D4AF37] transition-colors" style="font-family: var(--font-display); text-decoration: none;">Canecas</a></div>
    <div class="mobile-nav-item" style="transition-delay: 0.06s;"><a href="category.html?c=placas-mdf" class="text-3xl md:text-5xl font-display font-extrabold text-[#1A1A1A] hover:text-[#D4AF37] transition-colors" style="font-family: var(--font-display); text-decoration: none;">Placas MDF</a></div>
    <div class="mobile-nav-item" style="transition-delay: 0.12s;"><a href="category.html?c=gifts" class="text-3xl md:text-5xl font-display font-extrabold text-[#1A1A1A] hover:text-[#D4AF37] transition-colors" style="font-family: var(--font-display); text-decoration: none;">GIFTS</a></div>
-   <div class="mobile-nav-item" style="transition-delay: 0.18s;"></div>
+   <div class="mobile-nav-item" style="transition-delay: 0.18s;"><a href="account.html" class="text-3xl md:text-5xl font-display font-extrabold text-[#1A1A1A] hover:text-[#D4AF37] transition-colors" style="font-family: var(--font-display); text-decoration: none;">Minha Conta</a></div>
    <div class="mobile-nav-item" style="transition-delay: 0.24s;"></div>
    <div class="mobile-nav-item" style="transition-delay: 0.3s;"></div>
    <div class="mobile-nav-item" style="transition-delay: 0.36s;"><a href="contact.html" class="text-3xl md:text-5xl font-display font-extrabold text-[#1A1A1A]/50 hover:text-[#D4AF37] transition-colors" style="font-family: var(--font-display); text-decoration: none;">Contato</a></div>

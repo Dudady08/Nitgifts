@@ -124,60 +124,65 @@ function initRegisterForm() {
    if (spinner) spinner.style.display = 'inline-block';
    if (btnText) btnText.textContent = 'Criando conta...';
 
-   try {
     // 1. Criar usuário no Firebase Auth
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+    let user;
+    try {
+     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+     user = userCredential.user;
+    } catch (error) {
+     console.error("Erro no Firebase Auth:", error);
+     submitBtn.disabled = false;
+     if (spinner) spinner.style.display = 'none';
+     if (btnText) btnText.textContent = 'Criar conta';
 
-    // 2. Salvar dados adicionais no Firestore
-    await setDoc(doc(db, "users", user.uid), {
-     uid: user.uid,
-     name: name,
-     email: email,
-     phone: phone,
-     address: {
-      cep: cep,
-      street: address,
-      number: number,
-      complement: complement,
-      city: city,
-      state: state
-     },
-     createdAt: new Date().toISOString()
-    });
+     if (errorBox) {
+      let errorMsg = "Ocorreu um erro ao criar a conta.";
+      if (error.code === 'auth/email-already-in-use') {
+       errorMsg = "Este e-mail já está sendo usado por outra conta.";
+      } else if (error.code === 'auth/weak-password') {
+       errorMsg = "A senha é muito fraca. Use pelo menos 6 caracteres.";
+      } else if (error.code === 'auth/invalid-email') {
+       errorMsg = "E-mail inválido.";
+      }
 
-    // 3. Sucesso!
+      errorBox.textContent = errorMsg;
+      errorBox.style.display = 'block';
+      errorBox.style.animation = 'none';
+      errorBox.offsetHeight;
+      errorBox.style.animation = 'shakeAlert 0.4s ease-out';
+     }
+     return; // Parar aqui se a criação falhou
+    }
+
+    // 2. Salvar dados adicionais no Firestore (separado do auth)
+    try {
+     await setDoc(doc(db, "users", user.uid), {
+      uid: user.uid,
+      name: name,
+      email: email,
+      phone: phone,
+      address: {
+       cep: cep,
+       street: address,
+       number: number,
+       complement: complement,
+       city: city,
+       state: state
+      },
+      createdAt: new Date().toISOString()
+     });
+     console.log("Dados do usuário salvos no Firestore com sucesso!");
+    } catch (firestoreError) {
+     console.error("⚠️ ERRO AO SALVAR NO FIRESTORE:", firestoreError);
+     console.error("Os dados NÃO foram salvos. Verifique as regras de segurança do Firestore.");
+    }
+
+    // 3. Sucesso (auth criou o usuário)
     showToast("Sucesso!", "Sua conta foi criada. Redirecionando...");
 
-    // Redirecionar para index ou checkout
     setTimeout(() => {
      window.location.replace('index.html');
     }, 1500);
-
-   } catch (error) {
-    console.error("Erro no Firebase:", error);
-    submitBtn.disabled = false;
-    if (spinner) spinner.style.display = 'none';
-    if (btnText) btnText.textContent = 'Criar conta';
-
-    if (errorBox) {
-     // Traduzir erros comuns do Firebase
-     let errorMsg = "Ocorreu um erro ao criar a conta.";
-     if (error.code === 'auth/email-already-in-use') {
-      errorMsg = "Este e-mail já está sendo usado por outra conta.";
-     } else if (error.code === 'auth/weak-password') {
-      errorMsg = "A senha é muito fraca. Use pelo menos 6 caracteres.";
-     } else if (error.code === 'auth/invalid-email') {
-      errorMsg = "E-mail inválido.";
-     }
-
-     errorBox.textContent = errorMsg;
-     errorBox.style.display = 'block';
-     errorBox.style.animation = 'none';
-     errorBox.offsetHeight;
-     errorBox.style.animation = 'shakeAlert 0.4s ease-out';
-    }
-   }
   });
  }
 }

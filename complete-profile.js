@@ -108,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
      createdAt: new Date().toISOString()
     }, { merge: true });
 
+    console.log("Perfil salvo no Firestore com sucesso!");
     showToast("Sucesso!", "Seu perfil foi atualizado.");
     
     setTimeout(() => {
@@ -115,13 +116,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1500);
 
    } catch (error) {
-    console.error("Erro ao salvar perfil:", error);
+    console.error("⚠️ ERRO AO SALVAR PERFIL NO FIRESTORE:", error);
+    console.error("Verifique as regras de segurança do Firestore no console do Firebase.");
     submitBtn.disabled = false;
     if (spinner) spinner.style.display = 'none';
     if (btnText) btnText.textContent = 'Salvar Meu Perfil';
 
     if (errorBox) {
-     errorBox.textContent = "Erro ao salvar seus dados. Tente novamente.";
+     errorBox.textContent = "Erro ao salvar seus dados. Verifique se as permissões do Firestore estão configuradas.";
      errorBox.style.display = 'block';
      errorBox.style.animation = 'none';
      errorBox.offsetHeight;

@@ -98,39 +98,48 @@ function initLoginForm() {
    if (spinner) spinner.style.display = 'inline-block';
    if (btnText) btnText.textContent = 'Entrando...';
 
-   try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+    // 1. Autenticar o usuário (Auth)
+    let user;
+    try {
+     const userCredential = await signInWithEmailAndPassword(auth, email, password);
+     user = userCredential.user;
+    } catch (error) {
+     console.error("Erro na autenticação:", error);
+     submitBtn.disabled = false;
+     if (spinner) spinner.style.display = 'none';
+     if (btnText) btnText.textContent = 'Entrar';
 
-    // Verificar se o perfil está completo (pode ser o caso de alguém que usou Google e depois cadastrou senha)
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    
-    if (userDoc.exists() && userDoc.data().address) {
-     window.location.replace('index.html');
-    } else {
-     window.location.replace('complete-profile.html');
-    }
-
-   } catch (error) {
-    submitBtn.disabled = false;
-    if (spinner) spinner.style.display = 'none';
-    if (btnText) btnText.textContent = 'Entrar';
-
-    if (errorBox) {
-     let errorMsg = "E-mail ou senha inválidos.";
-     if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-      errorMsg = "E-mail ou senha inválidos.";
-     } else if (error.code === 'auth/too-many-requests') {
-      errorMsg = "Muitas tentativas falhas. Tente novamente mais tarde.";
+     if (errorBox) {
+      let errorMsg = "E-mail ou senha inválidos.";
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+       errorMsg = "E-mail ou senha inválidos.";
+      } else if (error.code === 'auth/too-many-requests') {
+       errorMsg = "Muitas tentativas falhas. Tente novamente mais tarde.";
+      }
+      
+      errorBox.textContent = errorMsg;
+      errorBox.style.display = 'block';
+      errorBox.style.animation = 'none';
+      errorBox.offsetHeight; 
+      errorBox.style.animation = 'shakeAlert 0.4s ease-out';
      }
-     
-     errorBox.textContent = errorMsg;
-     errorBox.style.display = 'block';
-     errorBox.style.animation = 'none';
-     errorBox.offsetHeight; 
-     errorBox.style.animation = 'shakeAlert 0.4s ease-out';
+     return; // Parar aqui se a autenticação falhou
     }
-   }
+
+    // 2. Verificar perfil no Firestore (separado do auth)
+    try {
+     const userDoc = await getDoc(doc(db, "users", user.uid));
+     
+     if (userDoc.exists() && userDoc.data().address) {
+      window.location.replace('index.html');
+     } else {
+      window.location.replace('complete-profile.html');
+     }
+    } catch (firestoreError) {
+     console.error("Erro ao ler perfil do Firestore:", firestoreError);
+     // Auth foi bem-sucedido, redirecionar mesmo assim
+     window.location.replace('index.html');
+    }
   });
  }
 }

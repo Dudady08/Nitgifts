@@ -1,4 +1,4 @@
-import { auth, db, doc, getDoc, onAuthStateChanged } from './firebase-config.js';
+import { auth, db, doc, getDoc, onAuthStateChanged, collection, addDoc } from './firebase-config.js';
 
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUrmbaRzwqRku-QT7j_V1tqNMuheBB4zkNDJynJy7iV7bnF3FJ4JE6hgeZ2vTuN5bDfA/exec";
 let userData = null;
@@ -109,7 +109,7 @@ function initCheckoutForm() {
 
  if (!form || !submitBtn) return;
 
- form.addEventListener('submit', (e) => {
+ form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   if (!userData) {
@@ -125,25 +125,44 @@ function initCheckoutForm() {
   if (spinner) spinner.style.display = 'inline-block';
   if (btnText) btnText.style.display = 'none';
 
-  // Processar Itens e Total
   let cartText = cart.map(item => `${item.qty}x ${item.name} (R$ ${item.price.toFixed(2).replace('.', ',')})`).join('\n');
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
   const shipping = subtotal > 200 ? 0 : 19.90;
   const formattedTotal = `R$ ${(subtotal + shipping).toFixed(2).replace('.', ',')}`;
+  const formattedShipping = shipping === 0 ? 'Grátis' : `R$ ${shipping.toFixed(2).replace('.', ',')}`;
 
-  // Prepara os dados
+  // Data do pedido
+  const now = new Date();
+  const orderDate = now.toLocaleDateString('pt-BR', {
+   day: '2-digit', month: '2-digit', year: 'numeric',
+   hour: '2-digit', minute: '2-digit'
+  });
+
+  // Montar endereço completo
+  const addr = userData.address || {};
+  const fullAddress = [
+   addr.street || '',
+   addr.number ? `nº ${addr.number}` : '',
+   addr.complement ? `(${addr.complement})` : ''
+  ].filter(Boolean).join(', ')
+   + ` — ${addr.city || ''}-${addr.state || ''}`
+   + ` | CEP: ${addr.cep || ''}`;
+
+  // ──── 1. Enviar para Google Apps Script (planilha + email) ────
   const formData = new URLSearchParams();
   formData.append('tipo_formulario', 'checkout');
   formData.append('nome', userData.name || '');
   formData.append('email', userData.email || '');
   formData.append('telefone', userData.phone || '');
-  formData.append('cep', userData.address?.cep || '');
-  formData.append('endereco', userData.address?.street || '');
-  formData.append('numero', userData.address?.number || '');
-  formData.append('complemento', userData.address?.complement || '');
-  formData.append('cidade', userData.address?.city || '');
-  formData.append('estado', userData.address?.state || '');
+  formData.append('data_pedido', orderDate);
+  formData.append('cep', addr.cep || '');
+  formData.append('endereco', addr.street || '');
+  formData.append('numero', addr.number || '');
+  formData.append('complemento', addr.complement || '');
+  formData.append('cidade', addr.city || '');
+  formData.append('estado', addr.state || '');
   formData.append('itens', cartText);
+  formData.append('frete', formattedShipping);
   formData.append('total', formattedTotal);
 
   console.log("Enviando Pedido para o Google Apps Script...");
@@ -160,6 +179,64 @@ function initCheckoutForm() {
   }).then(() => console.log("Fetch de Pedido enviado."))
     .catch(err => console.error("Erro no fetch de Pedido:", err));
 
+  // ──── 2. Salvar pedido no Firestore para histórico ────
+  try {
+   const user = auth.currentUser;
+   if (user) {
+    await addDoc(collection(db, "users", user.uid, "orders"), {
+     items: cart.map(item => ({
+      name: item.name,
+      qty: item.qty,
+      price: item.price,
+      image: item.image || ''
+     })),
+     subtotal: subtotal,
+     shipping: shipping,
+     total: subtotal + shipping,
+     createdAt: new Date().toISOString(),
+     status: "confirmado"
+    });
+    console.log("Pedido salvo no Firestore.");
+   }
+  } catch (firestoreErr) {
+   console.error("Erro ao salvar pedido no Firestore:", firestoreErr);
+  }
+
+   // ──── 3. Enviar notificação via Google Apps Script (email + WhatsApp automático) ────
+   const CONTACT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMOV8P62wf8zmQuAG_3rDXpHEfdVCP16PhZUQtda5m3yEXyt3YQtCcD_ftjLHlHSaryg/exec";
+
+   const itemsList = cart.map(item =>
+    `• ${item.qty}x ${item.name} — R$ ${(item.price * item.qty).toFixed(2).replace('.', ',')}`
+   ).join('\n');
+
+   const orderMessage = `🛒 NOVO PEDIDO — NIT GIFTS\n\n`
+    + `📅 Data: ${orderDate}\n\n`
+    + `👤 Cliente: ${userData.name || 'Não informado'}\n`
+    + `📧 E-mail: ${userData.email || 'Não informado'}\n`
+    + `📱 Telefone: ${userData.phone || 'Não informado'}\n\n`
+    + `📦 Itens do Pedido:\n${itemsList}\n\n`
+    + `🚚 Frete: ${formattedShipping}\n`
+    + `💰 Total: ${formattedTotal}\n\n`
+    + `📍 Endereço de Entrega:\n${fullAddress}`;
+
+   const notifData = new URLSearchParams();
+   notifData.append('tipo_formulario', 'contato');
+   notifData.append('nome', userData.name || '');
+   notifData.append('email', userData.email || '');
+   notifData.append('assunto', `Novo Pedido — ${formattedTotal}`);
+   notifData.append('mensagem', orderMessage);
+
+   fetch(CONTACT_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'cors',
+    cache: 'no-cache',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    redirect: 'follow',
+    body: notifData.toString()
+   }).then(() => console.log("Notificação de pedido enviada (email + WhatsApp)."))
+     .catch(err => console.error("Erro ao enviar notificação:", err));
+
+  // ──── 4. Limpar carrinho e redirecionar ────
   setTimeout(() => {
    localStorage.setItem('cart', '[]');
    window.dispatchEvent(new Event('cart-updated'));
