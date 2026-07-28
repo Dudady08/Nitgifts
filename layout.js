@@ -107,7 +107,7 @@ const footerHTML = `
 
    <!-- Bottom copyright row -->
    <div class="border-t border-black/20 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4" style="border-top: 1px solid rgba(0, 0, 0, 0.2);">
-    <p class="text-xs" style="color: rgba(0, 0, 0, 0.6);">© 2026 Nit Gifts. Todos os direitos reservados.</p>
+    <p class="text-xs" style="color: rgba(0, 0, 0, 0.6);">© 2026 Nit Gifts Todos os direitos reservados.</p>
     <div class="flex gap-6">
      <a href="contact.html" class="text-xs footer-bottom-link">Política de Privacidade</a>
      <a href="contact.html" class="text-xs footer-bottom-link">Termos de Uso</a>
