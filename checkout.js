@@ -187,11 +187,22 @@ function initCheckoutForm() {
    pagbankData.append('cpf', userData.cpf || '');
    
    // Formato JSON estruturado que a API do PagBank exige
-   pagbankData.append('items', JSON.stringify(cart.map(item => ({
+   const itemsForPagBank = cart.map(item => ({
     name: item.name,
     qty: item.qty,
     price: item.price
-   }))));
+   }));
+
+   // Adicionar o Frete como um item extra no PagBank (se não for grátis)
+   if (shipping > 0) {
+    itemsForPagBank.push({
+     name: "Frete Fixo",
+     qty: 1,
+     price: shipping
+    });
+   }
+
+   pagbankData.append('items', JSON.stringify(itemsForPagBank));
    
    // Enviamos TODOS os dados do formulário para o script novo guardar no Cache
    pagbankData.append('data_pedido', orderDate);
