@@ -247,6 +247,7 @@ function initCheckoutForm() {
    if (result.success && result.pay_url) {
     localStorage.setItem('pendingOrder', JSON.stringify({
      checkout_id: result.checkout_id,
+     reference_id: reference_id,
      pay_url: result.pay_url,
      userUid: userUid,
      orderId: orderId,
