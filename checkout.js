@@ -1,6 +1,7 @@
 import { auth, db, doc, getDoc, onAuthStateChanged, collection, addDoc } from './firebase-config.js';
 
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUrmbaRzwqRku-QT7j_V1tqNMuheBB4zkNDJynJy7iV7bnF3FJ4JE6hgeZ2vTuN5bDfA/exec";
+const PAGBANK_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxwuC7xGX5YJX9u8DYxi0zm6hxKSF2GxevgkAtrkWscb1srBA3KIjvxy-NYZtWDfWJ8vQ/exec";
 let userData = null;
 
 // 1. Dynamic Toast Notification System
@@ -100,7 +101,7 @@ function loadCheckoutSummary() {
  }
 }
 
-// 3. Form Submission Handler
+// 3. Form Submission Handler (Integrado com PagBank)
 function initCheckoutForm() {
  const form = document.getElementById('checkout-form');
  const submitBtn = document.getElementById('submit-order-btn');
@@ -118,7 +119,7 @@ function initCheckoutForm() {
   }
 
   const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-  if (cart.length === 0) return; 
+  if (cart.length === 0) return;
 
   // Trigger submitting visual states
   submitBtn.disabled = true;
@@ -140,15 +141,8 @@ function initCheckoutForm() {
 
   // Montar endereço completo
   const addr = userData.address || {};
-  const fullAddress = [
-   addr.street || '',
-   addr.number ? `nº ${addr.number}` : '',
-   addr.complement ? `(${addr.complement})` : ''
-  ].filter(Boolean).join(', ')
-   + ` — ${addr.city || ''}-${addr.state || ''}`
-   + ` | CEP: ${addr.cep || ''}`;
 
-  // ──── 1. Enviar para Google Apps Script (planilha + email) ────
+  // ──── 1. Enviar para Google Apps Script (planilha + email — em paralelo) ────
   const formData = new URLSearchParams();
   formData.append('tipo_formulario', 'checkout');
   formData.append('nome', userData.name || '');
@@ -165,8 +159,9 @@ function initCheckoutForm() {
   formData.append('frete', formattedShipping);
   formData.append('total', formattedTotal);
 
-  console.log("Enviando Pedido para o Google Apps Script...");
+  console.log("Enviando Pedido para a Planilha...");
 
+  // Dispara registro na planilha/email em paralelo (não bloqueia o checkout)
   fetch(GOOGLE_SCRIPT_URL, {
    method: 'POST',
    mode: 'cors',
@@ -176,8 +171,8 @@ function initCheckoutForm() {
    },
    redirect: 'follow',
    body: formData.toString()
-  }).then(() => console.log("Fetch de Pedido enviado."))
-    .catch(err => console.error("Erro no fetch de Pedido:", err));
+  }).then(() => console.log("Fetch de Planilha enviado."))
+    .catch(err => console.error("Erro no fetch de Planilha:", err));
 
   // ──── 2. Salvar pedido no Firestore para histórico ────
   try {
@@ -194,55 +189,82 @@ function initCheckoutForm() {
      shipping: shipping,
      total: subtotal + shipping,
      createdAt: new Date().toISOString(),
-     status: "confirmado"
+     status: "pendente_pagamento"
     });
-    console.log("Pedido salvo no Firestore.");
+    console.log("Pedido salvo no Firestore (pendente_pagamento).");
    }
   } catch (firestoreErr) {
    console.error("Erro ao salvar pedido no Firestore:", firestoreErr);
   }
 
-   // ──── 3. Enviar notificação via Google Apps Script (email + WhatsApp automático) ────
-   const CONTACT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMOV8P62wf8zmQuAG_3rDXpHEfdVCP16PhZUQtda5m3yEXyt3YQtCcD_ftjLHlHSaryg/exec";
+  // ──── 3. Criar Checkout no PagBank via Google Apps Script NOVO ────
+  try {
+   console.log("Criando checkout no PagBank...");
 
-   const itemsList = cart.map(item =>
-    `• ${item.qty}x ${item.name} — R$ ${(item.price * item.qty).toFixed(2).replace('.', ',')}`
-   ).join('\n');
+   // Determinar a URL de retorno (mesma origem do site + success.html)
+   const returnUrl = window.location.origin + window.location.pathname.replace('checkout.html', 'success.html');
 
-   const orderMessage = `🛒 NOVO PEDIDO — NIT GIFTS\n\n`
-    + `📅 Data: ${orderDate}\n\n`
-    + `👤 Cliente: ${userData.name || 'Não informado'}\n`
-    + `📧 E-mail: ${userData.email || 'Não informado'}\n`
-    + `📱 Telefone: ${userData.phone || 'Não informado'}\n\n`
-    + `📦 Itens do Pedido:\n${itemsList}\n\n`
-    + `🚚 Frete: ${formattedShipping}\n`
-    + `💰 Total: ${formattedTotal}\n\n`
-    + `📍 Endereço de Entrega:\n${fullAddress}`;
+   const pagbankData = new URLSearchParams();
+   pagbankData.append('nome', userData.name || '');
+   pagbankData.append('email', userData.email || '');
+   pagbankData.append('telefone', userData.phone || '');
+   pagbankData.append('cpf', userData.cpf || '');
+   pagbankData.append('items', JSON.stringify(cart.map(item => ({
+    name: item.name,
+    qty: item.qty,
+    price: item.price
+   }))));
+   pagbankData.append('reference_id', 'NITGIFT-' + Date.now());
+   pagbankData.append('return_url', returnUrl);
 
-   const notifData = new URLSearchParams();
-   notifData.append('tipo_formulario', 'contato');
-   notifData.append('nome', userData.name || '');
-   notifData.append('email', userData.email || '');
-   notifData.append('assunto', `Novo Pedido — ${formattedTotal}`);
-   notifData.append('mensagem', orderMessage);
-
-   fetch(CONTACT_SCRIPT_URL, {
+   const pagbankResponse = await fetch(PAGBANK_SCRIPT_URL, {
     method: 'POST',
     mode: 'cors',
     cache: 'no-cache',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: {
+     'Content-Type': 'application/x-www-form-urlencoded',
+    },
     redirect: 'follow',
-    body: notifData.toString()
-   }).then(() => console.log("Notificação de pedido enviada (email + WhatsApp)."))
-     .catch(err => console.error("Erro ao enviar notificação:", err));
+    body: pagbankData.toString()
+   });
 
-  // ──── 4. Limpar carrinho e redirecionar ────
-  setTimeout(() => {
-   localStorage.setItem('cart', '[]');
-   window.dispatchEvent(new Event('cart-updated'));
-   localStorage.setItem('orderSuccessToast', 'true');
-   window.location.replace('index.html');
-  }, 1500);
+   const responseText = await pagbankResponse.text();
+   let result;
+   try {
+    result = JSON.parse(responseText);
+   } catch (parseErr) {
+    console.error("Resposta não-JSON do GAS:", responseText);
+    throw new Error("Resposta inesperada do servidor.");
+   }
+
+   if (result.success && result.pay_url) {
+    localStorage.setItem('pendingOrder', JSON.stringify({
+     checkout_id: result.checkout_id,
+     items: cart,
+     total: subtotal + shipping,
+     date: orderDate
+    }));
+
+    console.log("Redirecionando para PagBank:", result.pay_url);
+    window.location.href = result.pay_url;
+   } else {
+    const errorMsg = result.error || "Erro ao processar pagamento.";
+    console.error("Erro PagBank:", errorMsg);
+    showToast("Erro no pagamento", errorMsg);
+
+    submitBtn.disabled = false;
+    if (spinner) spinner.style.display = 'none';
+    if (btnText) btnText.style.display = 'flex';
+   }
+
+  } catch (pagbankErr) {
+   console.error("Exceção ao criar checkout PagBank:", pagbankErr);
+   showToast("Erro de conexão", "Não foi possível conectar ao servidor de pagamento. Tente novamente.");
+
+   submitBtn.disabled = false;
+   if (spinner) spinner.style.display = 'none';
+   if (btnText) btnText.style.display = 'flex';
+  }
  });
 }
 

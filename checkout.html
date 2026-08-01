@@ -98,16 +98,22 @@
        <button type="submit" class="checkout-btn" id="submit-order-btn">
         <div class="spinner animate-spin" id="submit-spinner" style="display: none;"></div>
         <span id="submit-btn-text" style="display: flex; align-items: center; gap: 8px;">
-         <i data-lucide="lock" class="icon-sm"></i>
-         Finalizar Pedido
+         <i data-lucide="credit-card" class="icon-sm"></i>
+         Ir para o Pagamento
         </span>
        </button>
 
-       <p class="summary-badge-footer"
-        style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-        <i data-lucide="lock" class="icon-sm" style="width: 10px; height: 10px;"></i>
-        Pagamento seguro e criptografado
-       </p>
+       <!-- PagBank Security Badge -->
+       <div class="pagbank-badge" style="display: flex; flex-direction: column; align-items: center; gap: 6px; margin-top: 8px;">
+        <p class="summary-badge-footer"
+         style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+         <i data-lucide="shield-check" class="icon-sm" style="width: 12px; height: 12px; color: #00A94F;"></i>
+         Pagamento processado com segurança pelo PagBank
+        </p>
+        <div style="display: flex; align-items: center; gap: 6px; opacity: 0.5;">
+         <span style="font-size: 9px; letter-spacing: 0.05em; color: rgba(26,26,26,0.4);">Pix • Cartão • Boleto</span>
+        </div>
+       </div>
       </div>
      </div>
 
