@@ -126,6 +126,9 @@ function initCheckoutForm() {
   if (spinner) spinner.style.display = 'inline-block';
   if (btnText) btnText.style.display = 'none';
 
+  // Abrir a janela do PagBank AGORA (no contexto do clique) para evitar bloqueio de popup
+  const pagbankWindow = window.open('about:blank', '_blank');
+
   let cartText = cart.map(item => `${item.qty}x ${item.name} (R$ ${item.price.toFixed(2).replace('.', ',')})`).join('\n');
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
   const shipping = subtotal > 200 ? 0 : 19.90;
@@ -269,11 +272,15 @@ function initCheckoutForm() {
 
     console.log("Abrindo PagBank em nova aba:", result.pay_url);
     
-    // Abre o PagBank em uma aba nova
-    window.open(result.pay_url, '_blank');
+    // Redireciona a aba que já abrimos para a URL do PagBank
+    if (pagbankWindow) {
+     pagbankWindow.location.href = result.pay_url;
+    } else {
+     // Fallback se o popup foi bloqueado mesmo assim
+     window.open(result.pay_url, '_blank');
+    }
     
     // Redireciona a aba atual para success.html
-    // (assim o status é atualizado mesmo se o cliente fechar a aba do PagBank)
     window.location.href = 'success.html';
    } else {
     const errorMsg = result.error || "Erro ao processar pagamento.";
