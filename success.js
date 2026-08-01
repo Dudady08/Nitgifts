@@ -5,6 +5,7 @@
 import { auth, db, doc, getDoc, setDoc, onAuthStateChanged } from './firebase-config.js';
 
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUrmbaRzwqRku-QT7j_V1tqNMuheBB4zkNDJynJy7iV7bnF3FJ4JE6hgeZ2vTuN5bDfA/exec";
+const PAGBANK_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxwuC7xGX5YJX9u8DYxi0zm6hxKSF2GxevgkAtrkWscb1srBA3KIjvxy-NYZtWDfWJ8vQ/exec";
 
 // 1. Toast Notification System
 function showToast(title, description = "") {
@@ -54,7 +55,33 @@ function showToast(title, description = "") {
  }, 4000);
 }
 
-// 2. Atualizar status do pedido no Firestore para "pago"
+// 2. Mostrar overlay de pagamento aprovado
+function showApprovalOverlay() {
+ const overlay = document.createElement('div');
+ overlay.className = 'payment-overlay';
+ overlay.innerHTML = `
+  <div class="payment-overlay-card">
+   <div class="payment-overlay-icon">
+    <i data-lucide="check-circle" style="width: 64px; height: 64px; color: #059669;"></i>
+   </div>
+   <h2 class="payment-overlay-title">Pagamento Aprovado!</h2>
+   <p class="payment-overlay-text">Seu pedido foi confirmado com sucesso. Você receberá uma notificação em breve.</p>
+   <button class="btn payment-overlay-btn" onclick="document.querySelector('.payment-overlay').remove()">Entendi</button>
+  </div>
+ `;
+ document.body.appendChild(overlay);
+
+ // Animar entrada
+ requestAnimationFrame(() => {
+  overlay.classList.add('show');
+ });
+
+ if (window.lucide) {
+  window.lucide.createIcons();
+ }
+}
+
+// 3. Atualizar status do pedido no Firestore para "pago"
 async function updateOrderStatus(userUid, orderId) {
  if (!userUid || userUid === 'GUEST' || !orderId) return;
 
@@ -67,15 +94,14 @@ async function updateOrderStatus(userUid, orderId) {
  }
 }
 
-// 3. Enviar notificação para a planilha/email (script antigo)
+// 4. Enviar notificação para a planilha/email (script antigo)
 async function sendNotification(formData) {
  if (!formData) return;
 
  try {
   const params = new URLSearchParams();
   params.append('tipo_formulario', 'checkout');
-  
-  // Adicionar todos os campos do formulário
+
   for (const key of Object.keys(formData)) {
    params.append(key, formData[key]);
   }
@@ -86,9 +112,7 @@ async function sendNotification(formData) {
    method: 'POST',
    mode: 'cors',
    cache: 'no-cache',
-   headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
-   },
+   headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
    redirect: 'follow',
    body: params.toString()
   }).then(() => console.log("Notificação enviada com sucesso!"))
@@ -99,7 +123,88 @@ async function sendNotification(formData) {
  }
 }
 
-// 4. Process order and display confirmation
+// 5. Verificar status do pagamento no PagBank (polling)
+async function checkPaymentStatus(checkoutId) {
+ try {
+  const params = new URLSearchParams();
+  params.append('tipo_formulario', 'check_status');
+  params.append('checkout_id', checkoutId);
+
+  const response = await fetch(PAGBANK_SCRIPT_URL, {
+   method: 'POST',
+   mode: 'cors',
+   cache: 'no-cache',
+   headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+   redirect: 'follow',
+   body: params.toString()
+  });
+
+  const text = await response.text();
+  try {
+   return JSON.parse(text);
+  } catch {
+   console.error("Resposta não-JSON do check_status:", text);
+   return { status: "ERROR" };
+  }
+ } catch (err) {
+  console.error("Erro ao verificar status:", err);
+  return { status: "ERROR" };
+ }
+}
+
+// 6. Polling loop — verifica a cada 5 segundos se o pagamento foi aprovado
+async function startPaymentPolling(order) {
+ const statusEl = document.getElementById('payment-status-text');
+ const spinnerEl = document.getElementById('payment-status-spinner');
+ const checkoutId = order.checkout_id;
+
+ if (!checkoutId) {
+  console.warn("Sem checkout_id para polling.");
+  if (statusEl) statusEl.textContent = "Não foi possível verificar o pagamento automaticamente. Verifique em Meus Pedidos.";
+  if (spinnerEl) spinnerEl.style.display = 'none';
+  return;
+ }
+
+ let attempts = 0;
+ const maxAttempts = 120; // 10 minutos (120 x 5s)
+
+ const pollInterval = setInterval(async () => {
+  attempts++;
+  console.log(`Verificando pagamento... tentativa ${attempts}/${maxAttempts}`);
+
+  const result = await checkPaymentStatus(checkoutId);
+
+  if (result.status === "PAID") {
+   clearInterval(pollInterval);
+   console.log("PAGAMENTO CONFIRMADO!");
+
+   // Atualizar Firestore
+   await updateOrderStatus(order.userUid, order.orderId);
+
+   // Enviar notificação planilha/email
+   await sendNotification(order.formData);
+
+   // Atualizar UI
+   if (statusEl) statusEl.textContent = "Pagamento aprovado!";
+   if (spinnerEl) spinnerEl.style.display = 'none';
+
+   // Mostrar overlay de aprovação
+   showApprovalOverlay();
+
+   // Limpar dados temporários
+   localStorage.removeItem('pendingOrder');
+  }
+
+  if (attempts >= maxAttempts) {
+   clearInterval(pollInterval);
+   if (statusEl) statusEl.textContent = "Tempo esgotado. Verifique o status em Meus Pedidos.";
+   if (spinnerEl) spinnerEl.style.display = 'none';
+   localStorage.removeItem('pendingOrder');
+  }
+ }, 5000); // A cada 5 segundos
+}
+
+// 7. Process order and display confirmation
 async function processSuccess() {
  const loadingEl = document.getElementById('success-loading');
  const contentEl = document.getElementById('success-content');
@@ -114,24 +219,8 @@ async function processSuccess() {
  localStorage.setItem('cart', '[]');
  window.dispatchEvent(new Event('cart-updated'));
 
- // Se temos dados do pedido, processar pagamento
- if (pendingOrderStr) {
-  try {
-   const order = JSON.parse(pendingOrderStr);
-
-   // ── ATUALIZAR STATUS NO FIRESTORE ──
-   await updateOrderStatus(order.userUid, order.orderId);
-
-   // ── ENVIAR NOTIFICAÇÃO PARA PLANILHA/EMAIL ──
-   await sendNotification(order.formData);
-
-  } catch (err) {
-   console.error("Erro ao processar pedido pós-pagamento:", err);
-  }
- }
-
  // Aguardar um momento para efeito visual
- setTimeout(() => {
+ setTimeout(async () => {
   // Esconder loading, mostrar conteúdo
   if (loadingEl) loadingEl.style.display = 'none';
   if (contentEl) contentEl.style.display = 'block';
@@ -157,16 +246,14 @@ async function processSuccess() {
     }
 
     summaryCard.style.display = 'block';
+
+    // ── INICIAR POLLING DE PAGAMENTO ──
+    startPaymentPolling(order);
+
    } catch (e) {
     console.error("Erro ao parsear pedido:", e);
    }
   }
-
-  // Limpar dados temporários do pedido
-  localStorage.removeItem('pendingOrder');
-
-  // Mostrar toast de sucesso
-  showToast("Pagamento confirmado!", "Seu pedido foi registrado com sucesso.");
 
   // Inicializar ícones
   if (window.lucide) {
@@ -175,7 +262,7 @@ async function processSuccess() {
  }, 1200);
 }
 
-// 5. Initializer
+// 8. Initializer
 document.addEventListener('DOMContentLoaded', () => {
  processSuccess();
 

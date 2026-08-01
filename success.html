@@ -37,7 +37,13 @@
     </div>
 
     <h1 class="success-title">Pedido Realizado!</h1>
-    <p class="success-subtitle">Obrigado por comprar na <strong>Nit Gifts</strong>. Seu pagamento está sendo processado pelo PagBank.</p>
+    <p class="success-subtitle">Obrigado por comprar na <strong>Nit Gifts</strong>. Seu pagamento está sendo verificado pelo PagBank.</p>
+
+    <!-- Payment Status Indicator -->
+    <div style="display: flex; align-items: center; gap: 12px; justify-content: center; margin: 20px 0; padding: 16px; background: #FEF3C7; border-radius: 12px;">
+     <div class="spinner animate-spin" id="payment-status-spinner" style="width: 20px; height: 20px; border-width: 2px;"></div>
+     <span id="payment-status-text" style="font-size: 14px; font-weight: 600; color: #92400E;">Processando pagamento... Realize o pagamento na aba do PagBank.</span>
+    </div>
 
     <!-- Order Summary Card -->
     <div class="success-order-card" id="order-summary-card" style="display: none;">
