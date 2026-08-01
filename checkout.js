@@ -220,7 +220,7 @@ function initCheckoutForm() {
    pagbankData.append('total', formattedTotal);
 
    // O reference_id carrega o UID e o OrderID para o Webhook saber quem atualizar
-   const reference_id = `${userUid}|${orderId}`;
+   const reference_id = `${userUid}_${orderId}`;
    pagbankData.append('reference_id', reference_id);
    pagbankData.append('return_url', returnUrl);
 
@@ -240,6 +240,7 @@ function initCheckoutForm() {
    try {
     result = JSON.parse(responseText);
    } catch (parseErr) {
+    if (pagbankWindow) pagbankWindow.close();
     console.error("Resposta não-JSON do GAS:", responseText);
     throw new Error("Resposta inesperada do servidor.");
    }
@@ -284,6 +285,7 @@ function initCheckoutForm() {
      window.location.href = 'success.html';
     }, 500);
    } else {
+    if (pagbankWindow) pagbankWindow.close();
     const errorMsg = result.error || "Erro ao processar pagamento.";
     console.error("Erro PagBank:", errorMsg);
     showToast("Erro no pagamento", errorMsg);
@@ -294,6 +296,7 @@ function initCheckoutForm() {
    }
 
   } catch (pagbankErr) {
+   if (pagbankWindow) pagbankWindow.close();
    console.error("Exceção ao criar checkout PagBank:", pagbankErr);
    showToast("Erro de conexão", "Não foi possível conectar ao servidor de pagamento. Tente novamente.");
 
