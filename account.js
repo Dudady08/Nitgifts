@@ -195,7 +195,9 @@ function createOrderCard(orderData) {
  const statusLabel = {
   'confirmado': 'Confirmado',
   'enviado': 'Enviado',
-  'entregue': 'Entregue'
+  'entregue': 'Entregue',
+  'pendente_pagamento': 'Aguardando Pagamento',
+  'pago': 'Pago'
  }[statusClass] || 'Confirmado';
 
  let headerHTML = `

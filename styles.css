@@ -3534,11 +3534,27 @@ textarea.form-input {
  color: var(--color-primary);
 }
 
-/* Loading State */
-.success-loading {
- display: flex;
- flex-direction: column;
- align-items: center;
- justify-content: center;
- min-height: 50vh;
-}
+ .success-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+ }
+ 
+ /* Status Indicators for Account Orders */
+ .account-order-status.pendente_pagamento {
+  color: #D97706; /* Laranja/Amarelo */
+  background-color: #FEF3C7;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+ }
+ 
+ .account-order-status.pago {
+  color: #059669; /* Verde */
+  background-color: #D1FAE5;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+ }

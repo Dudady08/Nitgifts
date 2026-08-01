@@ -141,44 +141,20 @@ function initCheckoutForm() {
 
   // Montar endereço completo
   const addr = userData.address || {};
+  
+  // ──── 1. Salvar pedido no Firestore para histórico e para o Webhook ────
+  let orderId = 'NITGIFT-' + Date.now();
+  let userUid = 'GUEST';
 
-  // ──── 1. Enviar para Google Apps Script (planilha + email — em paralelo) ────
-  const formData = new URLSearchParams();
-  formData.append('tipo_formulario', 'checkout');
-  formData.append('nome', userData.name || '');
-  formData.append('email', userData.email || '');
-  formData.append('telefone', userData.phone || '');
-  formData.append('data_pedido', orderDate);
-  formData.append('cep', addr.cep || '');
-  formData.append('endereco', addr.street || '');
-  formData.append('numero', addr.number || '');
-  formData.append('complemento', addr.complement || '');
-  formData.append('cidade', addr.city || '');
-  formData.append('estado', addr.state || '');
-  formData.append('itens', cartText);
-  formData.append('frete', formattedShipping);
-  formData.append('total', formattedTotal);
-
-  console.log("Enviando Pedido para a Planilha...");
-
-  // Dispara registro na planilha/email em paralelo (não bloqueia o checkout)
-  fetch(GOOGLE_SCRIPT_URL, {
-   method: 'POST',
-   mode: 'cors',
-   cache: 'no-cache',
-   headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
-   },
-   redirect: 'follow',
-   body: formData.toString()
-  }).then(() => console.log("Fetch de Planilha enviado."))
-    .catch(err => console.error("Erro no fetch de Planilha:", err));
-
-  // ──── 2. Salvar pedido no Firestore para histórico ────
   try {
    const user = auth.currentUser;
    if (user) {
-    await addDoc(collection(db, "users", user.uid, "orders"), {
+    userUid = user.uid;
+    // Criamos a referência do documento ANTES para sabermos qual o ID
+    const newOrderRef = doc(collection(db, "users", user.uid, "orders"));
+    orderId = newOrderRef.id;
+
+    await setDoc(newOrderRef, {
      items: cart.map(item => ({
       name: item.name,
       qty: item.qty,
@@ -191,30 +167,40 @@ function initCheckoutForm() {
      createdAt: new Date().toISOString(),
      status: "pendente_pagamento"
     });
-    console.log("Pedido salvo no Firestore (pendente_pagamento).");
+    console.log("Pedido salvo no Firestore (pendente_pagamento). ID:", orderId);
    }
   } catch (firestoreErr) {
    console.error("Erro ao salvar pedido no Firestore:", firestoreErr);
   }
 
-  // ──── 3. Criar Checkout no PagBank via Google Apps Script NOVO ────
+  // ──── 2. Criar Checkout no PagBank (o Webhook fará o resto) ────
   try {
    console.log("Criando checkout no PagBank...");
 
-   // Determinar a URL de retorno (mesma origem do site + success.html)
    const returnUrl = window.location.origin + window.location.pathname.replace('checkout.html', 'success.html');
 
    const pagbankData = new URLSearchParams();
+   pagbankData.append('tipo_formulario', 'pagbank_checkout');
    pagbankData.append('nome', userData.name || '');
    pagbankData.append('email', userData.email || '');
    pagbankData.append('telefone', userData.phone || '');
    pagbankData.append('cpf', userData.cpf || '');
-   pagbankData.append('items', JSON.stringify(cart.map(item => ({
-    name: item.name,
-    qty: item.qty,
-    price: item.price
-   }))));
-   pagbankData.append('reference_id', 'NITGIFT-' + Date.now());
+   
+   // Enviamos TODOS os dados do formulário para o script novo guardar no Cache
+   pagbankData.append('data_pedido', orderDate);
+   pagbankData.append('cep', addr.cep || '');
+   pagbankData.append('endereco', addr.street || '');
+   pagbankData.append('numero', addr.number || '');
+   pagbankData.append('complemento', addr.complement || '');
+   pagbankData.append('cidade', addr.city || '');
+   pagbankData.append('estado', addr.state || '');
+   pagbankData.append('itens', cartText);
+   pagbankData.append('frete', formattedShipping);
+   pagbankData.append('total', formattedTotal);
+
+   // O reference_id carrega o UID e o OrderID para o Webhook saber quem atualizar
+   const reference_id = `${userUid}|${orderId}`;
+   pagbankData.append('reference_id', reference_id);
    pagbankData.append('return_url', returnUrl);
 
    const pagbankResponse = await fetch(PAGBANK_SCRIPT_URL, {
