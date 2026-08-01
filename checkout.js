@@ -1,4 +1,4 @@
-import { auth, db, doc, getDoc, onAuthStateChanged, collection, addDoc } from './firebase-config.js';
+import { auth, db, doc, getDoc, onAuthStateChanged, collection, addDoc, setDoc } from './firebase-config.js';
 
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUrmbaRzwqRku-QT7j_V1tqNMuheBB4zkNDJynJy7iV7bnF3FJ4JE6hgeZ2vTuN5bDfA/exec";
 const PAGBANK_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxwuC7xGX5YJX9u8DYxi0zm6hxKSF2GxevgkAtrkWscb1srBA3KIjvxy-NYZtWDfWJ8vQ/exec";
@@ -185,6 +185,13 @@ function initCheckoutForm() {
    pagbankData.append('email', userData.email || '');
    pagbankData.append('telefone', userData.phone || '');
    pagbankData.append('cpf', userData.cpf || '');
+   
+   // Formato JSON estruturado que a API do PagBank exige
+   pagbankData.append('items', JSON.stringify(cart.map(item => ({
+    name: item.name,
+    qty: item.qty,
+    price: item.price
+   }))));
    
    // Enviamos TODOS os dados do formulário para o script novo guardar no Cache
    pagbankData.append('data_pedido', orderDate);
