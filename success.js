@@ -187,6 +187,9 @@ async function startPaymentPolling(order) {
    // Atualizar UI
    if (statusEl) statusEl.textContent = "Pagamento aprovado!";
    if (spinnerEl) spinnerEl.style.display = 'none';
+   
+   const manualBtnContainer = document.getElementById('pagbank-manual-btn-container');
+   if (manualBtnContainer) manualBtnContainer.style.display = 'none';
 
    // Mostrar overlay de aprovação
    showApprovalOverlay();
@@ -246,6 +249,16 @@ async function processSuccess() {
     }
 
     summaryCard.style.display = 'block';
+    
+    // Configurar Botão Manual do PagBank caso o popup tenha falhado
+    if (order.pay_url) {
+     const manualBtnContainer = document.getElementById('pagbank-manual-btn-container');
+     const manualLink = document.getElementById('pagbank-manual-link');
+     if (manualBtnContainer && manualLink) {
+      manualLink.href = order.pay_url;
+      manualBtnContainer.style.display = 'block';
+     }
+    }
 
     // ── INICIAR POLLING DE PAGAMENTO ──
     startPaymentPolling(order);

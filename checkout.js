@@ -247,6 +247,7 @@ function initCheckoutForm() {
    if (result.success && result.pay_url) {
     localStorage.setItem('pendingOrder', JSON.stringify({
      checkout_id: result.checkout_id,
+     pay_url: result.pay_url,
      userUid: userUid,
      orderId: orderId,
      items: cart,
@@ -272,16 +273,15 @@ function initCheckoutForm() {
 
     console.log("Abrindo PagBank em nova aba:", result.pay_url);
     
-    // Redireciona a aba que já abrimos para a URL do PagBank
+    // Tenta redirecionar a aba que já abrimos
     if (pagbankWindow) {
      pagbankWindow.location.href = result.pay_url;
-    } else {
-     // Fallback se o popup foi bloqueado mesmo assim
-     window.open(result.pay_url, '_blank');
     }
     
-    // Redireciona a aba atual para success.html
-    window.location.href = 'success.html';
+    // Pequeno atraso para dar tempo do navegador processar o popup antes de mudar a página atual
+    setTimeout(() => {
+     window.location.href = 'success.html';
+    }, 500);
    } else {
     const errorMsg = result.error || "Erro ao processar pagamento.";
     console.error("Erro PagBank:", errorMsg);
