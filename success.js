@@ -124,11 +124,11 @@ async function sendNotification(formData) {
 }
 
 // 5. Verificar status do pagamento no PagBank (polling)
-async function checkPaymentStatus(referenceId) {
+async function checkPaymentStatus(checkoutId) {
  try {
   const params = new URLSearchParams();
   params.append('tipo_formulario', 'check_status');
-  params.append('reference_id', referenceId);
+  params.append('checkout_id', checkoutId);
 
   const response = await fetch(PAGBANK_SCRIPT_URL, {
    method: 'POST',
@@ -156,10 +156,10 @@ async function checkPaymentStatus(referenceId) {
 async function startPaymentPolling(order) {
  const statusEl = document.getElementById('payment-status-text');
  const spinnerEl = document.getElementById('payment-status-spinner');
- const referenceId = order.reference_id;
+ const checkoutId = order.checkout_id;
 
- if (!referenceId) {
-  console.warn("Sem reference_id para polling.");
+ if (!checkoutId) {
+  console.warn("Sem checkout_id para polling.");
   if (statusEl) statusEl.textContent = "Não foi possível verificar o pagamento automaticamente. Verifique em Meus Pedidos.";
   if (spinnerEl) spinnerEl.style.display = 'none';
   return;
@@ -172,7 +172,7 @@ async function startPaymentPolling(order) {
   attempts++;
   console.log(`Verificando pagamento... tentativa ${attempts}/${maxAttempts}`);
 
-  const result = await checkPaymentStatus(referenceId);
+  const result = await checkPaymentStatus(checkoutId);
   console.log("Resultado da API PagBank:\n", JSON.stringify(result, null, 2));
 
   if (result.status === "PAID") {
