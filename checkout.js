@@ -267,8 +267,14 @@ function initCheckoutForm() {
      }
     }));
 
-    console.log("Redirecionando para PagBank:", result.pay_url);
-    window.location.href = result.pay_url;
+    console.log("Abrindo PagBank em nova aba:", result.pay_url);
+    
+    // Abre o PagBank em uma aba nova
+    window.open(result.pay_url, '_blank');
+    
+    // Redireciona a aba atual para success.html
+    // (assim o status é atualizado mesmo se o cliente fechar a aba do PagBank)
+    window.location.href = 'success.html';
    } else {
     const errorMsg = result.error || "Erro ao processar pagamento.";
     console.error("Erro PagBank:", errorMsg);
