@@ -173,7 +173,7 @@ async function startPaymentPolling(order) {
   console.log(`Verificando pagamento... tentativa ${attempts}/${maxAttempts}`);
 
   const result = await checkPaymentStatus(referenceId);
-  console.log("Resultado da API PagBank:", result);
+  console.log("Resultado da API PagBank:\n", JSON.stringify(result, null, 2));
 
   if (result.status === "PAID") {
    clearInterval(pollInterval);
