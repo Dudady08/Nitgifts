@@ -244,9 +244,27 @@ function initCheckoutForm() {
    if (result.success && result.pay_url) {
     localStorage.setItem('pendingOrder', JSON.stringify({
      checkout_id: result.checkout_id,
+     userUid: userUid,
+     orderId: orderId,
      items: cart,
      total: subtotal + shipping,
-     date: orderDate
+     date: orderDate,
+     // Dados para enviar à planilha/email após pagamento
+     formData: {
+      nome: userData.name || '',
+      email: userData.email || '',
+      telefone: userData.phone || '',
+      data_pedido: orderDate,
+      cep: addr.cep || '',
+      endereco: addr.street || '',
+      numero: addr.number || '',
+      complemento: addr.complement || '',
+      cidade: addr.city || '',
+      estado: addr.state || '',
+      itens: cartText,
+      frete: formattedShipping,
+      total: formattedTotal
+     }
     }));
 
     console.log("Redirecionando para PagBank:", result.pay_url);
