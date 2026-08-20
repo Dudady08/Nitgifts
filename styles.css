@@ -103,7 +103,8 @@ main {
 }
 
 .btn-primary {
- (--color-dark);
+ background-color: var(--color-primary);
+ color: var(--color-dark);
 }
 
 .btn-primary:hover {
@@ -111,12 +112,13 @@ main {
 }
 
 .btn-secondary {
- border: 1px solid var(--color-white-border);
- color: var(--color-white);
+ background-color: var(--color-primary);
+ color: var(--color-dark);
+ border: none;
 }
 
 .btn-secondary:hover {
- background-color: var(--color-white-hover-bg);
+ background-color: var(--color-primary-hover);
 }
 
 /* ==========================================================================
@@ -708,12 +710,12 @@ main {
 .trust-section {
  max-width: 1400px;
  margin: 0 auto;
- padding: 48px 20px 80px 20px;
+ padding: 48px 20px 20px 20px;
 }
 
 @media (min-width: 768px) {
  .trust-section {
-  padding: 64px 40px 96px 40px;
+  padding: 64px 40px 32px 40px;
  }
 }
 
@@ -722,7 +724,7 @@ main {
  display: grid;
  grid-template-columns: repeat(2, 1fr);
  gap: 16px;
- margin-bottom: 64px;
+ margin-bottom: 16px;
 }
 
 @media (min-width: 768px) {
