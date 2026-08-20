@@ -605,7 +605,7 @@ main {
 }
 
 .badge-limited {
- background-color: var(--color-accent);
+ background-color: var(--color-primary);
  color: var(--color-dark);
 }
 
@@ -1849,7 +1849,7 @@ textarea.form-input {
  justify-content: center;
  gap: 8px;
  padding: 10px 20px;
- background-color: var(--color-accent);
+ background-color: var(--color-primary);
  color: var(--color-dark);
  font-size: 12px;
  font-weight: 700;
@@ -1859,7 +1859,7 @@ textarea.form-input {
 }
 
 .contact-dark-card-btn:hover {
- background-color: #d4f045;
+ background-color: var(--color-primary-hover);
 }
 
 /* ==========================================================================
@@ -2351,7 +2351,7 @@ textarea.form-input {
 .badge-limited-detail {
  display: inline-block;
  padding: 4px 10px;
- background-color: var(--color-accent);
+ background-color: var(--color-primary);
  color: var(--color-dark);
  font-size: 10px;
  font-weight: 700;

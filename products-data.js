@@ -1,8 +1,4 @@
-/* ==========================================================================
-  Nit Gifts - Centralized Products Database
-  ========================================================================== */
-
-const mockProducts = [
+const productsData = [
  {
   "id": "cam-1",
   "aliases": [
@@ -216,7 +212,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -248,7 +244,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "coracao"
  },
@@ -279,7 +275,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -311,7 +307,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -343,7 +339,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -375,7 +371,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -407,7 +403,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -438,7 +434,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -471,7 +467,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -504,7 +500,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -535,7 +531,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -566,7 +562,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -598,7 +594,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -630,7 +626,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -663,7 +659,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -694,7 +690,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -726,7 +722,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -758,7 +754,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -791,7 +787,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -823,7 +819,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -855,7 +851,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -886,7 +882,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -917,7 +913,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -950,7 +946,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -983,7 +979,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "colorida"
  },
@@ -1020,7 +1016,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium (Termossensível)",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "magica"
  },
@@ -1059,7 +1055,7 @@ const mockProducts = [
   "sizes": [
    "Único"
   ],
-  "material": "Cerâmica Esmaltada Premium (Termossensível)",
+  "material": "Cerâmica Importada",
   "dimensions": "10x9cm (350ml)",
   "cabo_tipo": "magica"
  },
@@ -1153,31 +1149,6 @@ const mockProducts = [
   "hover_image_url": "Placas de MDF/Luffy (exclusiva).jpg",
   "gallery_urls": [
    "Placas de MDF/Luffy.jpg"
-  ],
-  "is_bestseller": false,
-  "is_new": true,
-  "is_limited_edition": false,
-  "product_type": "exclusivo",
-  "colors": [],
-  "sizes": [
-   "Único"
-  ],
-  "material": "MDF Premium",
-  "dimensions": "20x20cm"
- },
- {
-  "id": "mdf-3",
-  "aliases": [
-   "mdf-3"
-  ],
-  "name": "Onça",
-  "category": "placas-mdf",
-  "price": 50,
-  "original_price": null,
-  "image_url": "Placas de MDF/Onça (exclusiva).jpg",
-  "hover_image_url": "Placas de MDF/Onça (exclusiva).jpg",
-  "gallery_urls": [
-   "Placas de MDF/Onça.jpg"
   ],
   "is_bestseller": false,
   "is_new": true,
