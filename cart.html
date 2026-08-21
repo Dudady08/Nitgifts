@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+ <!-- SEO Meta Tags -->
+ <title>Nit Gifts | Seu Carrinho</title>
+ <meta name="description" content="Confira os itens no seu carrinho e finalize sua compra.">
+ <meta name="author" content="Nit Gifts">
+
+ <!-- Google Fonts -->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link
+  href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap"
+  rel="stylesheet">
+
+ <!-- Tailwind CSS -->
+ <script src="https://cdn.tailwindcss.com"></script>
+ <!-- CSS Stylesheet -->
+ <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+ <!-- EMPTY CART STATE SECTION -->
+ <section class="empty-cart-container" id="empty-cart-section" style="display: none;">
+  <div class="empty-cart-box">
+   <i data-lucide="shopping-bag" class="empty-cart-icon" style="width: 48px; height: 48px; stroke-width: 1;"></i>
+   <h1 class="empty-cart-title">Seu carrinho está vazio</h1>
+   <p class="empty-cart-subtitle">Explore nossos produtos e encontre algo especial.</p>
+   <a href="index.html" class="btn btn-primary" id="empty-cart-btn">
+    Continuar Comprando
+   </a>
+  </div>
+ </section>
+
+ <!-- ACTIVE CART STATE SECTION -->
+ <main class="category-page-container" id="active-cart-section" style="display: none;">
+  <div class="category-main-content">
+
+   <!-- Back Link -->
+   <a href="index.html" class="cart-back-link">
+    <i data-lucide="chevron-left" class="icon-sm"></i>
+    Continuar comprando
+   </a>
+
+   <!-- Page Title -->
+   <h1 class="cart-page-title">Carrinho</h1>
+
+   <!-- Cart Grid Layout -->
+   <div class="cart-layout-grid">
+
+    <!-- Left Side: Cart Items List -->
+    <div class="cart-items-container" id="cart-items-list">
+     <!-- Rendered dynamically by cart.js -->
+    </div>
+
+    <!-- Right Side: Sticky Order Summary -->
+    <div class="summary-sticky">
+     <div class="summary-panel">
+      <h3 class="summary-title">Resumo do Pedido</h3>
+
+      <div class="summary-details">
+       <div class="summary-row">
+        <span class="summary-label">Subtotal</span>
+        <span class="summary-value" id="summary-subtotal">R$ 0,00</span>
+       </div>
+       <div class="summary-row">
+        <span class="summary-label">Frete</span>
+        <span class="summary-value" id="summary-shipping">R$ 0,00</span>
+       </div>
+       <!-- Free shipping notice -->
+       <p class="summary-free-shipping-note" id="free-shipping-alert" style="display: none;">
+        Frete grátis em compras acima de R$ 200,00
+       </p>
+      </div>
+
+      <div class="summary-divider">
+       <span class="summary-total-label">Total</span>
+       <span class="summary-total-value" id="summary-total">R$ 0,00</span>
+      </div>
+
+      <button class="checkout-btn" id="go-to-checkout-btn" style="width: 100%; justify-content: center; display: flex; align-items: center; gap: 8px;">
+       Finalizar Compra
+       <i data-lucide="arrow-right" class="icon-sm"></i>
+      </button>
+
+      <p class="summary-badge-footer">
+       Pagamento 100% seguro
+      </p>
+     </div>
+    </div>
+
+   </div>
+
+  </div>
+ </main>
+
+ <!-- TOAST ALERTS CONTAINER -->
+ <div class="toast-container" id="toast-container"></div>
+
+ <!-- Lucide Icons CDN -->
+ <script src="https://unpkg.com/lucide@latest"></script>
+ <!-- JS Scripts -->
+ <script src="layout.js"></script>
+ <script src="cart.js"></script>
+</body>
+
+</html>

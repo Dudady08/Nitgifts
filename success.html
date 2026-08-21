@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+ <!-- SEO Meta Tags -->
+ <title>Nit Gifts | Pedido Confirmado</title>
+ <meta name="description" content="Seu pedido foi realizado com sucesso!">
+ <meta name="author" content="Nit Gifts">
+
+ <!-- Google Fonts -->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link
+  href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap"
+  rel="stylesheet">
+
+ <!-- Tailwind CSS -->
+ <script src="https://cdn.tailwindcss.com"></script>
+ <!-- CSS Stylesheet -->
+ <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+
+ <main class="category-page-container">
+  <div class="category-main-content">
+
+   <!-- Success Content -->
+   <div class="success-page-wrapper" id="success-content" style="display: none;">
+
+    <!-- Success Icon Animation -->
+    <div class="success-icon-wrapper">
+     <div class="success-icon-circle">
+      <i data-lucide="check" class="success-icon-check"></i>
+     </div>
+    </div>
+
+    <h1 class="success-title">Pedido Realizado!</h1>
+    <p class="success-subtitle">Obrigado por comprar na <strong>Nit Gifts</strong>. Seu pagamento está sendo verificado pelo PagBank.</p>
+
+    <!-- Payment Status Indicator -->
+    <div style="display: flex; align-items: center; gap: 12px; justify-content: center; margin: 20px 0; padding: 16px; background: #FEF3C7; border-radius: 12px;">
+     <div class="spinner animate-spin" id="payment-status-spinner" style="width: 20px; height: 20px; border-width: 2px;"></div>
+     <span id="payment-status-text" style="font-size: 14px; font-weight: 600; color: #92400E;">Processando pagamento... Realize o pagamento na aba do PagBank.</span>
+    </div>
+
+    <!-- PagBank Manual Button -->
+    <div id="pagbank-manual-btn-container" style="display: none; text-align: center; margin-bottom: 24px;">
+     <p style="font-size: 14px; color: rgba(0,0,0,0.6); margin-bottom: 12px;">A página do PagBank não abriu?</p>
+     <a href="#" id="pagbank-manual-link" target="_blank" class="btn" style="background: #008761; color: white; display: inline-flex; align-items: center; gap: 8px;">
+      <i data-lucide="external-link" class="icon-sm"></i>
+      Abrir Página de Pagamento
+     </a>
+    </div>
+
+    <!-- Order Summary Card -->
+    <div class="success-order-card" id="order-summary-card" style="display: none;">
+     <div class="success-order-header">
+      <i data-lucide="receipt" class="icon-sm" style="color: var(--color-primary);"></i>
+      <span>Resumo do Pedido</span>
+     </div>
+     <div class="success-order-items" id="success-items-list">
+      <!-- Dynamic items -->
+     </div>
+     <div class="success-order-total">
+      <span>Total</span>
+      <span id="success-total" style="font-weight: 800;">R$ 0,00</span>
+     </div>
+    </div>
+
+    <!-- Info Cards -->
+    <div class="success-info-grid">
+     <div class="success-info-card">
+      <i data-lucide="mail" class="icon-sm" style="color: var(--color-primary);"></i>
+      <div>
+       <p class="success-info-title">Confirmação por E-mail</p>
+       <p class="success-info-desc">Você receberá um e-mail com todos os detalhes do seu pedido.</p>
+      </div>
+     </div>
+     <div class="success-info-card">
+      <i data-lucide="clock" class="icon-sm" style="color: var(--color-primary);"></i>
+      <div>
+       <p class="success-info-title">Processamento</p>
+       <p class="success-info-desc">Pagamentos via Pix e cartão são confirmados em minutos. Boletos podem levar até 3 dias úteis.</p>
+      </div>
+     </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="success-actions">
+     <a href="index.html" class="success-btn-primary">
+      <i data-lucide="home" class="icon-sm"></i>
+      Voltar à Loja
+     </a>
+     <a href="account.html" class="success-btn-secondary">
+      <i data-lucide="package" class="icon-sm"></i>
+      Meus Pedidos
+     </a>
+    </div>
+
+   </div>
+
+   <!-- Loading State (shown while page processes) -->
+   <div class="success-loading" id="success-loading">
+    <div class="spinner animate-spin"></div>
+    <p style="margin-top: 16px; font-size: 14px; color: rgba(0,0,0,0.5);">Confirmando seu pedido...</p>
+   </div>
+
+  </div>
+ </main>
+
+ <!-- TOAST ALERTS CONTAINER -->
+ <div class="toast-container" id="toast-container"></div>
+
+ <!-- Lucide Icons CDN -->
+ <script src="https://unpkg.com/lucide@latest"></script>
+ <!-- JS Scripts -->
+ <script src="layout.js"></script>
+ <script type="module" src="success.js"></script>
+</body>
+
+</html>

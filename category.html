@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+ <!-- SEO Meta Tags (Dynamic replacement is done via JS for specific categories) -->
+ <title>Nit Gifts | Coleções</title>
+ <meta name="description" content="Explore nossas de vestuário e decoração.">
+ <meta name="author" content="Nit Gifts">
+
+ <!-- Google Fonts -->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link
+  href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap"
+  rel="stylesheet">
+
+ <!-- Tailwind CSS -->
+ <script src="https://cdn.tailwindcss.com"></script>
+ <!-- CSS Stylesheet -->
+ <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+ <main class="category-page-container">
+
+  <!-- CATEGORY HEADER -->
+  <header class="category-header">
+   <div id="category-meta-content">
+    <p class="category-tag"></p>
+    <h1 class="category-title" id="category-title-heading">...</h1>
+    <p class="category-desc" id="category-desc-para">...</p>
+   </div>
+  </header>
+
+  <!-- MAIN SECTION (LAYOUT SIDEBAR + GRID) -->
+  <div class="category-main-content">
+   <div class="category-layout">
+
+    <!-- SIDEBAR FILTERS (DESKTOP) -->
+    <aside class="sidebar-filters" id="desktop-filters-container">
+     <!-- Rendered dynamically by category.js to avoid duplicate templates -->
+    </aside>
+
+    <!-- PRODUCTS CONTENT AREA -->
+    <section class="products-content-area">
+
+     <!-- Desktop Upper Status Bar -->
+     <div class="products-count-bar">
+      <p id="products-count-text-desktop">Carregando produtos...</p>
+     </div>
+
+     <!-- Mobile Filter Trigger Bar -->
+     <div class="mobile-filter-bar">
+      <button class="mobile-filter-btn" id="open-drawer-btn">
+       <i data-lucide="sliders-horizontal" class="icon-sm"></i>
+       Filtros
+       <span class="mobile-filter-count-badge" id="mobile-active-filter-badge" style="display: none;">0</span>
+      </button>
+      <p class="mobile-products-count" id="products-count-text-mobile">0 produtos</p>
+     </div>
+
+
+
+     <!-- Grid of Products -->
+     <div class="products-grid loading-state" id="category-products-grid">
+      <!-- Skeleton cards (simulating React initial loading states) -->
+      <div class="skeleton-card">
+       <div class="skeleton-image"></div>
+       <div class="skeleton-line short"></div>
+       <div class="skeleton-line long"></div>
+      </div>
+      <div class="skeleton-card">
+       <div class="skeleton-image"></div>
+       <div class="skeleton-line short"></div>
+       <div class="skeleton-line long"></div>
+      </div>
+      <div class="skeleton-card">
+       <div class="skeleton-image"></div>
+       <div class="skeleton-line short"></div>
+       <div class="skeleton-line long"></div>
+      </div>
+      <div class="skeleton-card">
+       <div class="skeleton-image"></div>
+       <div class="skeleton-line short"></div>
+       <div class="skeleton-line long"></div>
+      </div>
+      <div class="skeleton-card">
+       <div class="skeleton-image"></div>
+       <div class="skeleton-line short"></div>
+       <div class="skeleton-line long"></div>
+      </div>
+      <div class="skeleton-card">
+       <div class="skeleton-image"></div>
+       <div class="skeleton-line short"></div>
+       <div class="skeleton-line long"></div>
+      </div>
+     </div>
+
+     <!-- Empty State Container -->
+     <div class="no-products-found" id="empty-state-container" style="display: none;">
+      <p>Nenhum produto encontrado com os filtros selecionados.</p>
+     </div>
+
+    </section>
+   </div>
+  </div>
+
+ </main>
+
+ <!-- MOBILE FILTER DRAWER -->
+ <div class="drawer-overlay" id="mobile-drawer-overlay">
+  <div class="drawer-container" id="mobile-drawer-container">
+
+   <div class="drawer-header">
+    <h3 class="drawer-title">Filtros</h3>
+    <button class="drawer-close-btn" id="close-drawer-btn" aria-label="Fechar filtros">
+     <i data-lucide="x" class="icon-sm"></i>
+    </button>
+   </div>
+
+   <!-- Drawer Filters Content -->
+   <div id="drawer-filters-content">
+    <!-- Rendered dynamically by category.js -->
+   </div>
+
+   <button class="drawer-apply-btn" id="apply-filters-btn">
+    Aplicar Filtros
+   </button>
+
+  </div>
+ </div>
+
+ <!-- Lucide Icons CDN -->
+ <script src="https://unpkg.com/lucide@latest"></script>
+ <!-- JS Scripts -->
+ <script src="layout.js"></script>
+ <script src="products-data.js"></script>
+ <script src="category.js"></script>
+</body>
+
+</html>
