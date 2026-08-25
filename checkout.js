@@ -235,9 +235,9 @@ function loadCheckoutSummary() {
    <div class="shipping-option selected" style="cursor:default; border-color: rgba(26,26,26,0.1); background: transparent;">
     <div class="shipping-option-info">
      <span class="shipping-option-name" style="color: rgba(26,26,26,0.6);">Frete</span>
-     <span class="shipping-option-prazo" style="color: rgba(26,26,26,0.5);">Calculado na próxima etapa</span>
+     <span class="shipping-option-prazo" style="color: rgba(26,26,26,0.5);">Buscando opções...</span>
     </div>
-    <span class="shipping-option-price" style="color: rgba(26,26,26,0.5);">--,--</span>
+    <span class="shipping-option-price" style="color: rgba(26,26,26,0.5);">Calculando...</span>
    </div>
   `;
  }
