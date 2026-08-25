@@ -112,9 +112,9 @@ async function buscarFrete(cepDestino, embalagem) {
  });
 
  try {
-  const resp = await fetch(PAGBANK_SCRIPT_URL + '?' + params.toString(), {
-   method: 'GET',
-   redirect: 'follow'
+  const resp = await fetch(PAGBANK_SCRIPT_URL, {
+   method: 'POST',
+   body: params // Isso envia como application/x-www-form-urlencoded
   });
   const data = await resp.json();
   if (data.success && data.opcoes && data.opcoes.length > 0) {
