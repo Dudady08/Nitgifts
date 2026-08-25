@@ -5,6 +5,7 @@ const PAGBANK_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxwuC7xGX5YJ
 const CEP_ORIGEM = '24360220'; // CEP de envio da Nit Gifts
 let userData = null;
 let selectedShipping = null; // { nome, preco, prazo } — opção escolhida pelo cliente
+let freteCalculado = false; // Flag: frete foi calculado com sucesso?
 
 // Perfil de embalagem por categoria (peso em gramas, dimensões em cm)
 const CATEGORY_SHIPPING_PROFILE = {
@@ -122,16 +123,15 @@ async function buscarFrete(cepDestino, embalagem) {
    if (data.success && data.opcoes && data.opcoes.length > 0) {
     return data.opcoes;
    }
-   // Para depuração na tela se falhar:
-   document.getElementById('shipping-options').innerHTML = `<p style="color:red; font-size:12px;">Frete API Falhou:<br>${JSON.stringify(data)}</p>`;
+   // Log para debug (sem alert intrusivo)
+   console.warn('Frete API retornou erro:', data);
    return null;
   } catch(e) {
-   document.getElementById('shipping-options').innerHTML = `<p style="color:red; font-size:12px;">JSON Error. Resposta bruta:<br>${text.substring(0, 150)}</p>`;
+   console.warn('Frete API retornou resposta não-JSON:', text.substring(0, 200));
    return null;
   }
  } catch (err) {
-  document.getElementById('shipping-options').innerHTML = `<p style="color:red; font-size:12px;">CORS/Rede Erro:<br>${err.message}</p>`;
-  console.error('Erro ao buscar frete:', err);
+  console.error('Erro de rede ao buscar frete:', err);
   return null;
  }
 }
@@ -141,6 +141,7 @@ function renderizarSeletorFrete(opcoes, subtotal) {
  const loadingEl  = document.getElementById('shipping-loading');
  const optionsEl  = document.getElementById('shipping-options');
  const totalEl    = document.getElementById('summary-total');
+ const submitBtn  = document.getElementById('submit-order-btn');
 
  if (loadingEl) loadingEl.style.display = 'none';
  if (!optionsEl) return;
@@ -150,6 +151,14 @@ function renderizarSeletorFrete(opcoes, subtotal) {
 
  // Selecionar o mais barato por padrão
  selectedShipping = opcoes[0];
+ freteCalculado = true;
+
+ // Habilitar botão de pagamento agora que o frete foi calculado
+ if (submitBtn) {
+  submitBtn.disabled = false;
+  submitBtn.style.opacity = '1';
+  submitBtn.style.cursor = 'pointer';
+ }
 
  opcoes.forEach((opcao, idx) => {
   const isSelected = idx === 0;
@@ -249,6 +258,11 @@ function initCheckoutForm() {
 
   if (!userData) {
    showToast("Aguarde", "Carregando dados do usuário...");
+   return;
+  }
+
+  if (!freteCalculado) {
+   showToast("Frete pendente", "Aguarde o cálculo do frete ou tente novamente.");
    return;
   }
 
@@ -437,7 +451,13 @@ function initCheckoutForm() {
     if (pagbankWindow) pagbankWindow.close();
     const errorMsg = result.error || "Erro ao processar pagamento.";
     console.error("Erro PagBank:", errorMsg);
-    showToast("Erro no pagamento", errorMsg);
+
+    // Detectar erro de homologação PagBank e exibir mensagem clara
+    if (errorMsg.toLowerCase().includes('allowlist') || errorMsg.toLowerCase().includes('whitelist')) {
+     showToast("PagBank em configuração", "O sistema de pagamento está sendo configurado. Tente novamente em breve ou entre em contato pelo WhatsApp.");
+    } else {
+     showToast("Erro no pagamento", errorMsg);
+    }
 
     submitBtn.disabled = false;
     if (spinner) spinner.style.display = 'none';
@@ -506,13 +526,15 @@ async function loadUserAddress(user) {
     if (opcoes && opcoes.length > 0) {
      renderizarSeletorFrete(opcoes, subtotal);
     } else {
-     // Fallback: mostra aviso se a API falhar ou se não conseguir calcular
-     selectedShipping = { nome: 'A calcular', preco: 0, prazo: 'Calculado na próxima etapa' };
-     renderizarFretePendente(subtotal);
+     // Frete não conseguiu ser calculado — mostrar erro com botão de retry
+     selectedShipping = null;
+     freteCalculado = false;
+     renderizarFreteErro(subtotal, cep, embalagem);
     }
    } else {
-    selectedShipping = { nome: 'A calcular', preco: 0, prazo: 'Calculado na próxima etapa' };
-    renderizarFretePendente(subtotal);
+    selectedShipping = null;
+    freteCalculado = false;
+    renderizarFreteSemCep(subtotal);
    }
 
   } else {
@@ -524,22 +546,77 @@ async function loadUserAddress(user) {
  }
 }
 
-// Fallback visual (caso a API dos Correios falhe)
-function renderizarFretePendente(subtotal) {
+// Fallback visual — erro ao calcular frete (com botão de retry)
+function renderizarFreteErro(subtotal, cep, embalagem) {
  const loadingEl = document.getElementById('shipping-loading');
  const optionsEl = document.getElementById('shipping-options');
  const totalEl   = document.getElementById('summary-total');
+ const submitBtn = document.getElementById('submit-order-btn');
 
  if (loadingEl) loadingEl.style.display = 'none';
+
+ // Bloquear botão de pagamento
+ if (submitBtn) {
+  submitBtn.disabled = true;
+  submitBtn.style.opacity = '0.5';
+  submitBtn.style.cursor = 'not-allowed';
+ }
+
  if (optionsEl) {
   optionsEl.style.display = 'block';
   optionsEl.innerHTML = `
-   <div class="shipping-option selected" style="cursor:default; border-color: rgba(26,26,26,0.1); background: transparent;">
-    <div class="shipping-option-info">
-     <span class="shipping-option-name" style="color: rgba(26,26,26,0.6);">Frete</span>
-     <span class="shipping-option-prazo" style="color: rgba(26,26,26,0.5);">Calculado na próxima etapa</span>
-    </div>
-    <span class="shipping-option-price" style="color: rgba(26,26,26,0.5);">--,--</span>
+   <div style="padding: 16px; border: 1px solid rgba(200,50,50,0.2); border-radius: 10px; background: rgba(200,50,50,0.04); text-align: center;">
+    <p style="font-size: 13px; color: #c0392b; font-weight: 600; margin-bottom: 4px;">Não foi possível calcular o frete</p>
+    <p style="font-size: 12px; color: rgba(26,26,26,0.5); margin-bottom: 12px;">O serviço dos Correios está indisponível. Tente novamente.</p>
+    <button id="retry-frete-btn" style="padding: 8px 20px; font-size: 13px; font-weight: 600; border: 1px solid var(--color-primary); color: var(--color-primary); background: transparent; border-radius: 8px; cursor: pointer; transition: all 0.2s ease;">
+     Tentar novamente
+    </button>
+   </div>
+  `;
+  // Bind retry
+  const retryBtn = document.getElementById('retry-frete-btn');
+  if (retryBtn) {
+   retryBtn.addEventListener('click', async () => {
+    retryBtn.textContent = 'Calculando...';
+    retryBtn.disabled = true;
+    const opcoes = await buscarFrete(cep, embalagem);
+    if (opcoes && opcoes.length > 0) {
+     renderizarSeletorFrete(opcoes, subtotal);
+    } else {
+     retryBtn.textContent = 'Tentar novamente';
+     retryBtn.disabled = false;
+     showToast('Frete indisponível', 'O serviço de cálculo de frete está fora do ar. Tente novamente em instantes.');
+    }
+   });
+  }
+ }
+ if (totalEl) {
+  totalEl.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')} + frete`;
+ }
+}
+
+// Fallback visual — sem CEP no perfil
+function renderizarFreteSemCep(subtotal) {
+ const loadingEl = document.getElementById('shipping-loading');
+ const optionsEl = document.getElementById('shipping-options');
+ const totalEl   = document.getElementById('summary-total');
+ const submitBtn = document.getElementById('submit-order-btn');
+
+ if (loadingEl) loadingEl.style.display = 'none';
+
+ // Bloquear botão de pagamento
+ if (submitBtn) {
+  submitBtn.disabled = true;
+  submitBtn.style.opacity = '0.5';
+  submitBtn.style.cursor = 'not-allowed';
+ }
+
+ if (optionsEl) {
+  optionsEl.style.display = 'block';
+  optionsEl.innerHTML = `
+   <div style="padding: 16px; border: 1px solid rgba(200,150,50,0.3); border-radius: 10px; background: rgba(200,150,50,0.05); text-align: center;">
+    <p style="font-size: 13px; color: #b7791f; font-weight: 600; margin-bottom: 4px;">CEP não cadastrado</p>
+    <p style="font-size: 12px; color: rgba(26,26,26,0.5);">Complete seu endereço em <a href="account.html" style="color: var(--color-primary); text-decoration: underline;">Minha Conta</a> para calcular o frete.</p>
    </div>
   `;
  }
@@ -567,6 +644,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
  loadCheckoutSummary();
  initCheckoutForm();
+
+ // Bloquear botão de pagamento inicialmente (habilita quando frete é calculado)
+ const submitBtn = document.getElementById('submit-order-btn');
+ if (submitBtn) {
+  submitBtn.disabled = true;
+  submitBtn.style.opacity = '0.5';
+  submitBtn.style.cursor = 'not-allowed';
+ }
 
  if (window.lucide) {
   window.lucide.createIcons();
