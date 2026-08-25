@@ -481,13 +481,13 @@ async function loadUserAddress(user) {
     if (opcoes && opcoes.length > 0) {
      renderizarSeletorFrete(opcoes, subtotal);
     } else {
-     // Fallback: frete fixo se a API falhar
-     selectedShipping = { nome: 'Frete fixo', preco: 19.90, prazo: 'a combinar' };
-     renderizarFreteFixo(subtotal, 19.90);
+     // Fallback: mostra aviso se a API falhar ou se não conseguir calcular
+     selectedShipping = { nome: 'A calcular', preco: 0, prazo: 'Calculado na próxima etapa' };
+     renderizarFretePendente(subtotal);
     }
    } else {
-    selectedShipping = { nome: 'Frete fixo', preco: 19.90, prazo: 'a combinar' };
-    renderizarFreteFixo(subtotal, 19.90);
+    selectedShipping = { nome: 'A calcular', preco: 0, prazo: 'Calculado na próxima etapa' };
+    renderizarFretePendente(subtotal);
    }
 
   } else {
@@ -499,8 +499,8 @@ async function loadUserAddress(user) {
  }
 }
 
-// Fallback de frete fixo (caso a API dos Correios falhe)
-function renderizarFreteFixo(subtotal, valor) {
+// Fallback visual (caso a API dos Correios falhe)
+function renderizarFretePendente(subtotal) {
  const loadingEl = document.getElementById('shipping-loading');
  const optionsEl = document.getElementById('shipping-options');
  const totalEl   = document.getElementById('summary-total');
@@ -509,17 +509,17 @@ function renderizarFreteFixo(subtotal, valor) {
  if (optionsEl) {
   optionsEl.style.display = 'block';
   optionsEl.innerHTML = `
-   <div class="shipping-option selected" style="cursor:default">
+   <div class="shipping-option selected" style="cursor:default; border-color: rgba(26,26,26,0.1); background: transparent;">
     <div class="shipping-option-info">
-     <span class="shipping-option-name">Frete fixo</span>
-     <span class="shipping-option-prazo">Prazo a combinar</span>
+     <span class="shipping-option-name" style="color: rgba(26,26,26,0.6);">Frete</span>
+     <span class="shipping-option-prazo" style="color: rgba(26,26,26,0.5);">Calculado na próxima etapa</span>
     </div>
-    <span class="shipping-option-price">R$ ${valor.toFixed(2).replace('.', ',')}</span>
+    <span class="shipping-option-price" style="color: rgba(26,26,26,0.5);">--,--</span>
    </div>
   `;
  }
  if (totalEl) {
-  totalEl.textContent = `R$ ${(subtotal + valor).toFixed(2).replace('.', ',')}`;
+  totalEl.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')} + frete`;
  }
 }
 
