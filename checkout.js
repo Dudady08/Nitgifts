@@ -122,15 +122,15 @@ async function buscarFrete(cepDestino, embalagem) {
    if (data.success && data.opcoes && data.opcoes.length > 0) {
     return data.opcoes;
    }
-   // Para depuração: exibir por que a API falhou
-   alert("Debug Frete API Falhou: " + JSON.stringify(data));
+   // Para depuração na tela se falhar:
+   document.getElementById('shipping-options').innerHTML = `<p style="color:red; font-size:12px;">Frete API Falhou:<br>${JSON.stringify(data)}</p>`;
    return null;
   } catch(e) {
-   alert("Debug Frete Parse Error. Resposta bruta: " + text.substring(0, 200));
+   document.getElementById('shipping-options').innerHTML = `<p style="color:red; font-size:12px;">JSON Error. Resposta bruta:<br>${text.substring(0, 150)}</p>`;
    return null;
   }
  } catch (err) {
-  alert('Debug Frete Erro de Rede/CORS: ' + err.message);
+  document.getElementById('shipping-options').innerHTML = `<p style="color:red; font-size:12px;">CORS/Rede Erro:<br>${err.message}</p>`;
   console.error('Erro ao buscar frete:', err);
   return null;
  }
