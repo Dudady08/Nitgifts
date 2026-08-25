@@ -228,35 +228,25 @@ function updateOrderSummary(cart) {
  const freeShippingAlert = document.getElementById('free-shipping-alert');
 
  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
- const shipping = subtotal > 200 ? 0 : 19.90;
- const total = subtotal + shipping;
 
  // Update Subtotal UI
  if (subtotalEl) {
   subtotalEl.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
  }
 
- // Update Shipping UI (displays "Grátis" in green if 0)
+ // Frete calculado no Checkout com base no CEP — exibir aviso no carrinho
  if (shippingEl) {
-  if (shipping === 0) {
-   shippingEl.innerHTML = `<span class="summary-value-free">Grátis</span>`;
-  } else {
-   shippingEl.textContent = `R$ ${shipping.toFixed(2).replace('.', ',')}`;
-  }
+  shippingEl.innerHTML = `<span style="font-size:12px; color:rgba(26,26,26,0.5);">Calculado no checkout</span>`;
  }
 
- // Toggle Free Shipping Reminder Alert
+ // Toggle Free Shipping Reminder Alert (manter para UX)
  if (freeShippingAlert) {
-  if (subtotal < 200) {
-   freeShippingAlert.style.display = 'block';
-  } else {
-   freeShippingAlert.style.display = 'none';
-  }
+  freeShippingAlert.style.display = subtotal < 200 ? 'block' : 'none';
  }
 
- // Update Grand Total UI
+ // Total sem frete (frete é calculado no checkout)
  if (totalEl) {
-  totalEl.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+  totalEl.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
  }
 }
 

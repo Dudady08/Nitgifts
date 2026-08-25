@@ -114,8 +114,7 @@ async function buscarFrete(cepDestino, embalagem) {
  try {
   const resp = await fetch(PAGBANK_SCRIPT_URL + '?' + params.toString(), {
    method: 'GET',
-   mode: 'cors',
-   cache: 'no-cache'
+   redirect: 'follow'
   });
   const data = await resp.json();
   if (data.success && data.opcoes && data.opcoes.length > 0) {
@@ -204,7 +203,11 @@ function loadCheckoutSummary() {
  });
 
  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
- if (subtotalEl) subtotalEl.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}` ;
+ if (subtotalEl) subtotalEl.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+
+ // Mostrar total provisoriamente (sem frete) até o cálculo ser concluído
+ const totalEl = document.getElementById('summary-total');
+ if (totalEl) totalEl.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}` + ' + frete';
 }
 
 // 3. Form Submission Handler (Integrado com PagBank)
