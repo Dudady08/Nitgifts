@@ -2,7 +2,19 @@ import { auth, db, doc, getDoc, onAuthStateChanged, collection, addDoc, setDoc }
 
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUrmbaRzwqRku-QT7j_V1tqNMuheBB4zkNDJynJy7iV7bnF3FJ4JE6hgeZ2vTuN5bDfA/exec";
 const PAGBANK_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxwuC7xGX5YJX9u8DYxi0zm6hxKSF2GxevgkAtrkWscb1srBA3KIjvxy-NYZtWDfWJ8vQ/exec";
+const CEP_ORIGEM = '24360220'; // CEP de envio da Nit Gifts
 let userData = null;
+let selectedShipping = null; // { nome, preco, prazo } — opção escolhida pelo cliente
+
+// Perfil de embalagem por categoria (peso em gramas, dimensões em cm)
+const CATEGORY_SHIPPING_PROFILE = {
+ 'canecas':    { weightG: 500, c: 15, l: 15, a: 15 },
+ 'placas-mdf': { weightG: 250, c: 23, l: 23, a: 3  },
+ 'gifts':      { weightG: 60,  c: 11, l: 11, a: 3  },
+ 'gifts-grande': { weightG: 120, c: 15, l: 15, a: 3 },
+ 'camisetas':  { weightG: 300, c: 25, l: 20, a: 4  },
+ 'default':    { weightG: 300, c: 20, l: 15, a: 10 }
+};
 
 // 1. Dynamic Toast Notification System
 function showToast(title, description = "") {
@@ -53,13 +65,123 @@ function showToast(title, description = "") {
  }, 4000);
 }
 
-// 2. Render Checkout Summary Content
+// 2A. Calcular embalagem com base nos itens do carrinho
+function calcularEmbalagem(cart) {
+ let pesoTotalG = 0;
+ let maxC = 0, maxL = 0;
+ let alturaTotal = 0;
+
+ cart.forEach(item => {
+  const profile = CATEGORY_SHIPPING_PROFILE[item.category] || CATEGORY_SHIPPING_PROFILE['default'];
+  const qty = item.qty || 1;
+
+  pesoTotalG += profile.weightG * qty;
+  // Footprint: maior entre todos os itens
+  if (profile.c > maxC) maxC = profile.c;
+  if (profile.l > maxL) maxL = profile.l;
+  // Altura: empilhada por quantidade
+  alturaTotal += profile.a * qty;
+ });
+
+ // Peso cúbico (gramas): C × L × A / 6 (equivalente a /6000 com medidas em cm e resultado em kg)
+ const pesoCubicaG = (maxC * maxL * alturaTotal) / 6;
+ const pesoFinalG  = Math.max(pesoTotalG, pesoCubicaG);
+
+ // Correios exige mínimo de 15cm para comprimento e largura
+ return {
+  pesoG: Math.max(pesoFinalG, 100),
+  c: Math.max(maxC, 15),
+  l: Math.max(maxL, 10),
+  a: Math.max(alturaTotal, 2)
+ };
+}
+
+// 2B. Buscar frete no Correios via Google Apps Script
+async function buscarFrete(cepDestino, embalagem) {
+ const cepLimpo = cepDestino.replace(/\D/g, '');
+ if (cepLimpo.length !== 8) return null;
+
+ const params = new URLSearchParams({
+  tipo_formulario: 'calcular_frete',
+  cep_origem: CEP_ORIGEM,
+  cep_destino: cepLimpo,
+  peso_g: Math.ceil(embalagem.pesoG),
+  comprimento: Math.ceil(embalagem.c),
+  largura: Math.ceil(embalagem.l),
+  altura: Math.ceil(embalagem.a)
+ });
+
+ try {
+  const resp = await fetch(PAGBANK_SCRIPT_URL + '?' + params.toString(), {
+   method: 'GET',
+   mode: 'cors',
+   cache: 'no-cache'
+  });
+  const data = await resp.json();
+  if (data.success && data.opcoes && data.opcoes.length > 0) {
+   return data.opcoes;
+  }
+  return null;
+ } catch (err) {
+  console.error('Erro ao buscar frete:', err);
+  return null;
+ }
+}
+
+// 2C. Renderizar seletor PAC/SEDEX e atualizar total
+function renderizarSeletorFrete(opcoes, subtotal) {
+ const loadingEl  = document.getElementById('shipping-loading');
+ const optionsEl  = document.getElementById('shipping-options');
+ const totalEl    = document.getElementById('summary-total');
+
+ if (loadingEl) loadingEl.style.display = 'none';
+ if (!optionsEl) return;
+
+ optionsEl.innerHTML = '';
+ optionsEl.style.display = 'block';
+
+ // Selecionar o mais barato por padrão
+ selectedShipping = opcoes[0];
+
+ opcoes.forEach((opcao, idx) => {
+  const isSelected = idx === 0;
+  const optEl = document.createElement('label');
+  optEl.className = 'shipping-option' + (isSelected ? ' selected' : '');
+  optEl.innerHTML = `
+   <input type="radio" name="shipping_option" value="${idx}" ${isSelected ? 'checked' : ''} style="display:none">
+   <div class="shipping-option-info">
+    <span class="shipping-option-name">${opcao.nome}</span>
+    <span class="shipping-option-prazo">${opcao.prazo}</span>
+   </div>
+   <span class="shipping-option-price">R$ ${opcao.preco.toFixed(2).replace('.', ',')}</span>
+  `;
+
+  optEl.addEventListener('click', () => {
+   document.querySelectorAll('.shipping-option').forEach(el => el.classList.remove('selected'));
+   optEl.classList.add('selected');
+   optEl.querySelector('input').checked = true;
+   selectedShipping = opcao;
+   if (totalEl) {
+    const total = subtotal + opcao.preco;
+    totalEl.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+   }
+  });
+
+  optionsEl.appendChild(optEl);
+ });
+
+ // Atualizar total com a primeira opção selecionada
+ if (totalEl) {
+  const total = subtotal + selectedShipping.preco;
+  totalEl.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+ }
+}
+
+// 2D. Render Checkout Summary Content
 function loadCheckoutSummary() {
  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
  const listContainer = document.getElementById('checkout-items-list');
  const subtotalEl = document.getElementById('summary-subtotal');
- const shippingEl = document.getElementById('summary-shipping');
- const totalEl = document.getElementById('summary-total');
 
  if (!listContainer) return;
 
@@ -68,7 +190,6 @@ function loadCheckoutSummary() {
  cart.forEach(item => {
   const itemRow = document.createElement('div');
   itemRow.className = 'checkout-summary-item';
-
   itemRow.innerHTML = `
    <div class="checkout-summary-item-img-wrapper">
     <img src="${item.image}" alt="${item.name}" class="checkout-summary-item-img">
@@ -79,26 +200,11 @@ function loadCheckoutSummary() {
    </div>
    <span class="checkout-summary-item-price">R$ ${(item.price * item.qty).toFixed(2).replace('.', ',')}</span>
   `;
-
   listContainer.appendChild(itemRow);
  });
 
- // Calculate Prices Breakdown
  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
- const shipping = subtotal > 200 ? 0 : 19.90;
- const total = subtotal + shipping;
-
- if (subtotalEl) {
-  subtotalEl.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
- }
-
- if (shippingEl) {
-  shippingEl.textContent = shipping === 0 ? 'Grátis' : `R$ ${shipping.toFixed(2).replace('.', ',')}`;
- }
-
- if (totalEl) {
-  totalEl.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
- }
+ if (subtotalEl) subtotalEl.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}` ;
 }
 
 // 3. Form Submission Handler (Integrado com PagBank)
@@ -131,9 +237,12 @@ function initCheckoutForm() {
 
   let cartText = cart.map(item => `${item.qty}x ${item.name} (R$ ${item.price.toFixed(2).replace('.', ',')})`).join('\n');
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-  const shipping = subtotal > 200 ? 0 : 19.90;
+
+  // Usar o frete selecionado pelo cliente; fallback para R$19,90 caso não tenha carregado
+  const shipping = selectedShipping ? selectedShipping.preco : 19.90;
   const formattedTotal = `R$ ${(subtotal + shipping).toFixed(2).replace('.', ',')}`;
-  const formattedShipping = shipping === 0 ? 'Grátis' : `R$ ${shipping.toFixed(2).replace('.', ',')}`;
+  const shippingLabel = selectedShipping ? selectedShipping.nome : 'Frete';
+  const formattedShipping = `R$ ${shipping.toFixed(2).replace('.', ',')}`;
 
   // Data do pedido
   const now = new Date();
@@ -330,42 +439,85 @@ function showAddressError(message) {
  }
 }
 
-function loadUserAddress(user) {
- getDoc(doc(db, "users", user.uid))
-  .then((userDoc) => {
-   if (userDoc.exists() && userDoc.data().address) {
-    userData = userDoc.data();
+async function loadUserAddress(user) {
+ try {
+  const userDoc = await getDoc(doc(db, "users", user.uid));
+  if (userDoc.exists() && userDoc.data().address) {
+   userData = userDoc.data();
 
-    const skeleton = document.getElementById('user-address-skeleton');
-    const container = document.getElementById('user-address-container');
+   const skeleton = document.getElementById('user-address-skeleton');
+   const container = document.getElementById('user-address-container');
 
-    if (skeleton) skeleton.style.display = 'none';
-    if (container) container.style.display = 'block';
+   if (skeleton) skeleton.style.display = 'none';
+   if (container) container.style.display = 'block';
 
-    const nameEl = document.getElementById('display-name');
-    const streetEl = document.getElementById('display-street');
-    const cityEl = document.getElementById('display-city');
-    const phoneEl = document.getElementById('display-phone');
+   const nameEl   = document.getElementById('display-name');
+   const streetEl = document.getElementById('display-street');
+   const cityEl   = document.getElementById('display-city');
+   const phoneEl  = document.getElementById('display-phone');
 
-    if (nameEl) nameEl.textContent = userData.name || 'Sem nome';
-    if (streetEl) {
-     const addr = userData.address || {};
-     streetEl.textContent = `${addr.street || 'Endereço não informado'}, ${addr.number || 's/n'} ${addr.complement ? '(' + addr.complement + ')' : ''}`;
-    }
-    if (cityEl) {
-     const addr = userData.address || {};
-     cityEl.textContent = `${addr.city || ''} - ${addr.state || ''} | CEP: ${addr.cep || ''}`;
-    }
-    if (phoneEl) phoneEl.textContent = `Tel: ${userData.phone || 'Não informado'}`;
-   } else {
-    // Perfil incompleto (ex: logou pelo google e pulou) -> força preencher o endereço
-    window.location.replace('complete-profile.html');
+   if (nameEl) nameEl.textContent = userData.name || 'Sem nome';
+   if (streetEl) {
+    const addr = userData.address || {};
+    streetEl.textContent = `${addr.street || 'Endereço não informado'}, ${addr.number || 's/n'} ${addr.complement ? '(' + addr.complement + ')' : ''}`;
    }
-  })
-  .catch((error) => {
-   console.error("Erro ao buscar endereço:", error);
-   showAddressError("Erro ao carregar seus dados. Verifique sua conexão.");
-  });
+   if (cityEl) {
+    const addr = userData.address || {};
+    cityEl.textContent = `${addr.city || ''} - ${addr.state || ''} | CEP: ${addr.cep || ''}`;
+   }
+   if (phoneEl) phoneEl.textContent = `Tel: ${userData.phone || 'Não informado'}`;
+
+   // ── Calcular frete real com CEP do perfil ──
+   const cep = userData.address.cep;
+   const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+
+   if (cep && cart.length > 0) {
+    const embalagem = calcularEmbalagem(cart);
+    const opcoes = await buscarFrete(cep, embalagem);
+    if (opcoes && opcoes.length > 0) {
+     renderizarSeletorFrete(opcoes, subtotal);
+    } else {
+     // Fallback: frete fixo se a API falhar
+     selectedShipping = { nome: 'Frete fixo', preco: 19.90, prazo: 'a combinar' };
+     renderizarFreteFixo(subtotal, 19.90);
+    }
+   } else {
+    selectedShipping = { nome: 'Frete fixo', preco: 19.90, prazo: 'a combinar' };
+    renderizarFreteFixo(subtotal, 19.90);
+   }
+
+  } else {
+   window.location.replace('complete-profile.html');
+  }
+ } catch (error) {
+  console.error("Erro ao buscar endereço:", error);
+  showAddressError("Erro ao carregar seus dados. Verifique sua conexão.");
+ }
+}
+
+// Fallback de frete fixo (caso a API dos Correios falhe)
+function renderizarFreteFixo(subtotal, valor) {
+ const loadingEl = document.getElementById('shipping-loading');
+ const optionsEl = document.getElementById('shipping-options');
+ const totalEl   = document.getElementById('summary-total');
+
+ if (loadingEl) loadingEl.style.display = 'none';
+ if (optionsEl) {
+  optionsEl.style.display = 'block';
+  optionsEl.innerHTML = `
+   <div class="shipping-option selected" style="cursor:default">
+    <div class="shipping-option-info">
+     <span class="shipping-option-name">Frete fixo</span>
+     <span class="shipping-option-prazo">Prazo a combinar</span>
+    </div>
+    <span class="shipping-option-price">R$ ${valor.toFixed(2).replace('.', ',')}</span>
+   </div>
+  `;
+ }
+ if (totalEl) {
+  totalEl.textContent = `R$ ${(subtotal + valor).toFixed(2).replace('.', ',')}`;
+ }
 }
 
 // 5. Firebase Auth State Listener (module-level, fires immediately)

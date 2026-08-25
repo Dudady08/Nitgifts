@@ -416,6 +416,7 @@ function initQuantityControls(product) {
     name: itemName,
     price: product.price,
     image: itemImage,
+    category: product.category || 'default',
     size: selectedSize,
     color: selectedColor,
     qty: qty

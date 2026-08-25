@@ -85,9 +85,19 @@
          <span class="summary-label">Subtotal</span>
          <span class="summary-value" id="summary-subtotal">R$ 0,00</span>
         </div>
-        <div class="summary-row">
-         <span class="summary-label">Frete</span>
-         <span class="summary-value" id="summary-shipping">R$ 0,00</span>
+
+        <!-- Frete dinâmico: skeleton + seletor de opções -->
+        <div id="shipping-section" style="margin-top: 12px;">
+         <p class="summary-label" style="margin-bottom: 8px;">Frete</p>
+
+         <!-- Skeleton enquanto busca -->
+         <div id="shipping-loading" class="shipping-loading-skeleton">
+          <div class="skeleton-line" style="height:48px; border-radius:10px; width:100%;"></div>
+          <div class="skeleton-line" style="height:48px; border-radius:10px; width:100%; margin-top:8px;"></div>
+         </div>
+
+         <!-- Opções PAC / SEDEX renderizadas pelo JS -->
+         <div id="shipping-options" style="display:none; display:flex; flex-direction:column; gap:8px;"></div>
         </div>
        </div>
 

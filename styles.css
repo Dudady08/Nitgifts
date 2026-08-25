@@ -3202,6 +3202,61 @@ textarea.form-input {
  font-family: var(--font-display);
 }
 
+/* Seletor de Frete (Checkout) */
+.shipping-loading-skeleton {
+ display: flex;
+ flex-direction: column;
+ gap: 8px;
+}
+
+.shipping-option {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ padding: 12px 14px;
+ border: 2px solid rgba(26, 26, 26, 0.1);
+ border-radius: 10px;
+ cursor: pointer;
+ transition: border-color 0.2s ease, background 0.2s ease;
+ background: var(--color-white);
+ user-select: none;
+}
+
+.shipping-option:hover {
+ border-color: rgba(26, 26, 26, 0.3);
+ background: rgba(26, 26, 26, 0.02);
+}
+
+.shipping-option.selected {
+ border-color: var(--color-primary);
+ background: rgba(var(--color-primary-rgb, 26, 26, 26), 0.04);
+}
+
+.shipping-option-info {
+ display: flex;
+ flex-direction: column;
+ gap: 2px;
+}
+
+.shipping-option-name {
+ font-size: 14px;
+ font-weight: 700;
+ color: var(--color-dark);
+}
+
+.shipping-option-prazo {
+ font-size: 12px;
+ color: rgba(26, 26, 26, 0.5);
+}
+
+.shipping-option-price {
+ font-size: 15px;
+ font-weight: 800;
+ color: var(--color-dark);
+ font-family: var(--font-display);
+ white-space: nowrap;
+}
+
 /* Botão Retomar Pagamento */
 .account-order-pay-action {
  padding: 16px 20px;
