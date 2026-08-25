@@ -194,13 +194,13 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": 89.9,
-  "image_url": "canecas site/stitich cabo rosa 1 .jpg",
-  "hover_image_url": "canecas site/Stitich cabo rosa 2 .jpg",
+  "image_url": "canecas-site/stitich-cabo-rosa-1.jpg",
+  "hover_image_url": "canecas-site/stitich-cabo-rosa-2.jpg",
   "gallery_urls": [
-   "canecas site/stitich cabo rosa 1 .jpg",
-   "canecas site/Stitich cabo rosa 2 .jpg",
-   "canecas site/stitich cabo rosa 3.jpg",
-   "canecas site/stitich cabo rosa 4.jpg"
+   "canecas-site/stitich-cabo-rosa-1.jpg",
+   "canecas-site/stitich-cabo-rosa-2.jpg",
+   "canecas-site/stitich-cabo-rosa-3.jpg",
+   "canecas-site/stitich-cabo-rosa-4.jpg"
   ],
   "is_bestseller": true,
   "is_new": false,
@@ -225,14 +225,14 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/mickey cabo coração.jpg",
-  "hover_image_url": "canecas site/mickey cabo coração 2.jpg",
+  "image_url": "canecas-site/mickey-cabo-coração.jpg",
+  "hover_image_url": "canecas-site/mickey-cabo-coração-2.jpg",
   "gallery_urls": [
-   "canecas site/mickey cabo coração 2.jpg",
-   "canecas site/mickey cabo coração 3.jpg",
-   "canecas site/mickey cabo coração 4.jpg",
-   "canecas site/mickey cabo coração 5.jpg",
-   "canecas site/mickey cabo coração.jpg"
+   "canecas-site/mickey-cabo-coração-2.jpg",
+   "canecas-site/mickey-cabo-coração-3.jpg",
+   "canecas-site/mickey-cabo-coração-4.jpg",
+   "canecas-site/mickey-cabo-coração-5.jpg",
+   "canecas-site/mickey-cabo-coração.jpg"
   ],
   "is_bestseller": false,
   "is_new": true,
@@ -257,13 +257,13 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/amizade (branco).jpg",
-  "hover_image_url": "canecas site/amizade 2 (branco).jpg",
+  "image_url": "canecas-site/amizade-(branco).jpg",
+  "hover_image_url": "canecas-site/amizade-2-(branco).jpg",
   "gallery_urls": [
-   "canecas site/amizade (branco).jpg",
-   "canecas site/amizade 2 (branco).jpg",
-   "canecas site/amizade 3 (branco).jpg",
-   "canecas site/amizade 4 (branco).jpg"
+   "canecas-site/amizade-(branco).jpg",
+   "canecas-site/amizade-2-(branco).jpg",
+   "canecas-site/amizade-3-(branco).jpg",
+   "canecas-site/amizade-4-(branco).jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -288,14 +288,14 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/axe (branco).jpg",
-  "hover_image_url": "canecas site/axe 2 (branco).jpg",
+  "image_url": "canecas-site/axe-(branco).jpg",
+  "hover_image_url": "canecas-site/axe-2-(branco).jpg",
   "gallery_urls": [
-   "canecas site/axe (branco).jpg",
-   "canecas site/axe 2 (branco).jpg",
-   "canecas site/axe 3 (branco).jpg",
-   "canecas site/axe 4 (branco).jpg",
-   "canecas site/axe 5 (branco).jpg"
+   "canecas-site/axe-(branco).jpg",
+   "canecas-site/axe-2-(branco).jpg",
+   "canecas-site/axe-3-(branco).jpg",
+   "canecas-site/axe-4-(branco).jpg",
+   "canecas-site/axe-5-(branco).jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -320,14 +320,14 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/dorama (branco).jpg",
-  "hover_image_url": "canecas site/dorama 2 (branco).jpg",
+  "image_url": "canecas-site/dorama-(branco).jpg",
+  "hover_image_url": "canecas-site/dorama-2-(branco).jpg",
   "gallery_urls": [
-   "canecas site/dorama (branco).jpg",
-   "canecas site/dorama 2 (branco).jpg",
-   "canecas site/dorama 3 (branco).jpg",
-   "canecas site/dorama 4 (branco).jpg",
-   "canecas site/dorama 5 (branco).jpg"
+   "canecas-site/dorama-(branco).jpg",
+   "canecas-site/dorama-2-(branco).jpg",
+   "canecas-site/dorama-3-(branco).jpg",
+   "canecas-site/dorama-4-(branco).jpg",
+   "canecas-site/dorama-5-(branco).jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -352,14 +352,14 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/iemanja 1 (branco).jpg",
-  "hover_image_url": "canecas site/iemanja 2 (branco).jpg",
+  "image_url": "canecas-site/iemanja-1-(branco).jpg",
+  "hover_image_url": "canecas-site/iemanja-2-(branco).jpg",
   "gallery_urls": [
-   "canecas site/iemanja 1 (branco).jpg",
-   "canecas site/iemanja 2 (branco).jpg",
-   "canecas site/iemanja 3 (branco).jpg",
-   "canecas site/iemanja 4 (branco).jpg",
-   "canecas site/iemanja 5 (branco).jpg"
+   "canecas-site/iemanja-1-(branco).jpg",
+   "canecas-site/iemanja-2-(branco).jpg",
+   "canecas-site/iemanja-3-(branco).jpg",
+   "canecas-site/iemanja-4-(branco).jpg",
+   "canecas-site/iemanja-5-(branco).jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -384,14 +384,14 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/la casa de papel (branco).jpg",
-  "hover_image_url": "canecas site/la casa de papel 2 (branco).jpg",
+  "image_url": "canecas-site/la-casa-de-papel-(branco).jpg",
+  "hover_image_url": "canecas-site/la-casa-de-papel-2-(branco).jpg",
   "gallery_urls": [
-   "canecas site/la casa de papel (branco).jpg",
-   "canecas site/la casa de papel 2 (branco).jpg",
-   "canecas site/la casa de papel 3 (branco).jpg",
-   "canecas site/la casa de papel 4 (branco).jpg",
-   "canecas site/la casa de papel 5 (branco).jpg"
+   "canecas-site/la-casa-de-papel-(branco).jpg",
+   "canecas-site/la-casa-de-papel-2-(branco).jpg",
+   "canecas-site/la-casa-de-papel-3-(branco).jpg",
+   "canecas-site/la-casa-de-papel-4-(branco).jpg",
+   "canecas-site/la-casa-de-papel-5-(branco).jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -416,13 +416,13 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/mickey cabo vermelho 1.jpg",
-  "hover_image_url": "canecas site/mickey cabo vermelho 2.jpg",
+  "image_url": "canecas-site/mickey-cabo-vermelho-1.jpg",
+  "hover_image_url": "canecas-site/mickey-cabo-vermelho-2.jpg",
   "gallery_urls": [
-   "canecas site/mickey cabo vermelho 1.jpg",
-   "canecas site/mickey cabo vermelho 2.jpg",
-   "canecas site/mickey cabo vermelho 4.jpg",
-   "canecas site/mickey cabo vermelho 5.jpg"
+   "canecas-site/mickey-cabo-vermelho-1.jpg",
+   "canecas-site/mickey-cabo-vermelho-2.jpg",
+   "canecas-site/mickey-cabo-vermelho-4.jpg",
+   "canecas-site/mickey-cabo-vermelho-5.jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -447,15 +447,15 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/mickey castelo 1(branco).jpg",
-  "hover_image_url": "canecas site/mickey castelo 2(branco).jpg",
+  "image_url": "canecas-site/mickey-castelo-1(branco).jpg",
+  "hover_image_url": "canecas-site/mickey-castelo-2(branco).jpg",
   "gallery_urls": [
-   "canecas site/mickey castelo 1(branco).jpg",
-   "canecas site/mickey castelo 2(branco).jpg",
-   "canecas site/mickey castelo 3(branco).jpg",
-   "canecas site/mickey castelo 6(branco).jpg",
-   "canecas site/mickey catelo 4(branco).jpg",
-   "canecas site/mickey catelo 5(branco).jpg"
+   "canecas-site/mickey-castelo-1(branco).jpg",
+   "canecas-site/mickey-castelo-2(branco).jpg",
+   "canecas-site/mickey-castelo-3(branco).jpg",
+   "canecas-site/mickey-castelo-6(branco).jpg",
+   "canecas-site/mickey-catelo-4(branco).jpg",
+   "canecas-site/mickey-catelo-5(branco).jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -480,15 +480,15 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/naruto 1 cabo laranja.jpg",
-  "hover_image_url": "canecas site/naruto 2 cabo laranja.jpg",
+  "image_url": "canecas-site/naruto-1-cabo-laranja.jpg",
+  "hover_image_url": "canecas-site/naruto-2-cabo-laranja.jpg",
   "gallery_urls": [
-   "canecas site/naruto 1 cabo laranja.jpg",
-   "canecas site/naruto 2 cabo laranja.jpg",
-   "canecas site/naruto 3 cabo laranja.jpg",
-   "canecas site/naruto 4 cabo laranja.jpg",
-   "canecas site/naruto 6 cabo laranja.jpg",
-   "canecas site/naruto 7 cabo laranja.jpg"
+   "canecas-site/naruto-1-cabo-laranja.jpg",
+   "canecas-site/naruto-2-cabo-laranja.jpg",
+   "canecas-site/naruto-3-cabo-laranja.jpg",
+   "canecas-site/naruto-4-cabo-laranja.jpg",
+   "canecas-site/naruto-6-cabo-laranja.jpg",
+   "canecas-site/naruto-7-cabo-laranja.jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -513,13 +513,13 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/nossa senhora 1(branco).jpg",
-  "hover_image_url": "canecas site/nossa senhora 2(branco).jpg",
+  "image_url": "canecas-site/nossa-senhora-1(branco).jpg",
+  "hover_image_url": "canecas-site/nossa-senhora-2(branco).jpg",
   "gallery_urls": [
-   "canecas site/nossa senhora 1(branco).jpg",
-   "canecas site/nossa senhora 2(branco).jpg",
-   "canecas site/nossa senhora 3(branco).jpg",
-   "canecas site/nossa senhora 4(branco).jpg"
+   "canecas-site/nossa-senhora-1(branco).jpg",
+   "canecas-site/nossa-senhora-2(branco).jpg",
+   "canecas-site/nossa-senhora-3(branco).jpg",
+   "canecas-site/nossa-senhora-4(branco).jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -544,14 +544,14 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/signo 1 cabo preto.jpg",
-  "hover_image_url": "canecas site/signo 2 cabo preto.jpg",
+  "image_url": "canecas-site/signo-1-cabo-preto.jpg",
+  "hover_image_url": "canecas-site/signo-2-cabo-preto.jpg",
   "gallery_urls": [
-   "canecas site/signo 1 cabo preto.jpg",
-   "canecas site/signo 2 cabo preto.jpg",
-   "canecas site/signo 4 cabo preto.jpg",
-   "canecas site/signo 7 cabo preto.jpg",
-   "canecas site/signo 9 cabo preto.jpg"
+   "canecas-site/signo-1-cabo-preto.jpg",
+   "canecas-site/signo-2-cabo-preto.jpg",
+   "canecas-site/signo-4-cabo-preto.jpg",
+   "canecas-site/signo-7-cabo-preto.jpg",
+   "canecas-site/signo-9-cabo-preto.jpg"
   ],
   "is_bestseller": true,
   "is_new": false,
@@ -576,15 +576,15 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/skz(branco).jpg",
-  "hover_image_url": "canecas site/skz 2 (branco).jpg",
+  "image_url": "canecas-site/skz(branco).jpg",
+  "hover_image_url": "canecas-site/skz-2-(branco).jpg",
   "gallery_urls": [
-   "canecas site/skz 2 (branco).jpg",
-   "canecas site/skz 3(branco).jpg",
-   "canecas site/skz 4(branco).jpg",
-   "canecas site/skz 5(branco).jpg",
-   "canecas site/skz 6(branco).jpg",
-   "canecas site/skz(branco).jpg"
+   "canecas-site/skz-2-(branco).jpg",
+   "canecas-site/skz-3(branco).jpg",
+   "canecas-site/skz-4(branco).jpg",
+   "canecas-site/skz-5(branco).jpg",
+   "canecas-site/skz-6(branco).jpg",
+   "canecas-site/skz(branco).jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -609,13 +609,13 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/sophia 1(branco).jpg",
-  "hover_image_url": "canecas site/sophia 2(branco).jpg",
+  "image_url": "canecas-site/sophia-1(branco).jpg",
+  "hover_image_url": "canecas-site/sophia-2(branco).jpg",
   "gallery_urls": [
-   "canecas site/sophia 1(branco).jpg",
-   "canecas site/sophia 2(branco).jpg",
-   "canecas site/sophia 3(branco).jpg",
-   "canecas site/sophia 4(branco).jpg"
+   "canecas-site/sophia-1(branco).jpg",
+   "canecas-site/sophia-2(branco).jpg",
+   "canecas-site/sophia-3(branco).jpg",
+   "canecas-site/sophia-4(branco).jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -640,14 +640,14 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/studio.jpg",
-  "hover_image_url": "canecas site/studio 2 (branco).jpg",
+  "image_url": "canecas-site/studio.jpg",
+  "hover_image_url": "canecas-site/studio-2-(branco).jpg",
   "gallery_urls": [
-   "canecas site/studio 2 (branco).jpg",
-   "canecas site/studio 3(branco).jpg",
-   "canecas site/studio 4(branco).jpg",
-   "canecas site/studio 5(branco).jpg",
-   "canecas site/studio.jpg"
+   "canecas-site/studio-2-(branco).jpg",
+   "canecas-site/studio-3(branco).jpg",
+   "canecas-site/studio-4(branco).jpg",
+   "canecas-site/studio-5(branco).jpg",
+   "canecas-site/studio.jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -672,14 +672,14 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/star cabo preto.jpg",
-  "hover_image_url": "canecas site/star 2  cabo preto.jpg",
+  "image_url": "canecas-site/star-cabo-preto.jpg",
+  "hover_image_url": "canecas-site/star-2-cabo-preto.jpg",
   "gallery_urls": [
-   "canecas site/star 2  cabo preto.jpg",
-   "canecas site/star 3 cabo preto.jpg",
-   "canecas site/star 4 cabo preto.jpg",
-   "canecas site/star 6 cabo preto.jpg",
-   "canecas site/star cabo preto.jpg"
+   "canecas-site/star-2-cabo-preto.jpg",
+   "canecas-site/star-3-cabo-preto.jpg",
+   "canecas-site/star-4-cabo-preto.jpg",
+   "canecas-site/star-6-cabo-preto.jpg",
+   "canecas-site/star-cabo-preto.jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -704,15 +704,15 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/stitich boca 1(branco).jpg",
-  "hover_image_url": "canecas site/stitich boca 2 (branco).jpg",
+  "image_url": "canecas-site/stitich-boca-1(branco).jpg",
+  "hover_image_url": "canecas-site/stitich-boca-2-(branco).jpg",
   "gallery_urls": [
-   "canecas site/stitich boca 1(branco).jpg",
-   "canecas site/stitich boca 2 (branco).jpg",
-   "canecas site/stitich boca 3(branco).jpg",
-   "canecas site/stitich boca 4(branco).jpg",
-   "canecas site/stitich boca 5(branco).jpg",
-   "canecas site/stitich boca 6(branco).jpg"
+   "canecas-site/stitich-boca-1(branco).jpg",
+   "canecas-site/stitich-boca-2-(branco).jpg",
+   "canecas-site/stitich-boca-3(branco).jpg",
+   "canecas-site/stitich-boca-4(branco).jpg",
+   "canecas-site/stitich-boca-5(branco).jpg",
+   "canecas-site/stitich-boca-6(branco).jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -737,14 +737,14 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/espirito santo cabo (azul).jpg",
-  "hover_image_url": "canecas site/espirito santo 2 (azul).jpg",
+  "image_url": "canecas-site/espirito-santo-cabo-(azul).jpg",
+  "hover_image_url": "canecas-site/espirito-santo-2-(azul).jpg",
   "gallery_urls": [
-   "canecas site/espirito santo 2 (azul).jpg",
-   "canecas site/espirito santo 3 (azul).jpg",
-   "canecas site/espirito santo 4 (azul).jpg",
-   "canecas site/espirito santo 5 (azul).jpg",
-   "canecas site/espirito santo cabo (azul).jpg"
+   "canecas-site/espirito-santo-2-(azul).jpg",
+   "canecas-site/espirito-santo-3-(azul).jpg",
+   "canecas-site/espirito-santo-4-(azul).jpg",
+   "canecas-site/espirito-santo-5-(azul).jpg",
+   "canecas-site/espirito-santo-cabo-(azul).jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -769,14 +769,14 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/marvel (verde).jpg",
-  "hover_image_url": "canecas site/marvel 2 (verde).jpg",
+  "image_url": "canecas-site/marvel-(verde).jpg",
+  "hover_image_url": "canecas-site/marvel-2-(verde).jpg",
   "gallery_urls": [
-   "canecas site/marvel (verde).jpg",
-   "canecas site/marvel 2 (verde).jpg",
-   "canecas site/marvel 3 (verde).jpg",
-   "canecas site/marvel 4 (verde).jpg",
-   "canecas site/marvel 5 (verde).jpg"
+   "canecas-site/marvel-(verde).jpg",
+   "canecas-site/marvel-2-(verde).jpg",
+   "canecas-site/marvel-3-(verde).jpg",
+   "canecas-site/marvel-4-(verde).jpg",
+   "canecas-site/marvel-5-(verde).jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -801,13 +801,13 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/planeta(branco).jpg",
-  "hover_image_url": "canecas site/planeta 2(branco).jpg",
+  "image_url": "canecas-site/planeta(branco).jpg",
+  "hover_image_url": "canecas-site/planeta-2(branco).jpg",
   "gallery_urls": [
-   "canecas site/planeta 2(branco).jpg",
-   "canecas site/planeta 3(branco).jpg",
-   "canecas site/planeta 4(branco).jpg",
-   "canecas site/planeta(branco).jpg"
+   "canecas-site/planeta-2(branco).jpg",
+   "canecas-site/planeta-3(branco).jpg",
+   "canecas-site/planeta-4(branco).jpg",
+   "canecas-site/planeta(branco).jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -832,13 +832,13 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/pokemon(branco).jpg",
-  "hover_image_url": "canecas site/pokemon 2(branco).jpg",
+  "image_url": "canecas-site/pokemon(branco).jpg",
+  "hover_image_url": "canecas-site/pokemon-2(branco).jpg",
   "gallery_urls": [
-   "canecas site/pokemon 2(branco).jpg",
-   "canecas site/pokemon 3(branco).jpg",
-   "canecas site/pokemon 4(branco).jpg",
-   "canecas site/pokemon(branco).jpg"
+   "canecas-site/pokemon-2(branco).jpg",
+   "canecas-site/pokemon-3(branco).jpg",
+   "canecas-site/pokemon-4(branco).jpg",
+   "canecas-site/pokemon(branco).jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -863,15 +863,15 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/sem café 1(branco).jpg",
-  "hover_image_url": "canecas site/sem café 2 (branco).jpg",
+  "image_url": "canecas-site/sem-café-1(branco).jpg",
+  "hover_image_url": "canecas-site/sem-café-2-(branco).jpg",
   "gallery_urls": [
-   "canecas site/sem café 1(branco).jpg",
-   "canecas site/sem café 2 (branco).jpg",
-   "canecas site/sem café 3(branco).jpg",
-   "canecas site/sem café 4(branco).jpg",
-   "canecas site/sem café 5(branco).jpg",
-   "canecas site/sem café 6(branco).jpg"
+   "canecas-site/sem-café-1(branco).jpg",
+   "canecas-site/sem-café-2-(branco).jpg",
+   "canecas-site/sem-café-3(branco).jpg",
+   "canecas-site/sem-café-4(branco).jpg",
+   "canecas-site/sem-café-5(branco).jpg",
+   "canecas-site/sem-café-6(branco).jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -896,15 +896,15 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/são jorge cabo verde.jpg",
-  "hover_image_url": "canecas site/são jorge 2 cabo verde.jpg",
+  "image_url": "canecas-site/são-jorge-cabo-verde.jpg",
+  "hover_image_url": "canecas-site/são-jorge-2-cabo-verde.jpg",
   "gallery_urls": [
-   "canecas site/são jorge 2 cabo verde.jpg",
-   "canecas site/são jorge 3 cabo verde.jpg",
-   "canecas site/são jorge 4 cabo verde.jpg",
-   "canecas site/são jorge 5 cabo verde.jpg",
-   "canecas site/são jorge 6 cabo verde.jpg",
-   "canecas site/são jorge cabo verde.jpg"
+   "canecas-site/são-jorge-2-cabo-verde.jpg",
+   "canecas-site/são-jorge-3-cabo-verde.jpg",
+   "canecas-site/são-jorge-4-cabo-verde.jpg",
+   "canecas-site/são-jorge-5-cabo-verde.jpg",
+   "canecas-site/são-jorge-6-cabo-verde.jpg",
+   "canecas-site/são-jorge-cabo-verde.jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -929,19 +929,19 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/mulher maravilha caneca magica 1.jpg",
-  "hover_image_url": "canecas site/mulher maravilha caneca magica 3.jpg",
+  "image_url": "canecas-site/mulher-maravilha-caneca-magica-1.jpg",
+  "hover_image_url": "canecas-site/mulher-maravilha-caneca-magica-3.jpg",
   "gallery_urls": [
-   "canecas site/mulher maravilha caneca magica 1.jpg",
-   "canecas site/mulher maravilha caneca magica 3.jpg",
-   "canecas site/mulher maravilha caneca magica 4.jpg",
-   "canecas site/mulher maravilha caneca magica 5.jpg",
-   "canecas site/caneca magica 2.jpg",
-   "canecas site/caneca magica 3.jpg",
-   "canecas site/caneca magica 4.jpg",
-   "canecas site/caneca magica 5.jpg",
-   "canecas site/caneca magica 6.jpg",
-   "canecas site/caneca magica.jpg"
+   "canecas-site/mulher-maravilha-caneca-magica-1.jpg",
+   "canecas-site/mulher-maravilha-caneca-magica-3.jpg",
+   "canecas-site/mulher-maravilha-caneca-magica-4.jpg",
+   "canecas-site/mulher-maravilha-caneca-magica-5.jpg",
+   "canecas-site/caneca-magica-2.jpg",
+   "canecas-site/caneca-magica-3.jpg",
+   "canecas-site/caneca-magica-4.jpg",
+   "canecas-site/caneca-magica-5.jpg",
+   "canecas-site/caneca-magica-6.jpg",
+   "canecas-site/caneca-magica.jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -966,21 +966,21 @@ const productsData = [
   "category": "canecas",
   "price": 80,
   "original_price": null,
-  "image_url": "canecas site/orixá caneca magica 1.jpg",
-  "hover_image_url": "canecas site/orixá caneca magica 2.jpg",
+  "image_url": "canecas-site/orixá-caneca-magica-1.jpg",
+  "hover_image_url": "canecas-site/orixá-caneca-magica-2.jpg",
   "gallery_urls": [
-   "canecas site/orixá caneca magica 1.jpg",
-   "canecas site/orixá caneca magica 2.jpg",
-   "canecas site/orixá caneca magica 3.jpg",
-   "canecas site/orixá caneca magica 7.jpg",
-   "canecas site/orixá caneca magica 8.jpg",
-   "canecas site/orixá caneca magica 9.jpg",
-   "canecas site/caneca magica 2.jpg",
-   "canecas site/caneca magica 3.jpg",
-   "canecas site/caneca magica 4.jpg",
-   "canecas site/caneca magica 5.jpg",
-   "canecas site/caneca magica 6.jpg",
-   "canecas site/caneca magica.jpg"
+   "canecas-site/orixá-caneca-magica-1.jpg",
+   "canecas-site/orixá-caneca-magica-2.jpg",
+   "canecas-site/orixá-caneca-magica-3.jpg",
+   "canecas-site/orixá-caneca-magica-7.jpg",
+   "canecas-site/orixá-caneca-magica-8.jpg",
+   "canecas-site/orixá-caneca-magica-9.jpg",
+   "canecas-site/caneca-magica-2.jpg",
+   "canecas-site/caneca-magica-3.jpg",
+   "canecas-site/caneca-magica-4.jpg",
+   "canecas-site/caneca-magica-5.jpg",
+   "canecas-site/caneca-magica-6.jpg",
+   "canecas-site/caneca-magica.jpg"
   ],
   "is_bestseller": false,
   "is_new": false,
@@ -1057,10 +1057,10 @@ const productsData = [
   "category": "placas-mdf",
   "price": 50,
   "original_price": null,
-  "image_url": "Placas de MDF/BTS (exclusiva).jpg",
-  "hover_image_url": "Placas de MDF/BTS (exclusiva).jpg",
+  "image_url": "placas-de-mdf/bts-(exclusiva).jpg",
+  "hover_image_url": "placas-de-mdf/bts-(exclusiva).jpg",
   "gallery_urls": [
-   "Placas de MDF/BTS.jpg"
+   "placas-de-mdf/bts.jpg"
   ],
   "is_bestseller": false,
   "is_new": true,
@@ -1082,10 +1082,10 @@ const productsData = [
   "category": "placas-mdf",
   "price": 50,
   "original_price": null,
-  "image_url": "Placas de MDF/Luffy (exclusiva).jpg",
-  "hover_image_url": "Placas de MDF/Luffy (exclusiva).jpg",
+  "image_url": "placas-de-mdf/luffy-(exclusiva).jpg",
+  "hover_image_url": "placas-de-mdf/luffy-(exclusiva).jpg",
   "gallery_urls": [
-   "Placas de MDF/Luffy.jpg"
+   "placas-de-mdf/luffy.jpg"
   ],
   "is_bestseller": false,
   "is_new": true,
@@ -1107,10 +1107,10 @@ const productsData = [
   "category": "placas-mdf",
   "price": 50,
   "original_price": null,
-  "image_url": "Placas de MDF/Studio ghibli (exclusiva).jpg",
-  "hover_image_url": "Placas de MDF/Studio ghibli (exclusiva).jpg",
+  "image_url": "placas-de-mdf/studio-ghibli-(exclusiva).jpg",
+  "hover_image_url": "placas-de-mdf/studio-ghibli-(exclusiva).jpg",
   "gallery_urls": [
-   "Placas de MDF/Studio ghibli 1.jpg"
+   "placas-de-mdf/studio-ghibli-1.jpg"
   ],
   "is_bestseller": false,
   "is_new": true,
@@ -1132,10 +1132,10 @@ const productsData = [
   "category": "placas-mdf",
   "price": 50,
   "original_price": null,
-  "image_url": "Placas de MDF/Zoro (exclusiva).jpg",
-  "hover_image_url": "Placas de MDF/Zoro (exclusiva).jpg",
+  "image_url": "placas-de-mdf/zoro-(exclusiva).jpg",
+  "hover_image_url": "placas-de-mdf/zoro-(exclusiva).jpg",
   "gallery_urls": [
-   "Placas de MDF/Zoro.jpg"
+   "placas-de-mdf/zoro.jpg"
   ],
   "is_bestseller": false,
   "is_new": true,
@@ -1157,10 +1157,10 @@ const productsData = [
   "category": "placas-mdf",
   "price": 50,
   "original_price": null,
-  "image_url": "Placas de MDF/Anime (exclusiva).jpg",
-  "hover_image_url": "Placas de MDF/Anime (exclusiva).jpg",
+  "image_url": "placas-de-mdf/anime-(exclusiva).jpg",
+  "hover_image_url": "placas-de-mdf/anime-(exclusiva).jpg",
   "gallery_urls": [
-   "Placas de MDF/Anime.jpg"
+   "placas-de-mdf/anime.jpg"
   ],
   "is_bestseller": false,
   "is_new": true,
@@ -1182,10 +1182,10 @@ const productsData = [
   "category": "placas-mdf",
   "price": 50,
   "original_price": null,
-  "image_url": "Placas de MDF/Frase personalizasa (personalizado).png",
-  "hover_image_url": "Placas de MDF/Frase personalizasa (personalizado).png",
+  "image_url": "placas-de-mdf/frase-personalizasa-(personalizado).png",
+  "hover_image_url": "placas-de-mdf/frase-personalizasa-(personalizado).png",
   "gallery_urls": [
-   "Placas de MDF/Frase personalizasa.png"
+   "placas-de-mdf/frase-personalizasa.png"
   ],
   "is_bestseller": false,
   "is_new": true,
@@ -1207,10 +1207,10 @@ const productsData = [
   "category": "placas-mdf",
   "price": 50,
   "original_price": null,
-  "image_url": "Placas de MDF/Ovelha (personalizado).png",
-  "hover_image_url": "Placas de MDF/Ovelha (personalizado).png",
+  "image_url": "placas-de-mdf/ovelha-(personalizado).png",
+  "hover_image_url": "placas-de-mdf/ovelha-(personalizado).png",
   "gallery_urls": [
-   "Placas de MDF/Ovelha.png"
+   "placas-de-mdf/ovelha.png"
   ],
   "is_bestseller": false,
   "is_new": true,
@@ -1230,13 +1230,13 @@ const productsData = [
   "category": "gifts",
   "price": 15,
   "original_price": null,
-  "image_url": "Placas de MDF/Anime (exclusiva).jpg",
-  "hover_image_url": "Placas de MDF/Anime (exclusiva).jpg",
+  "image_url": "placas-de-mdf/anime-(exclusiva).jpg",
+  "hover_image_url": "placas-de-mdf/anime-(exclusiva).jpg",
   "gallery_urls": [
-   "Placas de MDF/Anime (exclusiva).jpg",
-   "Placas de MDF/Luffy (exclusiva).jpg",
-   "Placas de MDF/Zoro (exclusiva).jpg",
-   "Placas de MDF/Studio ghibli (exclusiva).jpg"
+   "placas-de-mdf/anime-(exclusiva).jpg",
+   "placas-de-mdf/luffy-(exclusiva).jpg",
+   "placas-de-mdf/zoro-(exclusiva).jpg",
+   "placas-de-mdf/studio-ghibli-(exclusiva).jpg"
   ],
   "is_bestseller": true,
   "is_new": true,
@@ -1249,19 +1249,19 @@ const productsData = [
   "variants": [
    {
     "name": "Anime Genérico",
-    "image_url": "Placas de MDF/Anime (exclusiva).jpg"
+    "image_url": "placas-de-mdf/anime-(exclusiva).jpg"
    },
    {
     "name": "Luffy (One Piece)",
-    "image_url": "Placas de MDF/Luffy (exclusiva).jpg"
+    "image_url": "placas-de-mdf/luffy-(exclusiva).jpg"
    },
    {
     "name": "Zoro (One Piece)",
-    "image_url": "Placas de MDF/Zoro (exclusiva).jpg"
+    "image_url": "placas-de-mdf/zoro-(exclusiva).jpg"
    },
    {
     "name": "Studio Ghibli",
-    "image_url": "Placas de MDF/Studio ghibli (exclusiva).jpg"
+    "image_url": "placas-de-mdf/studio-ghibli-(exclusiva).jpg"
    }
   ]
  },
@@ -1272,10 +1272,10 @@ const productsData = [
   "category": "gifts",
   "price": 15,
   "original_price": null,
-  "image_url": "Placas de MDF/BTS (exclusiva).jpg",
-  "hover_image_url": "Placas de MDF/BTS (exclusiva).jpg",
+  "image_url": "placas-de-mdf/bts-(exclusiva).jpg",
+  "hover_image_url": "placas-de-mdf/bts-(exclusiva).jpg",
   "gallery_urls": [
-   "Placas de MDF/BTS (exclusiva).jpg"
+   "placas-de-mdf/bts-(exclusiva).jpg"
   ],
   "is_bestseller": false,
   "is_new": true,
@@ -1288,7 +1288,7 @@ const productsData = [
   "variants": [
    {
     "name": "BTS",
-    "image_url": "Placas de MDF/BTS (exclusiva).jpg"
+    "image_url": "placas-de-mdf/bts-(exclusiva).jpg"
    }
   ]
  }

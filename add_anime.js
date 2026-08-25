@@ -13,10 +13,10 @@ global.mockProducts.push({
  category: "placas-mdf",
  price: 50.0,
  original_price: null,
- image_url: "Placas de MDF/Anime.jpg",
- hover_image_url: "Placas de MDF/Anime.jpg",
+ image_url: "placas-de-mdf/anime.jpg",
+ hover_image_url: "placas-de-mdf/anime.jpg",
  gallery_urls: [
-  "Placas de MDF/Anime.jpg"
+  "placas-de-mdf/anime.jpg"
  ],
  is_bestseller: false,
  is_new: true,

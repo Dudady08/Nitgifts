@@ -5,8 +5,8 @@ eval(content.replace('const mockProducts =', 'global.mockProducts ='));
 
 const p = global.mockProducts.find(x => x.id === 'mdf-4');
 if (p) {
-  p.hover_image_url = "Placas de MDF/Studio ghibli 1.jpg";
-  p.gallery_urls = ["Placas de MDF/Studio ghibli 1.jpg"];
+  p.hover_image_url = "placas-de-mdf/studio-ghibli-1.jpg";
+  p.gallery_urls = ["placas-de-mdf/studio-ghibli-1.jpg"];
 }
 
 const newContent = content.replace(/const mockProducts = \[[\s\S]*?\];/, 'const mockProducts = ' + JSON.stringify(global.mockProducts, null, 2) + ';');

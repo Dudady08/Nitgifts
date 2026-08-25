@@ -16,7 +16,7 @@ global.mockProducts.forEach(p => {
     
     // Add the new image to the Studio Ghibli plate
     if (p.name.includes('Ghibli')) {
-      const newImg = 'Placas de MDF/Studio ghibli todos os personagens.jpg';
+      const newImg = 'placas-de-mdf/studio-ghibli-todos-os-personagens.jpg';
       if (!p.gallery_urls.includes(newImg)) {
         p.gallery_urls.push(newImg);
       }
