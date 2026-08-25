@@ -116,12 +116,21 @@ async function buscarFrete(cepDestino, embalagem) {
    method: 'POST',
    body: params // Isso envia como application/x-www-form-urlencoded
   });
-  const data = await resp.json();
-  if (data.success && data.opcoes && data.opcoes.length > 0) {
-   return data.opcoes;
+  const text = await resp.text();
+  try {
+   const data = JSON.parse(text);
+   if (data.success && data.opcoes && data.opcoes.length > 0) {
+    return data.opcoes;
+   }
+   // Para depuração: exibir por que a API falhou
+   alert("Debug Frete API Falhou: " + JSON.stringify(data));
+   return null;
+  } catch(e) {
+   alert("Debug Frete Parse Error. Resposta bruta: " + text.substring(0, 200));
+   return null;
   }
-  return null;
  } catch (err) {
+  alert('Debug Frete Erro de Rede/CORS: ' + err.message);
   console.error('Erro ao buscar frete:', err);
   return null;
  }
