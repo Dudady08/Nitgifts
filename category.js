@@ -479,7 +479,12 @@ function initMobileDrawer() {
 }
 
 // 9. Initializer Lifecycle
-document.addEventListener('DOMContentLoaded', () => {
+function initCategoryPage() {
+ if (typeof mockProducts === 'undefined') {
+  setTimeout(initCategoryPage, 50);
+  return;
+ }
+
  // Detect category from URL
  activeCategory = detectCategory();
  currentFilters.type = "all"; // Reset type filter for fresh load
@@ -508,5 +513,7 @@ document.addEventListener('DOMContentLoaded', () => {
  if (window.lucide) {
   window.lucide.createIcons();
  }
-});
+}
+
+document.addEventListener('DOMContentLoaded', initCategoryPage);
 

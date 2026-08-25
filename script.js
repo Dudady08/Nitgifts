@@ -6,6 +6,7 @@
 
 // Preload hover images for zero-delay, flicker-free UX
 function preloadHoverImages() {
+ if (typeof mockProducts === 'undefined') return;
  mockProducts.forEach(product => {
   if (product.hover_image_url) {
    const img = new Image();
@@ -225,7 +226,13 @@ function showToast(title, description = "") {
 }
 
 // 5. Initializer Lifecycle
-document.addEventListener('DOMContentLoaded', () => {
+function initPage() {
+ if (typeof mockProducts === 'undefined') {
+  // products-data.js may not have loaded yet, retry
+  setTimeout(initPage, 50);
+  return;
+ }
+
  // Preload hovers immediately
  preloadHoverImages();
 
@@ -238,16 +245,20 @@ document.addEventListener('DOMContentLoaded', () => {
  renderShowcase('showcase-gifts', p => p.category === 'gifts');
 
  // Check if we redirected from a successful checkout order
- if (localStorage.getItem('orderSuccessToast') === 'true') {
-  localStorage.removeItem('orderSuccessToast');
-  setTimeout(() => {
-   showToast("Pedido realizado com sucesso!", "Você receberá um e-mail com os detalhes.");
-  }, 500);
- }
+ try {
+  if (localStorage.getItem('orderSuccessToast') === 'true') {
+   localStorage.removeItem('orderSuccessToast');
+   setTimeout(() => {
+    showToast("Pedido realizado com sucesso!", "Você receberá um e-mail com os detalhes.");
+   }, 500);
+  }
+ } catch (e) { /* localStorage may be restricted */ }
 
  // Initialize static Lucide Icons already in index.html (like arrow-right, sparkles, stars)
  if (window.lucide) {
   window.lucide.createIcons();
  }
-});
+}
+
+document.addEventListener('DOMContentLoaded', initPage);
 
