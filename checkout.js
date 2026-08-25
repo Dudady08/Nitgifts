@@ -273,6 +273,18 @@ function initCheckoutForm() {
      }
     }));
 
+    // ── Salvar pay_url no Firestore para retomada de pagamento pelo perfil ──
+    try {
+     const user = auth.currentUser;
+     if (user && orderId) {
+      const orderRef = doc(db, "users", user.uid, "orders", orderId);
+      await setDoc(orderRef, { pay_url: result.pay_url }, { merge: true });
+      console.log("pay_url salvo no Firestore para retomada.");
+     }
+    } catch (saveUrlErr) {
+     console.warn("Não foi possível salvar pay_url no Firestore:", saveUrlErr);
+    }
+
     console.log("Abrindo PagBank em nova aba:", result.pay_url);
     
     // Tenta redirecionar a aba que já abrimos

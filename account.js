@@ -232,11 +232,27 @@ function createOrderCard(orderData) {
 
  // Footer
  const total = orderData.total || 0;
+
+ // ── Botão "Pagar Agora" para pedidos pendentes com pay_url salvo ──
+ let payButtonHTML = '';
+ if (statusClass === 'pendente_pagamento' && orderData.pay_url) {
+  payButtonHTML = `
+   <div class="account-order-pay-action">
+    <a href="${orderData.pay_url}" target="_blank" rel="noopener noreferrer" class="account-order-pay-btn">
+     <i data-lucide="credit-card" style="width:16px;height:16px;"></i>
+     Pagar Agora
+    </a>
+    <p class="account-order-pay-hint">Se já realizou o pagamento, aguarde alguns minutos para atualização.</p>
+   </div>
+  `;
+ }
+
  let footerHTML = `
   <div class="account-order-footer">
    <span class="account-order-total-label">Total</span>
    <span class="account-order-total-value">${formatCurrency(total)}</span>
   </div>
+  ${payButtonHTML}
  `;
 
  card.innerHTML = headerHTML + itemsHTML + footerHTML;
