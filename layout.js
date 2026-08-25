@@ -134,7 +134,13 @@ function updateNavbarCartCount() {
  const badge = document.getElementById('navbar-cart-count');
  if (!badge) return;
 
- const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+ let cart = [];
+ try {
+  cart = JSON.parse(localStorage.getItem('cart') || '[]');
+ } catch (e) {
+  // localStorage may be blocked in some contexts (e.g., file://, private mode)
+  cart = [];
+ }
  const count = cart.reduce((sum, item) => sum + item.qty, 0);
 
  if (count > 0) {
