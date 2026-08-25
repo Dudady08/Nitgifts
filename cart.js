@@ -269,14 +269,9 @@ document.addEventListener('DOMContentLoaded', () => {
  const checkoutBtn = document.getElementById('go-to-checkout-btn');
  if (checkoutBtn) {
   checkoutBtn.addEventListener('click', () => {
-   if (currentUser) {
-    window.location.href = 'checkout.html';
-   } else {
-    showToast("Faça login ou cadastre-se para finalizar a compra.");
-    setTimeout(() => {
-     window.location.href = 'login.html';
-    }, 2000);
-   }
+   // Redirect to checkout — auth verification is handled by checkout.js
+   window.location.href = 'checkout.html';
   });
  }
 });
+
