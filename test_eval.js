@@ -5,7 +5,7 @@ let content = fs.readFileSync('products-data.js', 'utf8');
 const files = fs.readdirSync('canecas site');
 
 // We need to parse the products and fix the image_url, hover_image_url, and gallery_urls for category: "canecas".
-// Since we corrupted it to image_url: "canecas site/", or image_url: canecas-site/,-or-something,-//-let's use a regex to replace the entire block of image fields for canecas.
+// Since we corrupted it to image_url: "canecas site/", or image_url: canecas-site/or-something-let's use a regex to replace the entire block of image fields for canecas.
 // The block usually looks like:
 // image_url: ...
 // hover_image_url: ...

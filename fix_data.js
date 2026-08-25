@@ -43,12 +43,12 @@ const manualReplacements = {
   '"canecas-site/marvel-3.jpg"': '"canecas-site/marvel-3-cabo-verde.jpg"',
   '"canecas-site/marvel-4.jpg"': '"canecas-site/marvel-4-cabo-verde.jpg"',
   '"canecas-site/marvel-5.jpg"': '"canecas-site/marvel-5-cabo-verde.jpg"',
-  '"canecas-site/são-jorge.jpg"': '"canecas-site/são-jorge-cabo-verde.jpg"',
-  '"canecas-site/são-jorge-2.jpg"': '"canecas-site/são-jorge-2-cabo-verde.jpg"',
-  '"canecas-site/são-jorge-3.jpg"': '"canecas-site/são-jorge-3-cabo-verde.jpg"',
-  '"canecas-site/são-jorge-4.jpg"': '"canecas-site/são-jorge-4-cabo-verde.jpg"',
-  '"canecas-site/são-jorge-5.jpg"': '"canecas-site/são-jorge-5-cabo-verde.jpg"',
-  '"canecas-site/são-jorge-6.jpg"': '"canecas-site/são-jorge-6-cabo-verde.jpg"'
+  '"canecas-site/sao-jorge.jpg"': '"canecas-site/sao-jorge-cabo-verde.jpg"',
+  '"canecas-site/sao-jorge-2.jpg"': '"canecas-site/sao-jorge-2-cabo-verde.jpg"',
+  '"canecas-site/sao-jorge-3.jpg"': '"canecas-site/sao-jorge-3-cabo-verde.jpg"',
+  '"canecas-site/sao-jorge-4.jpg"': '"canecas-site/sao-jorge-4-cabo-verde.jpg"',
+  '"canecas-site/sao-jorge-5.jpg"': '"canecas-site/sao-jorge-5-cabo-verde.jpg"',
+  '"canecas-site/sao-jorge-6.jpg"': '"canecas-site/sao-jorge-6-cabo-verde.jpg"'
 };
 
 for (const [bad, good] of Object.entries(manualReplacements)) {
