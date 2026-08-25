@@ -205,9 +205,25 @@ function loadCheckoutSummary() {
  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
  if (subtotalEl) subtotalEl.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
 
- // Mostrar total provisoriamente (sem frete) até o cálculo ser concluído
- const totalEl = document.getElementById('summary-total');
- if (totalEl) totalEl.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}` + ' + frete';
+ // Mostrar frete e total provisionalmente IMEDIATAMENTE (o frete real atualiza depois)
+ const loadingEl = document.getElementById('shipping-loading');
+ const optionsEl = document.getElementById('shipping-options');
+ const totalEl   = document.getElementById('summary-total');
+
+ if (loadingEl) loadingEl.style.display = 'none';
+ if (optionsEl) {
+  optionsEl.style.display = 'flex';
+  optionsEl.innerHTML = `
+   <div class="shipping-option selected" style="cursor:default; border-color: rgba(26,26,26,0.1); background: transparent;">
+    <div class="shipping-option-info">
+     <span class="shipping-option-name" style="color: rgba(26,26,26,0.6);">Frete</span>
+     <span class="shipping-option-prazo" style="color: rgba(26,26,26,0.5);">Calculado na próxima etapa</span>
+    </div>
+    <span class="shipping-option-price" style="color: rgba(26,26,26,0.5);">--,--</span>
+   </div>
+  `;
+ }
+ if (totalEl) totalEl.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')} + frete`;
 }
 
 // 3. Form Submission Handler (Integrado com PagBank)
