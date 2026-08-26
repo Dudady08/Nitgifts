@@ -378,6 +378,7 @@ function initCheckoutForm() {
    pagbankData.append('estado', addr.state || '');
    pagbankData.append('itens', cartText);
    pagbankData.append('frete', formattedShipping);
+   pagbankData.append('tipo_frete', shippingLabel + (selectedShipping ? ' (' + selectedShipping.prazo + ')' : ''));
    pagbankData.append('total', formattedTotal);
 
    // O reference_id carrega o UID e o OrderID para o Webhook saber quem atualizar

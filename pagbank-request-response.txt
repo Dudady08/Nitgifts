@@ -1,13 +1,22 @@
 =========================================================
-API UTILIZADA: API de Checkouts (PagBank V4)
-ENDPOINT: POST https://sandbox.api.pagseguro.com/checkouts
+DOCUMENTAÇÃO DE HOMOLOGAÇÃO - NITGIFTS
 =========================================================
 
+MENSAGEM AO ANALISTA:
+Olá,
+Segue abaixo o log contendo uma requisição real e sua respectiva resposta gerada no ambiente Sandbox, conforme solicitado para a homologação.
+A nossa integração utiliza a **API de Checkouts** (endpoint /checkouts) com a flag `customer_modifiable: true`.
+Desta forma, a captura e o processamento de todos os Meios de Pagamento (Cartão de Crédito, PIX e Boleto) são delegados e geridos integralmente pela página de pagamento hospedada (Hosted Checkout) do próprio PagBank.
+
 ---------------------------------------------------------
-EXEMPLO DE REQUEST (O que a nossa loja envia para vocês)
+EVIDÊNCIA 1: REQUEST REAL (Enviado para Sandbox)
+ENDPOINT: POST https://sandbox.api.pagseguro.com/checkouts
+HEADERS: 
+  Authorization: Bearer 19f762a6-33c3-4687-b75c-7bf889c1aac16b1710db46a4ac61ace0b3ca8bb638260397-571f-4e6c-a6d4-af1aae47e5f2
+  Content-Type: application/json
 ---------------------------------------------------------
 {
-  "reference_id": "abc123_sB2xqYpxp2CyD7LD1Mh1",
+  "reference_id": "test_homologation_nitgifts_01",
   "items": [
     {
       "reference_id": "item-1",
@@ -22,19 +31,25 @@ EXEMPLO DE REQUEST (O que a nossa loja envia para vocês)
   ],
   "customer": {
     "name": "João Teste da Silva",
-    "email": "pagbank.teste@nitgifts.com"
-  },
-  "redirect_url": "https://nitgifts.com/success.html"
+    "email": "pagbank.teste@nitgifts.com",
+    "tax_id": "12345678909"
+  }
 }
 
 ---------------------------------------------------------
-EXEMPLO DE RESPONSE (O que esperamos receber de vocês)
+EVIDÊNCIA 2: RESPONSE REAL (Retornado pelo Sandbox)
+STATUS HTTP: 200 / 201 Created
 ---------------------------------------------------------
 {
-  "id": "CHK_88A123456789CDEF0123456789ABCDEF",
-  "reference_id": "abc123_sB2xqYpxp2CyD7LD1Mh1",
+  "id": "CHEC_B256BFD8-3DCF-499A-AC0B-66B515C5A59C",
+  "reference_id": "test_homologation_nitgifts_01",
+  "created_at": "2026-08-26T18:07:27-03:00",
   "status": "ACTIVE",
-  "created_at": "2026-08-25T14:30:00.000-03:00",
+  "customer": {
+    "name": "Joao Teste da Silva",
+    "email": "pagbank.teste@nitgifts.com",
+    "tax_id": "12345678909"
+  },
   "customer_modifiable": true,
   "items": [
     {
@@ -44,12 +59,30 @@ EXEMPLO DE RESPONSE (O que esperamos receber de vocês)
       "unit_amount": 3500
     }
   ],
+  "additional_amount": 0,
+  "discount_amount": 0,
+  "notification_urls": [
+    "https://script.google.com/macros/s/AKfycbxwuC7xGX5YJX9u8DYxi0zm6hxKSF2GxevgkAtrkWscb1srBA3KIjvxy-NYZtWDfWJ8vQ/exec"
+  ],
+  "payment_notification_urls": [
+    "https://script.google.com/macros/s/AKfycbxwuC7xGX5YJX9u8DYxi0zm6hxKSF2GxevgkAtrkWscb1srBA3KIjvxy-NYZtWDfWJ8vQ/exec"
+  ],
   "links": [
     {
+      "rel": "SELF",
+      "href": "https://sandbox.api.pagseguro.com/checkouts/CHEC_B256BFD8-3DCF-499A-AC0B-66B515C5A59C",
+      "method": "GET"
+    },
+    {
       "rel": "PAY",
-      "href": "https://pagseguro.uol.com.br/checkout/payment.html?code=CHK_88A123456789CDEF0123456789ABCDEF",
-      "media": "text/html",
-      "type": "GET"
+      "href": "https://pagamento.sandbox.pagbank.com.br/pagamento?code=b256bfd8-3dcf-499a-ac0b-66b515c5a59c",
+      "method": "GET"
+    },
+    {
+      "rel": "INACTIVATE",
+      "href": "https://sandbox.api.pagseguro.com/checkouts/CHEC_B256BFD8-3DCF-499A-AC0B-66B515C5A59C/inactivate",
+      "method": "POST"
     }
-  ]
+  ],
+  "origin": "CHECKOUT_WEB"
 }
