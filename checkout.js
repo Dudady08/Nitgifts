@@ -558,6 +558,12 @@ async function loadUserAddress(user) {
 
 // Fallback visual — erro ao calcular frete (com botão de retry)
 function renderizarFreteErro(subtotal, cep, embalagem) {
+ // Se compra >= 300, aplicar frete grátis diretamente sem precisar do GAS
+ if (subtotal >= 300) {
+  renderizarSeletorFrete([{ codigo: 'frete_gratis', nome: 'Frete Grátis Especial', prazo: '5 a 10 dias úteis', preco: 0 }], subtotal);
+  return;
+ }
+
  const loadingEl = document.getElementById('shipping-loading');
  const optionsEl = document.getElementById('shipping-options');
  const totalEl   = document.getElementById('summary-total');
@@ -607,6 +613,12 @@ function renderizarFreteErro(subtotal, cep, embalagem) {
 
 // Fallback visual — sem CEP no perfil
 function renderizarFreteSemCep(subtotal) {
+ // Se compra >= 300, aplicar frete grátis mesmo sem CEP
+ if (subtotal >= 300) {
+  renderizarSeletorFrete([{ codigo: 'frete_gratis', nome: 'Frete Grátis Especial', prazo: '5 a 10 dias úteis', preco: 0 }], subtotal);
+  return;
+ }
+
  const loadingEl = document.getElementById('shipping-loading');
  const optionsEl = document.getElementById('shipping-options');
  const totalEl   = document.getElementById('summary-total');
