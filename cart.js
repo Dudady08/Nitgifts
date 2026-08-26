@@ -241,7 +241,7 @@ function updateOrderSummary(cart) {
 
  // Toggle Free Shipping Reminder Alert (manter para UX)
  if (freeShippingAlert) {
-  freeShippingAlert.style.display = subtotal < 200 ? 'block' : 'none';
+  freeShippingAlert.style.display = subtotal < 300 ? 'block' : 'none';
  }
 
  // Total sem frete (frete é calculado no checkout)

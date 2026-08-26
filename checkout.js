@@ -138,6 +138,16 @@ async function buscarFrete(cepDestino, embalagem) {
 
 // 2C. Renderizar seletor PAC/SEDEX e atualizar total
 function renderizarSeletorFrete(opcoes, subtotal) {
+  // Aplicar regra de Frete Grátis para compras >= 300
+  if (subtotal >= 300) {
+   opcoes = [{
+    codigo: "frete_gratis",
+    nome: "Frete Grátis Especial",
+    prazo: opcoes && opcoes[0] ? opcoes[0].prazo : "5 a 10 dias úteis",
+    preco: 0
+   }];
+  }
+
  const loadingEl  = document.getElementById('shipping-loading');
  const optionsEl  = document.getElementById('shipping-options');
  const totalEl    = document.getElementById('summary-total');
