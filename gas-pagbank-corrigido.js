@@ -288,34 +288,94 @@ function handlePagBankWebhook(payload) {
 // ============================================================================
 
 var TABELA_FRETE = [
-  // { faixa_inicio, faixa_fim, estado, regiao, pac_preco, pac_prazo, sedex_preco, sedex_prazo }
+  // Faixas de CEP oficiais dos Correios, ordenadas por número crescente.
+  // Origem: Niterói - RJ (CEP 24360-220)
+  // Preços médios realistas para pacotes de até 1kg (PAC e SEDEX).
 
-  // RJ - Mesma cidade / estado
-  { ini: 20000, fim: 28999, uf: 'RJ', pac: 16.90, pac_d: 4,  sedex: 24.90, sedex_d: 1 },
+  // SP — CEPs 01000 a 19999
+  // ATENÇÃO: usar 1000 e não 01000 (zero à esquerda vira octal em JS)
+  { ini: 1000,  fim: 19999, uf: 'SP',  pac: 22.90, pac_d: 5,  sedex: 34.90, sedex_d: 2 },
 
-  // SP
-  { ini: 01000, fim: 19999, uf: 'SP', pac: 22.90, pac_d: 5,  sedex: 34.90, sedex_d: 2 },
+  // RJ — CEPs 20000 a 28999
+  { ini: 20000, fim: 28999, uf: 'RJ',  pac: 16.90, pac_d: 3,  sedex: 22.90, sedex_d: 1 },
 
-  // MG
-  { ini: 30000, fim: 39999, uf: 'MG', pac: 22.90, pac_d: 5,  sedex: 34.90, sedex_d: 2 },
+  // ES — CEPs 29000 a 29999
+  { ini: 29000, fim: 29999, uf: 'ES',  pac: 24.90, pac_d: 5,  sedex: 36.90, sedex_d: 2 },
 
-  // ES
-  { ini: 29000, fim: 29999, uf: 'ES', pac: 22.90, pac_d: 5,  sedex: 34.90, sedex_d: 2 },
+  // MG — CEPs 30000 a 39999
+  { ini: 30000, fim: 39999, uf: 'MG',  pac: 22.90, pac_d: 5,  sedex: 34.90, sedex_d: 2 },
 
-  // PR, SC, RS (Sul)
-  { ini: 80000, fim: 99999, uf: 'SUL', pac: 28.90, pac_d: 7,  sedex: 42.90, sedex_d: 3 },
+  // BA — CEPs 40000 a 48999
+  { ini: 40000, fim: 48999, uf: 'BA',  pac: 32.90, pac_d: 8,  sedex: 48.90, sedex_d: 4 },
 
-  // BA
-  { ini: 40000, fim: 48999, uf: 'BA', pac: 32.90, pac_d: 8,  sedex: 48.90, sedex_d: 4 },
+  // SE — CEPs 49000 a 49999
+  { ini: 49000, fim: 49999, uf: 'SE',  pac: 35.90, pac_d: 9,  sedex: 52.90, sedex_d: 4 },
 
-  // SE, AL, PE, PB, RN, CE, PI, MA (Nordeste)
-  { ini: 49000, fim: 65999, uf: 'NE', pac: 35.90, pac_d: 10, sedex: 52.90, sedex_d: 5 },
+  // PE — CEPs 50000 a 56999
+  { ini: 50000, fim: 56999, uf: 'PE',  pac: 35.90, pac_d: 10, sedex: 52.90, sedex_d: 5 },
 
-  // DF, GO, TO, MT, MS (Centro-Oeste)
-  { ini: 70000, fim: 79999, uf: 'CO', pac: 35.90, pac_d: 10, sedex: 52.90, sedex_d: 5 },
+  // AL — CEPs 57000 a 57999
+  { ini: 57000, fim: 57999, uf: 'AL',  pac: 35.90, pac_d: 10, sedex: 52.90, sedex_d: 5 },
 
-  // PA, AM, AP, RR, RO, AC (Norte)
-  { ini: 66000, fim: 69999, uf: 'NO', pac: 42.90, pac_d: 14, sedex: 62.90, sedex_d: 6 },
+  // PB — CEPs 58000 a 58999
+  { ini: 58000, fim: 58999, uf: 'PB',  pac: 35.90, pac_d: 10, sedex: 52.90, sedex_d: 5 },
+
+  // RN — CEPs 59000 a 59999
+  { ini: 59000, fim: 59999, uf: 'RN',  pac: 35.90, pac_d: 10, sedex: 52.90, sedex_d: 5 },
+
+  // CE — CEPs 60000 a 63999
+  { ini: 60000, fim: 63999, uf: 'CE',  pac: 37.90, pac_d: 11, sedex: 54.90, sedex_d: 5 },
+
+  // PI — CEPs 64000 a 64999
+  { ini: 64000, fim: 64999, uf: 'PI',  pac: 37.90, pac_d: 12, sedex: 54.90, sedex_d: 6 },
+
+  // MA — CEPs 65000 a 65999
+  { ini: 65000, fim: 65999, uf: 'MA',  pac: 39.90, pac_d: 12, sedex: 56.90, sedex_d: 6 },
+
+  // PA — CEPs 66000 a 68899
+  { ini: 66000, fim: 68899, uf: 'PA',  pac: 42.90, pac_d: 14, sedex: 62.90, sedex_d: 6 },
+
+  // AP — CEPs 68900 a 68999
+  { ini: 68900, fim: 68999, uf: 'AP',  pac: 44.90, pac_d: 15, sedex: 64.90, sedex_d: 7 },
+
+  // AM — CEPs 69000 a 69299
+  { ini: 69000, fim: 69299, uf: 'AM',  pac: 44.90, pac_d: 15, sedex: 64.90, sedex_d: 7 },
+
+  // RR — CEPs 69300 a 69399
+  { ini: 69300, fim: 69399, uf: 'RR',  pac: 46.90, pac_d: 16, sedex: 66.90, sedex_d: 8 },
+
+  // AM (restante) — CEPs 69400 a 69899
+  { ini: 69400, fim: 69899, uf: 'AM',  pac: 44.90, pac_d: 15, sedex: 64.90, sedex_d: 7 },
+
+  // AC — CEPs 69900 a 69999
+  { ini: 69900, fim: 69999, uf: 'AC',  pac: 46.90, pac_d: 16, sedex: 66.90, sedex_d: 8 },
+
+  // DF — CEPs 70000 a 73699
+  { ini: 70000, fim: 73699, uf: 'DF',  pac: 33.90, pac_d: 9,  sedex: 49.90, sedex_d: 4 },
+
+  // GO — CEPs 73700 a 76799
+  { ini: 73700, fim: 76799, uf: 'GO',  pac: 33.90, pac_d: 9,  sedex: 49.90, sedex_d: 4 },
+
+  // TO — CEPs 77000 a 77999
+  { ini: 77000, fim: 77999, uf: 'TO',  pac: 38.90, pac_d: 12, sedex: 56.90, sedex_d: 6 },
+
+  // MT — CEPs 78000 a 78899
+  { ini: 78000, fim: 78899, uf: 'MT',  pac: 38.90, pac_d: 12, sedex: 56.90, sedex_d: 6 },
+
+  // RO — CEPs 78900 a 78999
+  { ini: 78900, fim: 78999, uf: 'RO',  pac: 42.90, pac_d: 14, sedex: 62.90, sedex_d: 7 },
+
+  // MS — CEPs 79000 a 79999
+  { ini: 79000, fim: 79999, uf: 'MS',  pac: 33.90, pac_d: 9,  sedex: 49.90, sedex_d: 4 },
+
+  // PR — CEPs 80000 a 87999
+  { ini: 80000, fim: 87999, uf: 'PR',  pac: 28.90, pac_d: 7,  sedex: 42.90, sedex_d: 3 },
+
+  // SC — CEPs 88000 a 89999
+  { ini: 88000, fim: 89999, uf: 'SC',  pac: 29.90, pac_d: 8,  sedex: 44.90, sedex_d: 3 },
+
+  // RS — CEPs 90000 a 99999
+  { ini: 90000, fim: 99999, uf: 'RS',  pac: 31.90, pac_d: 8,  sedex: 46.90, sedex_d: 3 },
 ];
 
 function calcularFrete(e) {
