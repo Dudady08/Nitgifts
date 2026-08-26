@@ -24,6 +24,8 @@ var PAGBANK_API_URLS = {
 var MELHOR_ENVIO_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZGQyMTlmNDEzMjZjNmZlNzZjZWQ3NzBiNzM0N2RiOTg4ZTMyOTVhMWM0NmRlNWI5YTYxNjdiMTllNzkwNzExOGJkYzIxNGYyN2U0ZDdlNTAiLCJpYXQiOjE3ODc3MTk1NjIuNDk2ODkzLCJuYmYiOjE3ODc3MTk1NjIuNDk2ODk0LCJleHAiOjE4MTkyNTU1NjIuNDg3NjY5LCJzdWIiOiJhMjk3MzNjNS1iMTc3LTQzZGUtYjU1Yi00NWM3MTFjZWE1NzciLCJzY29wZXMiOlsic2hpcHBpbmctY2FsY3VsYXRlIiwic2hpcHBpbmctY29tcGFuaWVzIl19.oguQLtX14hd5-yYr_USYp66A_4y8tAJs9u40Eys7pHZubsHIs5_yxJt6fxtX7SiWlUU2z6zdsTi152QgWdhVcxGD720ZWGlsNss1zHs6pGDMA0b3BrkAP-OEXgX7h_v3WQ1fnIpwCZqhcC4WYTGGtCkbFxoCYZTBt-6JschUbheQWmg7vuE8JaxaDhxCbpYefHQzq07zNE-1Mck0X4G1Wis53FhiUbL1kTfZTIbgCLHiuaA-qCTb98OT_-k4C53PC1pZGd3EDpJx-gp6QuQSELL-B-40syr6OQEZd-JJIm9bDFX0raqq-lAxy5ir3jr4A3e1pjv6sijkMvzBHNUnv8QjXuhnhF0giiWzXQMQBA1dbLeI_ServXfeTJl_pOFtBTkRQrTC4HafjmbAwBK6h0Mv2A35LGs-iQ-YZMzBULK3EOYuVIFu3UtSnYzoQwe9JZJftrGNaQ41clAORgjQ_dBJRoxcES26l-XHwowemYnzl7CI5lu1qT9Q_XJUMo9ttUolAONGTW1RB_5je-mHXWWMRaLLAxiE_EWrLox6rq5rvn-3cfpfyvWzOoV7eSZ0VRqBQM7cpTxybr5E0cf0ZBiSacVZLx0ZdKoaZ6rYn79n2xuOufLmkx28E-QdqevqBlWFHACYEuJPZSY4d9KigAoANwMeS2KpOj6AXMs5swM";
 // Use URL oficial (Production) do Melhor Envio
 var MELHOR_ENVIO_API_URL = "https://www.melhorenvio.com.br/api/v2/me/shipment/calculate";
+// Filtro de Transportadoras: 1=PAC, 2=SEDEX, 3=Jadlog Package, 4=Jadlog .Com, 17=Mini Envios
+var MELHOR_ENVIO_SERVICOS = [1, 2, 3, 4];
 
 // ============================================================================
 // PORTA DE ENTRADA (doPost)
@@ -364,8 +366,8 @@ function calcularFrete(e) {
       if (Array.isArray(jsonME)) {
         for (var i = 0; i < jsonME.length; i++) {
           var svc = jsonME[i];
-          // Só adiciona se não tem erro, tem preço, e ignora opções excessivamente lentas
-          if (!svc.error && svc.price) {
+          // Só adiciona se não tem erro, tem preço, e se o serviço estiver na lista permitida
+          if (!svc.error && svc.price && MELHOR_ENVIO_SERVICOS.indexOf(svc.id) !== -1) {
             opcoes.push({
               codigo: svc.id.toString(),
               nome: svc.company.name + " " + svc.name,
