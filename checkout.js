@@ -349,12 +349,12 @@ function initCheckoutForm() {
 
    // Adicionar o Frete como um item extra no PagBank (se não for grátis)
    if (shipping > 0) {
-    itemsForPagBank.push({
-     name: "Frete Fixo",
-     qty: 1,
-     price: shipping
-    });
-   }
+     itemsForPagBank.push({
+      name: shippingLabel + " - " + (selectedShipping ? selectedShipping.prazo : 'A calcular'),
+      qty: 1,
+      price: shipping
+     });
+    }
 
    pagbankData.append('items', JSON.stringify(itemsForPagBank));
    

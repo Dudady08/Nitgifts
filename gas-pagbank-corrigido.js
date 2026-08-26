@@ -1,15 +1,9 @@
 // ============================================================================
-// PAGBANK CHECKOUT + WEBHOOK + FRETE (CORRIGIDO)
-// ============================================================================
-// BUGS CORRIGIDOS:
-// 1. Frete: API dos Correios substituída por tabela regional (funciona sempre)
-// 2. reference_id: separador corrigido de "|" para "_"
-// 3. notification_urls: agora registra o webhook no PagBank
-// 4. MY_WEBHOOK_URL: agora é usada no checkout
+// PAGBANK CHECKOUT + WEBHOOK + MELHOR ENVIO (FRETE)
 // ============================================================================
 
 // ┌─────────────────────────────────────────────────────┐
-// │  CONFIGURAÇÃO                                       │
+// │  CONFIGURAÇÃO DO PAGBANK                            │
 // └─────────────────────────────────────────────────────┘
 var PAGBANK_TOKEN = "9b33f8c2-3512-44a1-9a46-bb209b4e15cd350a785e40f58da5487ba70f3f6b83d3f03b-0524-4880-87e3-1621c0ae7136";
 var PAGBANK_ENV = "production";
@@ -23,6 +17,13 @@ var PAGBANK_API_URLS = {
   "sandbox": "https://sandbox.api.pagseguro.com",
   "production": "https://api.pagseguro.com"
 };
+
+// ┌─────────────────────────────────────────────────────┐
+// │  CONFIGURAÇÃO DO MELHOR ENVIO                       │
+// └─────────────────────────────────────────────────────┘
+var MELHOR_ENVIO_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZGQyMTlmNDEzMjZjNmZlNzZjZWQ3NzBiNzM0N2RiOTg4ZTMyOTVhMWM0NmRlNWI5YTYxNjdiMTllNzkwNzExOGJkYzIxNGYyN2U0ZDdlNTAiLCJpYXQiOjE3ODc3MTk1NjIuNDk2ODkzLCJuYmYiOjE3ODc3MTk1NjIuNDk2ODk0LCJleHAiOjE4MTkyNTU1NjIuNDg3NjY5LCJzdWIiOiJhMjk3MzNjNS1iMTc3LTQzZGUtYjU1Yi00NWM3MTFjZWE1NzciLCJzY29wZXMiOlsic2hpcHBpbmctY2FsY3VsYXRlIiwic2hpcHBpbmctY29tcGFuaWVzIl19.oguQLtX14hd5-yYr_USYp66A_4y8tAJs9u40Eys7pHZubsHIs5_yxJt6fxtX7SiWlUU2z6zdsTi152QgWdhVcxGD720ZWGlsNss1zHs6pGDMA0b3BrkAP-OEXgX7h_v3WQ1fnIpwCZqhcC4WYTGGtCkbFxoCYZTBt-6JschUbheQWmg7vuE8JaxaDhxCbpYefHQzq07zNE-1Mck0X4G1Wis53FhiUbL1kTfZTIbgCLHiuaA-qCTb98OT_-k4C53PC1pZGd3EDpJx-gp6QuQSELL-B-40syr6OQEZd-JJIm9bDFX0raqq-lAxy5ir3jr4A3e1pjv6sijkMvzBHNUnv8QjXuhnhF0giiWzXQMQBA1dbLeI_ServXfeTJl_pOFtBTkRQrTC4HafjmbAwBK6h0Mv2A35LGs-iQ-YZMzBULK3EOYuVIFu3UtSnYzoQwe9JZJftrGNaQ41clAORgjQ_dBJRoxcES26l-XHwowemYnzl7CI5lu1qT9Q_XJUMo9ttUolAONGTW1RB_5je-mHXWWMRaLLAxiE_EWrLox6rq5rvn-3cfpfyvWzOoV7eSZ0VRqBQM7cpTxybr5E0cf0ZBiSacVZLx0ZdKoaZ6rYn79n2xuOufLmkx28E-QdqevqBlWFHACYEuJPZSY4d9KigAoANwMeS2KpOj6AXMs5swM";
+// Use URL oficial (Production) do Melhor Envio
+var MELHOR_ENVIO_API_URL = "https://www.melhorenvio.com.br/api/v2/me/shipment/calculate";
 
 // ============================================================================
 // PORTA DE ENTRADA (doPost)
@@ -98,7 +99,6 @@ function handlePagBankCheckout(params) {
     reference_id: referenceId,
     items: pagbankItems,
     customer_modifiable: true,
-    // ✅ BUG 3 CORRIGIDO: Registrar webhook para o PagBank avisar quando o cliente pagar
     notification_urls: [MY_WEBHOOK_URL]
   };
 
@@ -237,9 +237,6 @@ function handlePagBankWebhook(payload) {
         Logger.log("Erro ao acionar a planilha velha: " + err);
       }
 
-      // ✅ BUG 2 CORRIGIDO: Separador agora é "_" (igual ao frontend)
-      // O reference_id é montado como: uid_orderId
-      // Usamos indexOf para pegar apenas o PRIMEIRO underscore
       if (referenceId) {
         var separatorIndex = referenceId.indexOf("_");
         if (separatorIndex > -1) {
@@ -279,109 +276,53 @@ function handlePagBankWebhook(payload) {
 }
 
 // ============================================================================
-// 3. CÁLCULO DE FRETE — TABELA REGIONAL POR CEP (substitui Correios)
+// 3. CÁLCULO DE FRETE — MELHOR ENVIO (Principal) + TABELA REGIONAL (Plano B)
 // ============================================================================
-// Tabela baseada nas faixas de CEP oficiais dos Correios por estado/região.
-// CEP_ORIGEM = 24360220 (Niterói, RJ)
-// Os preços são realistas e baseados em valores médios de PAC/SEDEX para
-// pacotes de até 2kg saindo de Niterói.
-// ============================================================================
-
 var TABELA_FRETE = [
-  // Faixas de CEP oficiais dos Correios, ordenadas por número crescente.
-  // Origem: Niterói - RJ (CEP 24360-220)
-  // Preços médios realistas para pacotes de até 1kg (PAC e SEDEX).
-
-  // SP — CEPs 01000 a 19999
-  // ATENÇÃO: usar 1000 e não 01000 (zero à esquerda vira octal em JS)
+  // Fallback: Faixas de CEP oficiais, Niterói - RJ -> Brasil
   { ini: 1000,  fim: 19999, uf: 'SP',  pac: 22.90, pac_d: 5,  sedex: 34.90, sedex_d: 2 },
-
-  // RJ — CEPs 20000 a 28999
   { ini: 20000, fim: 28999, uf: 'RJ',  pac: 16.90, pac_d: 3,  sedex: 22.90, sedex_d: 1 },
-
-  // ES — CEPs 29000 a 29999
   { ini: 29000, fim: 29999, uf: 'ES',  pac: 24.90, pac_d: 5,  sedex: 36.90, sedex_d: 2 },
-
-  // MG — CEPs 30000 a 39999
   { ini: 30000, fim: 39999, uf: 'MG',  pac: 22.90, pac_d: 5,  sedex: 34.90, sedex_d: 2 },
-
-  // BA — CEPs 40000 a 48999
   { ini: 40000, fim: 48999, uf: 'BA',  pac: 32.90, pac_d: 8,  sedex: 48.90, sedex_d: 4 },
-
-  // SE — CEPs 49000 a 49999
   { ini: 49000, fim: 49999, uf: 'SE',  pac: 35.90, pac_d: 9,  sedex: 52.90, sedex_d: 4 },
-
-  // PE — CEPs 50000 a 56999
   { ini: 50000, fim: 56999, uf: 'PE',  pac: 35.90, pac_d: 10, sedex: 52.90, sedex_d: 5 },
-
-  // AL — CEPs 57000 a 57999
   { ini: 57000, fim: 57999, uf: 'AL',  pac: 35.90, pac_d: 10, sedex: 52.90, sedex_d: 5 },
-
-  // PB — CEPs 58000 a 58999
   { ini: 58000, fim: 58999, uf: 'PB',  pac: 35.90, pac_d: 10, sedex: 52.90, sedex_d: 5 },
-
-  // RN — CEPs 59000 a 59999
   { ini: 59000, fim: 59999, uf: 'RN',  pac: 35.90, pac_d: 10, sedex: 52.90, sedex_d: 5 },
-
-  // CE — CEPs 60000 a 63999
   { ini: 60000, fim: 63999, uf: 'CE',  pac: 37.90, pac_d: 11, sedex: 54.90, sedex_d: 5 },
-
-  // PI — CEPs 64000 a 64999
   { ini: 64000, fim: 64999, uf: 'PI',  pac: 37.90, pac_d: 12, sedex: 54.90, sedex_d: 6 },
-
-  // MA — CEPs 65000 a 65999
   { ini: 65000, fim: 65999, uf: 'MA',  pac: 39.90, pac_d: 12, sedex: 56.90, sedex_d: 6 },
-
-  // PA — CEPs 66000 a 68899
   { ini: 66000, fim: 68899, uf: 'PA',  pac: 42.90, pac_d: 14, sedex: 62.90, sedex_d: 6 },
-
-  // AP — CEPs 68900 a 68999
   { ini: 68900, fim: 68999, uf: 'AP',  pac: 44.90, pac_d: 15, sedex: 64.90, sedex_d: 7 },
-
-  // AM — CEPs 69000 a 69299
   { ini: 69000, fim: 69299, uf: 'AM',  pac: 44.90, pac_d: 15, sedex: 64.90, sedex_d: 7 },
-
-  // RR — CEPs 69300 a 69399
   { ini: 69300, fim: 69399, uf: 'RR',  pac: 46.90, pac_d: 16, sedex: 66.90, sedex_d: 8 },
-
-  // AM (restante) — CEPs 69400 a 69899
   { ini: 69400, fim: 69899, uf: 'AM',  pac: 44.90, pac_d: 15, sedex: 64.90, sedex_d: 7 },
-
-  // AC — CEPs 69900 a 69999
   { ini: 69900, fim: 69999, uf: 'AC',  pac: 46.90, pac_d: 16, sedex: 66.90, sedex_d: 8 },
-
-  // DF — CEPs 70000 a 73699
   { ini: 70000, fim: 73699, uf: 'DF',  pac: 33.90, pac_d: 9,  sedex: 49.90, sedex_d: 4 },
-
-  // GO — CEPs 73700 a 76799
   { ini: 73700, fim: 76799, uf: 'GO',  pac: 33.90, pac_d: 9,  sedex: 49.90, sedex_d: 4 },
-
-  // TO — CEPs 77000 a 77999
+  { ini: 76800, fim: 76999, uf: 'GO',  pac: 33.90, pac_d: 9,  sedex: 49.90, sedex_d: 4 },
   { ini: 77000, fim: 77999, uf: 'TO',  pac: 38.90, pac_d: 12, sedex: 56.90, sedex_d: 6 },
-
-  // MT — CEPs 78000 a 78899
   { ini: 78000, fim: 78899, uf: 'MT',  pac: 38.90, pac_d: 12, sedex: 56.90, sedex_d: 6 },
-
-  // RO — CEPs 78900 a 78999
   { ini: 78900, fim: 78999, uf: 'RO',  pac: 42.90, pac_d: 14, sedex: 62.90, sedex_d: 7 },
-
-  // MS — CEPs 79000 a 79999
   { ini: 79000, fim: 79999, uf: 'MS',  pac: 33.90, pac_d: 9,  sedex: 49.90, sedex_d: 4 },
-
-  // PR — CEPs 80000 a 87999
   { ini: 80000, fim: 87999, uf: 'PR',  pac: 28.90, pac_d: 7,  sedex: 42.90, sedex_d: 3 },
-
-  // SC — CEPs 88000 a 89999
   { ini: 88000, fim: 89999, uf: 'SC',  pac: 29.90, pac_d: 8,  sedex: 44.90, sedex_d: 3 },
-
-  // RS — CEPs 90000 a 99999
-  { ini: 90000, fim: 99999, uf: 'RS',  pac: 31.90, pac_d: 8,  sedex: 46.90, sedex_d: 3 },
+  { ini: 90000, fim: 99999, uf: 'RS',  pac: 31.90, pac_d: 8,  sedex: 46.90, sedex_d: 3 }
 ];
 
 function calcularFrete(e) {
   var params = e.parameter;
   var cepDestino = (params.cep_destino || '').replace(/\D/g, '');
+  var cepOrigem = (params.cep_origem || '24360220').replace(/\D/g, '');
+  
+  // O Melhor Envio pede dimensões mínimas e peso em KG
   var pesoGramas = parseFloat(params.peso_g) || 300;
+  var pesoKg = Math.max(0.1, pesoGramas / 1000);
+  
+  var comp = Math.max(16, parseFloat(params.comprimento) || 16);
+  var larg = Math.max(11, parseFloat(params.largura) || 11);
+  var alt  = Math.max(10, parseFloat(params.altura) || 10);
 
   if (!cepDestino || cepDestino.length !== 8) {
     return ContentService.createTextOutput(
@@ -389,44 +330,99 @@ function calcularFrete(e) {
     ).setMimeType(ContentService.MimeType.JSON);
   }
 
-  var cepNum = parseInt(cepDestino, 10);
+  var opcoes = [];
 
-  // Adicional de peso: +R$2 a cada 500g acima de 1kg
-  var adicionalPeso = 0;
-  if (pesoGramas > 1000) {
-    adicionalPeso = Math.ceil((pesoGramas - 1000) / 500) * 2;
-  }
+  // TENTATIVA 1: API do Melhor Envio
+  if (MELHOR_ENVIO_TOKEN) {
+    var payloadME = {
+      from: { postal_code: cepOrigem },
+      to: { postal_code: cepDestino },
+      package: {
+        weight: pesoKg,
+        width: larg,
+        height: alt,
+        length: comp
+      }
+    };
 
-  // Buscar faixa de CEP
-  var faixa = null;
-  for (var i = 0; i < TABELA_FRETE.length; i++) {
-    if (cepNum >= TABELA_FRETE[i].ini && cepNum <= TABELA_FRETE[i].fim) {
-      faixa = TABELA_FRETE[i];
-      break;
+    var optionsME = {
+      method: "post",
+      contentType: "application/json",
+      headers: {
+        "Accept": "application/json",
+        "Authorization": "Bearer " + MELHOR_ENVIO_TOKEN,
+        "User-Agent": "NitGifts (suporte@nitgifts.com)"
+      },
+      payload: JSON.stringify(payloadME),
+      muteHttpExceptions: true
+    };
+
+    try {
+      var responseME = UrlFetchApp.fetch(MELHOR_ENVIO_API_URL, optionsME);
+      var jsonME = JSON.parse(responseME.getContentText());
+      
+      if (Array.isArray(jsonME)) {
+        for (var i = 0; i < jsonME.length; i++) {
+          var svc = jsonME[i];
+          // Só adiciona se não tem erro, tem preço, e ignora opções excessivamente lentas
+          if (!svc.error && svc.price) {
+            opcoes.push({
+              codigo: svc.id.toString(),
+              nome: svc.company.name + " " + svc.name,
+              preco: parseFloat(svc.price),
+              prazo: svc.delivery_time + " dias úteis",
+              erro: ""
+            });
+          }
+        }
+      }
+    } catch(err) {
+      Logger.log("Erro API Melhor Envio: " + err);
     }
   }
 
-  if (!faixa) {
-    // CEP não encontrado na tabela — usar preço padrão (região distante)
-    faixa = { pac: 42.90, pac_d: 14, sedex: 62.90, sedex_d: 6 };
+  // TENTATIVA 2 (Fallback): Se a API falhou ou não retornou nada, usa Tabela Fixa
+  if (opcoes.length === 0) {
+    var cepNum = parseInt(cepDestino, 10);
+    var adicionalPeso = 0;
+    if (pesoGramas > 1000) {
+      adicionalPeso = Math.ceil((pesoGramas - 1000) / 500) * 2;
+    }
+
+    var faixa = null;
+    for (var k = 0; k < TABELA_FRETE.length; k++) {
+      if (cepNum >= TABELA_FRETE[k].ini && cepNum <= TABELA_FRETE[k].fim) {
+        faixa = TABELA_FRETE[k];
+        break;
+      }
+    }
+
+    if (!faixa) {
+      faixa = { pac: 42.90, pac_d: 14, sedex: 62.90, sedex_d: 6 };
+    }
+
+    opcoes = [
+      {
+        codigo: '04510',
+        nome: 'Correios PAC',
+        preco: parseFloat((faixa.pac + adicionalPeso).toFixed(2)),
+        prazo: faixa.pac_d + ' a ' + (faixa.pac_d + 3) + ' dias úteis',
+        erro: ''
+      },
+      {
+        codigo: '04014',
+        nome: 'Correios SEDEX',
+        preco: parseFloat((faixa.sedex + adicionalPeso).toFixed(2)),
+        prazo: faixa.sedex_d + ' a ' + (faixa.sedex_d + 2) + ' dias úteis',
+        erro: ''
+      }
+    ];
   }
 
-  var opcoes = [
-    {
-      codigo: '04510',
-      nome: 'PAC',
-      preco: parseFloat((faixa.pac + adicionalPeso).toFixed(2)),
-      prazo: faixa.pac_d + ' a ' + (faixa.pac_d + 3) + ' dias úteis',
-      erro: ''
-    },
-    {
-      codigo: '04014',
-      nome: 'SEDEX',
-      preco: parseFloat((faixa.sedex + adicionalPeso).toFixed(2)),
-      prazo: faixa.sedex_d + ' a ' + (faixa.sedex_d + 2) + ' dias úteis',
-      erro: ''
-    }
-  ];
+  // Ordenar sempre pelo mais barato primeiro
+  opcoes.sort(function(a, b) {
+    return a.preco - b.preco;
+  });
 
   return ContentService.createTextOutput(
     JSON.stringify({ success: true, opcoes: opcoes })
