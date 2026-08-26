@@ -94,34 +94,7 @@ async function updateOrderStatus(userUid, orderId) {
  }
 }
 
-// 4. Enviar notificação para a planilha/email (script antigo)
-async function sendNotification(formData) {
- if (!formData) return;
-
- try {
-  const params = new URLSearchParams();
-  params.append('tipo_formulario', 'checkout');
-
-  for (const key of Object.keys(formData)) {
-   params.append(key, formData[key]);
-  }
-
-  console.log("Enviando notificação para a planilha/email...");
-
-  fetch(GOOGLE_SCRIPT_URL, {
-   method: 'POST',
-   mode: 'cors',
-   cache: 'no-cache',
-   headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-   redirect: 'follow',
-   body: params.toString()
-  }).then(() => console.log("Notificação enviada com sucesso!"))
-    .catch(err => console.error("Erro ao enviar notificação:", err));
-
- } catch (err) {
-  console.error("Exceção ao enviar notificação:", err);
- }
-}
+// 4. (Removido: Envio de notificação agora é feito exclusivamente pelo Webhook do PagBank para evitar duplicidade)
 
 // 5. Verificar status do pagamento no PagBank (polling)
 async function checkPaymentStatus(checkoutId) {
@@ -181,9 +154,6 @@ async function startPaymentPolling(order) {
 
    // Atualizar Firestore
    await updateOrderStatus(order.userUid, order.orderId);
-
-   // Enviar notificação planilha/email
-   await sendNotification(order.formData);
 
    // Atualizar UI
    if (statusEl) statusEl.textContent = "Pagamento aprovado!";

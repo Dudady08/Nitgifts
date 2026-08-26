@@ -191,14 +191,20 @@ function createOrderCard(orderData) {
  card.className = 'account-order-card';
 
  // Header
- const statusClass = (orderData.status || 'confirmado').toLowerCase();
- const statusLabel = {
+ let statusClass = (orderData.status || 'confirmado').toLowerCase();
+ let statusLabel = {
   'confirmado': 'Confirmado',
   'enviado': 'Enviado',
   'entregue': 'Entregue',
   'pendente_pagamento': 'Aguardando Pagamento',
   'pago': 'Pago'
  }[statusClass] || 'Confirmado';
+
+ // Se tem código de rastreio e ainda está como "pago", podemos forçar visualmente para "Enviado"
+ if (orderData.tracking_code && (statusClass === 'pago' || statusClass === 'confirmado')) {
+  statusClass = 'enviado';
+  statusLabel = 'Enviado';
+ }
 
  let headerHTML = `
   <div class="account-order-header">
@@ -247,12 +253,28 @@ function createOrderCard(orderData) {
   `;
  }
 
+ // ── Botão "Acompanhar Entrega" se houver código de rastreio ──
+ let trackingButtonHTML = '';
+ if (orderData.tracking_code) {
+  // Cria um botão estilizado para o Rastreio
+  trackingButtonHTML = `
+   <div class="account-order-pay-action" style="margin-top: 12px; border-top: 1px dashed rgba(26,26,26,0.1); padding-top: 12px;">
+    <a href="https://app.melhorrastreio.com.br/app/${orderData.tracking_code}" target="_blank" rel="noopener noreferrer" class="account-order-pay-btn" style="background-color: #1A1A1A; color: white;">
+     <i data-lucide="truck" style="width:16px;height:16px;"></i>
+     Acompanhar Entrega
+    </a>
+    <p class="account-order-pay-hint">Código de rastreio: <strong>${orderData.tracking_code}</strong></p>
+   </div>
+  `;
+ }
+
  let footerHTML = `
   <div class="account-order-footer">
    <span class="account-order-total-label">Total</span>
    <span class="account-order-total-value">${formatCurrency(total)}</span>
   </div>
   ${payButtonHTML}
+  ${trackingButtonHTML}
  `;
 
  card.innerHTML = headerHTML + itemsHTML + footerHTML;
