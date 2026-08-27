@@ -103,7 +103,47 @@ function renderProfile(userData) {
  }
 }
 
-// 4.1 Inline Edit Logic
+// 4.1 CEP Auto-fill using ViaCEP API
+async function buscarCEP(cep) {
+ const digits = cep.replace(/\D/g, '');
+ if (digits.length !== 8) return;
+
+ const streetInput = document.getElementById('input-street');
+ const cityInput = document.getElementById('input-city');
+ const stateInput = document.getElementById('input-state');
+
+ // Feedback visual: mostra loading
+ if (streetInput) streetInput.placeholder = 'Buscando...';
+
+ try {
+  const res = await fetch(`https://viacep.com.br/ws/${digits}/json/`);
+  const data = await res.json();
+
+  if (data.erro) {
+   showToast('CEP não encontrado', 'Verifique o código e tente novamente.');
+   if (streetInput) streetInput.placeholder = 'Rua / Avenida';
+   return;
+  }
+
+  // Preenche os campos automaticamente
+  if (streetInput) { streetInput.value = data.logradouro || ''; streetInput.placeholder = 'Rua / Avenida'; }
+  if (cityInput)   cityInput.value   = data.localidade || '';
+  if (stateInput)  stateInput.value  = data.uf || '';
+
+  // Foca no campo de número para o utilizador preencher
+  const numberInput = document.getElementById('input-number');
+  if (numberInput) numberInput.focus();
+
+  showToast('Endereço preenchido!', 'Confira os dados e preencha o número.');
+
+ } catch (err) {
+  console.error('Erro ao buscar CEP:', err);
+  if (streetInput) streetInput.placeholder = 'Rua / Avenida';
+  showToast('Erro', 'Não foi possível buscar o CEP. Tente novamente.');
+ }
+}
+
+// 4.2 Inline Edit Logic
 window.toggleEdit = function(field) {
  const container = document.getElementById(`field-${field}`);
  if (!container) return;
@@ -138,6 +178,17 @@ window.toggleEdit = function(field) {
    document.getElementById('input-complement').value = addr.complement || '';
    document.getElementById('input-city').value = addr.city || '';
    document.getElementById('input-state').value = addr.state || '';
+
+   // Ativar auto-preenchimento por CEP (liga o evento se ainda não foi ligado)
+   const cepInput = document.getElementById('input-cep');
+   if (cepInput && !cepInput.dataset.viaCepBound) {
+    cepInput.dataset.viaCepBound = 'true';
+    cepInput.addEventListener('blur', () => buscarCEP(cepInput.value));
+    cepInput.addEventListener('input', () => {
+     const digits = cepInput.value.replace(/\D/g, '');
+     if (digits.length === 8) buscarCEP(cepInput.value);
+    });
+   }
   }
  }
 };
