@@ -49,6 +49,44 @@ function showToast(title, description = "") {
  }, 4000);
 }
 
+// 1.5. CEP Auto-fill (ViaCEP)
+async function initCEPAutoFill(cepId, addressId, numberId, cityId, stateId) {
+ const cepInput    = document.getElementById(cepId);
+ const addressInput = document.getElementById(addressId);
+ const numberInput  = document.getElementById(numberId);
+ const cityInput   = document.getElementById(cityId);
+ const stateInput  = document.getElementById(stateId);
+ if (!cepInput) return;
+
+ async function buscarCEP() {
+  const digits = cepInput.value.replace(/\D/g, '');
+  if (digits.length !== 8) return;
+  if (addressInput) addressInput.placeholder = 'Buscando...';
+  try {
+   const res = await fetch(`https://viacep.com.br/ws/${digits}/json/`);
+   const data = await res.json();
+   if (data.erro) {
+    showToast('CEP não encontrado', 'Verifique o código e tente novamente.');
+    if (addressInput) addressInput.placeholder = 'Rua / Avenida';
+    return;
+   }
+   if (addressInput) { addressInput.value = data.logradouro || ''; addressInput.placeholder = 'Rua / Avenida'; }
+   if (cityInput)    cityInput.value    = data.localidade || '';
+   if (stateInput)   stateInput.value   = data.uf || '';
+   if (numberInput)  numberInput.focus();
+   showToast('Endereço preenchido!', 'Confira os dados e preencha o número.');
+  } catch (err) {
+   console.error('Erro ao buscar CEP:', err);
+   if (addressInput) addressInput.placeholder = 'Rua / Avenida';
+  }
+ }
+
+ cepInput.addEventListener('blur', buscarCEP);
+ cepInput.addEventListener('input', () => {
+  if (cepInput.value.replace(/\D/g, '').length === 8) buscarCEP();
+ });
+}
+
 // 2. Stage 1: Registration Form Handling
 function initRegisterForm() {
  const form = document.getElementById('register-form');
@@ -190,6 +228,7 @@ function initRegisterForm() {
 // Initializer Lifecycle
 document.addEventListener('DOMContentLoaded', () => {
  initRegisterForm();
+ initCEPAutoFill('cep', 'address', 'number', 'city', 'state');
 
  // Render static Lucide icons
  if (window.lucide) {
