@@ -1,4 +1,4 @@
-import { auth, db, doc, getDoc, onAuthStateChanged, collection, addDoc, setDoc } from './firebase-config.js';
+import { auth, db, doc, getDoc, onAuthStateChanged, collection, addDoc, setDoc, getDocs, query, where } from './firebase-config.js';
 
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUrmbaRzwqRku-QT7j_V1tqNMuheBB4zkNDJynJy7iV7bnF3FJ4JE6hgeZ2vTuN5bDfA/exec";
 const PAGBANK_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxwuC7xGX5YJX9u8DYxi0zm6hxKSF2GxevgkAtrkWscb1srBA3KIjvxy-NYZtWDfWJ8vQ/exec";
@@ -13,7 +13,8 @@ let appliedCouponCode = '';
 const COUPONS = {
  'TESTE1REAL': { type: 'fixed_price', value: 1.00 },
  'FRETEGRATIS': { type: 'free_shipping', value: 0 },
- 'DESCONTO10': { type: 'percentage', value: 0.10 }
+ 'DESCONTO10': { type: 'percentage', value: 0.10, one_time: true },
+ 'DESCONTO10OM': { type: 'percentage', value: 0.10 }
 };
 
 // Perfil de embalagem por categoria (peso em gramas, dimensões em cm)
@@ -297,22 +298,65 @@ function initCouponSystem() {
 
   if (!applyBtn || !input) return;
 
-  applyBtn.addEventListener('click', () => {
+  applyBtn.addEventListener('click', async () => {
     const code = input.value.trim().toUpperCase();
     if (!code) return;
 
     if (COUPONS[code]) {
+      // ── VALIDAÇÃO DE CUPOM DE USO ÚNICO ──
+      if (COUPONS[code].one_time) {
+        if (!auth.currentUser) {
+          msg.textContent = 'Você precisa estar logado para usar este cupom especial.';
+          msg.className = 'coupon-message error';
+          msg.style.display = 'block';
+          return;
+        }
+        
+        applyBtn.textContent = "Validando...";
+        applyBtn.disabled = true;
+        
+        try {
+          const ordersRef = collection(db, "users", auth.currentUser.uid, "orders");
+          const q = query(ordersRef, where("couponCode", "==", code));
+          const querySnapshot = await getDocs(q);
+          
+          if (!querySnapshot.empty) {
+            msg.textContent = 'Você já utilizou este cupom em uma compra anterior!';
+            msg.className = 'coupon-message error';
+            msg.style.display = 'block';
+            applyBtn.textContent = "Aplicar";
+            applyBtn.disabled = false;
+            return;
+          }
+        } catch (error) {
+          console.error("Erro ao validar cupom:", error);
+          msg.textContent = 'Erro ao validar o cupom. Tente novamente.';
+          msg.className = 'coupon-message error';
+          msg.style.display = 'block';
+          applyBtn.textContent = "Aplicar";
+          applyBtn.disabled = false;
+          return;
+        }
+        
+        applyBtn.textContent = "Aplicar";
+        applyBtn.disabled = false;
+      }
+      
       appliedCouponCode = code;
-      msg.textContent = `Cupom ${code} aplicado!`;
-      msg.style.color = '#00A94F';
+      msg.textContent = 'Cupom aplicado com sucesso!';
+      msg.className = 'coupon-message success';
       msg.style.display = 'block';
       atualizarTotalGeral();
     } else {
-      appliedCouponCode = '';
       msg.textContent = 'Cupom inválido ou expirado.';
-      msg.style.color = '#dc2626';
+      msg.className = 'coupon-message error';
       msg.style.display = 'block';
-      atualizarTotalGeral();
+      
+      // Se tinha um cupom antes e errou o novo, removemos
+      if (appliedCouponCode) {
+        appliedCouponCode = '';
+        atualizarTotalGeral();
+      }
     }
   });
 }
