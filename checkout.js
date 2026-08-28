@@ -7,6 +7,13 @@ let userData = null;
 let selectedShipping = null; // { nome, preco, prazo } — opção escolhida pelo cliente
 let freteCalculado = false; // Flag: frete foi calculado com sucesso?
 
+// Estado do Cupom
+let appliedDiscount = 0;
+let appliedCouponCode = '';
+const COUPONS = {
+ 'TESTE1REAL': { type: 'fixed_price', value: 1.00 }
+};
+
 // Perfil de embalagem por categoria (peso em gramas, dimensões em cm)
 const CATEGORY_SHIPPING_PROFILE = {
  'canecas':    { weightG: 500, c: 15, l: 15, a: 15 },
@@ -136,6 +143,40 @@ async function buscarFrete(cepDestino, embalagem) {
  }
 }
 
+// Função para recalcular o total considerando frete e cupom
+function atualizarTotalGeral() {
+ const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+ const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+ const shipping = selectedShipping ? selectedShipping.preco : 0;
+ 
+ let total = subtotal + shipping;
+ let discount = 0;
+
+ if (appliedCouponCode && COUPONS[appliedCouponCode]) {
+   const coupon = COUPONS[appliedCouponCode];
+   if (coupon.type === 'fixed_price') {
+     discount = total - coupon.value;
+     if (discount < 0) discount = 0;
+   } else if (coupon.type === 'percentage') {
+     discount = total * coupon.value;
+   }
+ }
+ appliedDiscount = discount;
+ total = total - discount;
+
+ const totalEl = document.getElementById('summary-total');
+ if (totalEl) totalEl.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+
+ const discountRow = document.getElementById('discount-row');
+ const discountValue = document.getElementById('summary-discount');
+ if (discount > 0 && discountRow && discountValue) {
+   discountRow.style.display = 'flex';
+   discountValue.textContent = `- R$ ${discount.toFixed(2).replace('.', ',')}`;
+ } else if (discountRow) {
+   discountRow.style.display = 'none';
+ }
+}
+
 // 2C. Renderizar seletor PAC/SEDEX e atualizar total
 function renderizarSeletorFrete(opcoes, subtotal) {
   // Aplicar regra de Frete Grátis para compras >= 300
@@ -150,7 +191,6 @@ function renderizarSeletorFrete(opcoes, subtotal) {
 
  const loadingEl  = document.getElementById('shipping-loading');
  const optionsEl  = document.getElementById('shipping-options');
- const totalEl    = document.getElementById('summary-total');
  const submitBtn  = document.getElementById('submit-order-btn');
 
  if (loadingEl) loadingEl.style.display = 'none';
@@ -188,20 +228,13 @@ function renderizarSeletorFrete(opcoes, subtotal) {
    optEl.classList.add('selected');
    optEl.querySelector('input').checked = true;
    selectedShipping = opcao;
-   if (totalEl) {
-    const total = subtotal + opcao.preco;
-    totalEl.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
-   }
+   atualizarTotalGeral();
   });
 
   optionsEl.appendChild(optEl);
  });
 
- // Atualizar total com a primeira opção selecionada
- if (totalEl) {
-  const total = subtotal + selectedShipping.preco;
-  totalEl.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
- }
+ atualizarTotalGeral();
 }
 
 // 2D. Render Checkout Summary Content
@@ -236,7 +269,6 @@ function loadCheckoutSummary() {
  // Mostrar frete e total provisionalmente IMEDIATAMENTE (o frete real atualiza depois)
  const loadingEl = document.getElementById('shipping-loading');
  const optionsEl = document.getElementById('shipping-options');
- const totalEl   = document.getElementById('summary-total');
 
  if (loadingEl) loadingEl.style.display = 'none';
  if (optionsEl) {
@@ -251,7 +283,34 @@ function loadCheckoutSummary() {
    </div>
   `;
  }
- if (totalEl) totalEl.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')} + frete`;
+ atualizarTotalGeral();
+}
+
+function initCouponSystem() {
+  const applyBtn = document.getElementById('apply-coupon-btn');
+  const input = document.getElementById('coupon-input');
+  const msg = document.getElementById('coupon-message');
+
+  if (!applyBtn || !input) return;
+
+  applyBtn.addEventListener('click', () => {
+    const code = input.value.trim().toUpperCase();
+    if (!code) return;
+
+    if (COUPONS[code]) {
+      appliedCouponCode = code;
+      msg.textContent = `Cupom ${code} aplicado!`;
+      msg.style.color = '#00A94F';
+      msg.style.display = 'block';
+      atualizarTotalGeral();
+    } else {
+      appliedCouponCode = '';
+      msg.textContent = 'Cupom inválido ou expirado.';
+      msg.style.color = '#dc2626';
+      msg.style.display = 'block';
+      atualizarTotalGeral();
+    }
+  });
 }
 
 // 3. Form Submission Handler (Integrado com PagBank)
@@ -292,7 +351,19 @@ function initCheckoutForm() {
 
   // Usar o frete selecionado pelo cliente; fallback para R$19,90 caso não tenha carregado
   const shipping = selectedShipping ? selectedShipping.preco : 19.90;
-  const formattedTotal = `R$ ${(subtotal + shipping).toFixed(2).replace('.', ',')}`;
+  
+  let finalTotal = subtotal + shipping;
+  let discount = 0;
+  if (appliedCouponCode && COUPONS[appliedCouponCode]) {
+    const coupon = COUPONS[appliedCouponCode];
+    if (coupon.type === 'fixed_price') {
+      discount = finalTotal - coupon.value;
+      if (discount < 0) discount = 0;
+    }
+  }
+  finalTotal -= discount;
+
+  const formattedTotal = `R$ ${finalTotal.toFixed(2).replace('.', ',')}`;
   const shippingLabel = selectedShipping ? selectedShipping.nome : 'Frete';
   const formattedShipping = `R$ ${shipping.toFixed(2).replace('.', ',')}`;
 
@@ -327,7 +398,9 @@ function initCheckoutForm() {
      })),
      subtotal: subtotal,
      shipping: shipping,
-     total: subtotal + shipping,
+     discount: discount,
+     couponCode: appliedCouponCode || null,
+     total: finalTotal,
      createdAt: new Date().toISOString(),
      status: "pendente_pagamento"
     });
@@ -379,6 +452,7 @@ function initCheckoutForm() {
    pagbankData.append('itens', cartText);
    pagbankData.append('frete', formattedShipping);
    pagbankData.append('tipo_frete', shippingLabel + (selectedShipping ? ' (' + selectedShipping.prazo + ')' : ''));
+   pagbankData.append('desconto', discount.toString());
    pagbankData.append('total', formattedTotal);
 
    // O reference_id carrega o UID e o OrderID para o Webhook saber quem atualizar

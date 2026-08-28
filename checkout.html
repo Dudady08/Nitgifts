@@ -102,6 +102,23 @@
          <!-- Opções PAC / SEDEX renderizadas pelo JS -->
          <div id="shipping-options" style="display:none; flex-direction:column; gap:8px;"></div>
         </div>
+        
+        <!-- Campo de Cupom -->
+        <div id="coupon-section" style="margin-top: 16px; padding-top: 16px; border-top: 1px dashed rgba(26,26,26,0.1);">
+         <p class="summary-label" style="margin-bottom: 8px; font-size: 14px;">Cupom de Desconto</p>
+         <div style="display: flex; gap: 8px;">
+          <input type="text" id="coupon-input" placeholder="Código do cupom" style="flex: 1; padding: 8px 12px; border: 1px solid rgba(0,0,0,0.1); border-radius: 6px; font-size: 14px; outline: none; transition: border-color 0.2s;">
+          <button type="button" id="apply-coupon-btn" style="padding: 8px 16px; background: #000; color: #fff; border: none; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity 0.2s;">Aplicar</button>
+         </div>
+         <p id="coupon-message" style="font-size: 12px; margin-top: 6px; display: none;"></p>
+        </div>
+
+        <!-- Linha do Desconto -->
+        <div class="summary-row" id="discount-row" style="display: none; margin-top: 12px; color: #00A94F;">
+         <span class="summary-label">Desconto</span>
+         <span class="summary-value" id="summary-discount">- R$ 0,00</span>
+        </div>
+
        </div>
 
        <!-- Grand Total -->

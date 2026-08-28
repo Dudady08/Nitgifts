@@ -104,6 +104,10 @@ function handlePagBankCheckout(params) {
     notification_urls: [MY_WEBHOOK_URL]
   };
 
+  if (params.desconto && parseFloat(params.desconto) > 0) {
+    checkoutBody.discount_amount = Math.round(parseFloat(params.desconto) * 100);
+  }
+
   if (customerName && customerEmail) {
     checkoutBody.customer = { name: customerName, email: customerEmail };
   }
@@ -123,6 +127,15 @@ function handlePagBankCheckout(params) {
     var response = UrlFetchApp.fetch(apiUrl, options);
     var responseCode = response.getResponseCode();
     var responseBody = JSON.parse(response.getContentText());
+    
+    // --- LOG PARA O PAGBANK (COPIE ISSO E ENVIE NO E-MAIL) ---
+    Logger.log("========= INÍCIO DO LOG PAGBANK =========");
+    Logger.log("ENDPOINT: " + apiUrl);
+    Logger.log("REQUEST PAYLOAD: " + JSON.stringify(checkoutBody));
+    Logger.log("HTTP STATUS: " + responseCode);
+    Logger.log("RESPONSE PAYLOAD: " + response.getContentText());
+    Logger.log("========= FIM DO LOG PAGBANK =========");
+    // --------------------------------------------------------
 
     if (responseCode === 201 || responseCode === 200) {
       var payLink = "";
