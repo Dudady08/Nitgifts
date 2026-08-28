@@ -741,6 +741,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
  loadCheckoutSummary();
  initCheckoutForm();
+ initCouponSystem();
 
  // Bloquear botão de pagamento inicialmente (habilita quando frete é calculado)
  const submitBtn = document.getElementById('submit-order-btn');
