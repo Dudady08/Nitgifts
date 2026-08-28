@@ -492,10 +492,16 @@ function initCheckoutForm() {
    } catch (parseErr) {
     if (pagbankWindow) pagbankWindow.close();
     console.error("Resposta não-JSON do GAS:", responseText);
-    throw new Error("Resposta inesperada do servidor.");
+    showToast("Erro inesperado", "O servidor retornou uma resposta inválida.");
+    return;
    }
 
-   if (result.success && result.pay_url) {
+   if (result.success) {
+    // ALERT COM OS LOGS DO PAGBANK PARA ENVIAR POR EMAIL
+    if (result.pagbank_log) {
+       alert("🎉 TESTE CONCLUÍDO!\n\nCopie o texto abaixo e envie para o PagBank:\n\n" + JSON.stringify(result.pagbank_log, null, 2));
+    }
+    
     localStorage.setItem('pendingOrder', JSON.stringify({
      checkout_id: result.checkout_id,
      reference_id: reference_id,
