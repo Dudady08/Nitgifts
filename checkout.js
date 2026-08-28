@@ -450,6 +450,11 @@ function initCheckoutForm() {
 
    pagbankData.append('items', JSON.stringify(itemsForPagBank));
    
+   // ALERT PARA DEBUG (Vamos descobrir o que está acontecendo)
+   if (discount > 0) {
+     alert("DEBUG DO CUPOM!\n\nItens que estão sendo enviados para o PagBank:\n" + JSON.stringify(itemsForPagBank, null, 2));
+   }
+   
    // Enviamos TODOS os dados do formulário para o script novo guardar no Cache
    pagbankData.append('data_pedido', orderDate);
    pagbankData.append('cep', addr.cep || '');
