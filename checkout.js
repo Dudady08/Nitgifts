@@ -11,7 +11,9 @@ let freteCalculado = false; // Flag: frete foi calculado com sucesso?
 let appliedDiscount = 0;
 let appliedCouponCode = '';
 const COUPONS = {
- 'TESTE1REAL': { type: 'fixed_price', value: 1.00 }
+ 'TESTE1REAL': { type: 'fixed_price', value: 1.00 },
+ 'FRETEGRATIS': { type: 'free_shipping', value: 0 },
+ 'DESCONTO10': { type: 'percentage', value: 0.10 }
 };
 
 // Perfil de embalagem por categoria (peso em gramas, dimensões em cm)
@@ -152,15 +154,17 @@ function atualizarTotalGeral() {
  let total = subtotal + shipping;
  let discount = 0;
 
- if (appliedCouponCode && COUPONS[appliedCouponCode]) {
-   const coupon = COUPONS[appliedCouponCode];
-   if (coupon.type === 'fixed_price') {
-     discount = total - coupon.value;
-     if (discount < 0) discount = 0;
-   } else if (coupon.type === 'percentage') {
-     discount = total * coupon.value;
-   }
- }
+  if (appliedCouponCode && COUPONS[appliedCouponCode]) {
+    const coupon = COUPONS[appliedCouponCode];
+    if (coupon.type === 'fixed_price') {
+      discount = total - coupon.value;
+      if (discount < 0) discount = 0;
+    } else if (coupon.type === 'percentage') {
+      discount = subtotal * coupon.value;
+    } else if (coupon.type === 'free_shipping') {
+      discount = shipping;
+    }
+  }
  appliedDiscount = discount;
  total = total - discount;
 
@@ -359,6 +363,10 @@ function initCheckoutForm() {
     if (coupon.type === 'fixed_price') {
       discount = finalTotal - coupon.value;
       if (discount < 0) discount = 0;
+    } else if (coupon.type === 'percentage') {
+      discount = subtotal * coupon.value;
+    } else if (coupon.type === 'free_shipping') {
+      discount = shipping;
     }
   }
   finalTotal -= discount;
@@ -431,12 +439,14 @@ function initCheckoutForm() {
    }));
 
    // ── CUPOM: Se há desconto, substituir tudo por 1 item de R$1,00 ──
+   let finalDiscountForPagBank = discount;
    if (discount > 0 && COUPONS[appliedCouponCode] && COUPONS[appliedCouponCode].type === 'fixed_price') {
     itemsForPagBank = [{
      name: 'Pedido NitGifts (cupom ' + appliedCouponCode + ')',
      qty: 1,
      price: COUPONS[appliedCouponCode].value
     }];
+    finalDiscountForPagBank = 0; // Já reduzimos o item, não podemos enviar desconto
    }
 
    // Adicionar o Frete como um item extra no PagBank (se não for grátis e não tiver cupom fixed_price)
@@ -452,7 +462,7 @@ function initCheckoutForm() {
    
    // ALERT PARA DEBUG (Vamos descobrir o que está acontecendo)
    if (discount > 0) {
-     alert("DEBUG DO CUPOM!\n\nItens que estão sendo enviados para o PagBank:\n" + JSON.stringify(itemsForPagBank, null, 2));
+     alert("DEBUG DO CUPOM!\n\nItens que estão sendo enviados para o PagBank:\n" + JSON.stringify(itemsForPagBank, null, 2) + "\n\nDesconto enviado: R$ " + finalDiscountForPagBank);
    }
    
    // Enviamos TODOS os dados do formulário para o script novo guardar no Cache
@@ -466,7 +476,7 @@ function initCheckoutForm() {
    pagbankData.append('itens', cartText);
    pagbankData.append('frete', formattedShipping);
    pagbankData.append('tipo_frete', shippingLabel + (selectedShipping ? ' (' + selectedShipping.prazo + ')' : ''));
-   pagbankData.append('desconto', discount.toString());
+   pagbankData.append('desconto', finalDiscountForPagBank.toString());
    pagbankData.append('total', formattedTotal);
 
    // O reference_id carrega o UID e o OrderID para o Webhook saber quem atualizar
