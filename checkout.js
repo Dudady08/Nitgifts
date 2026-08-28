@@ -13,8 +13,8 @@ let appliedCouponCode = '';
 const COUPONS = {
  'TESTE1REAL': { type: 'fixed_price', value: 1.00 },
  'FRETEGRATIS': { type: 'free_shipping', value: 0 },
- 'DESCONTO10': { type: 'percentage', value: 0.10, one_time: true },
- 'DESCONTO10OM': { type: 'percentage', value: 0.10 }
+ 'DESCONTO5': { type: 'percentage', value: 0.05, one_time: true },
+ 'DESCONTO5OM': { type: 'percentage', value: 0.05 }
 };
 
 // Perfil de embalagem por categoria (peso em gramas, dimensões em cm)
