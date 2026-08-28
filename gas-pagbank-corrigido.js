@@ -140,7 +140,17 @@ function handlePagBankCheckout(params) {
           if (responseBody.links[i].rel === "PAY") { payLink = responseBody.links[i].href; break; }
         }
       }
-      return ContentService.createTextOutput(JSON.stringify({ success: true, checkout_id: responseBody.id || "", pay_url: payLink })).setMimeType(ContentService.MimeType.JSON);
+      return ContentService.createTextOutput(JSON.stringify({ 
+        success: true, 
+        checkout_id: responseBody.id || "", 
+        pay_url: payLink,
+        pagbank_log: {
+          endpoint: apiUrl,
+          request_payload: checkoutBody,
+          http_status: responseCode,
+          response_payload: responseBody
+        }
+      })).setMimeType(ContentService.MimeType.JSON);
     } else {
       var errorMsg = "Erro PagBank: " + responseCode;
       if (responseBody.error_messages) {
