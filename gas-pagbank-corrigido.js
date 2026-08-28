@@ -104,10 +104,6 @@ function handlePagBankCheckout(params) {
     notification_urls: [MY_WEBHOOK_URL]
   };
 
-  if (params.desconto && parseFloat(params.desconto) > 0) {
-    checkoutBody.discount_amount = Math.round(parseFloat(params.desconto) * 100);
-  }
-
   if (customerName && customerEmail) {
     checkoutBody.customer = { name: customerName, email: customerEmail };
   }

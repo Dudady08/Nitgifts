@@ -424,14 +424,23 @@ function initCheckoutForm() {
    pagbankData.append('cpf', userData.cpf || '');
    
    // Formato JSON estruturado que a API do PagBank exige
-   const itemsForPagBank = cart.map(item => ({
+   let itemsForPagBank = cart.map(item => ({
     name: item.name,
     qty: item.qty,
     price: item.price
    }));
 
-   // Adicionar o Frete como um item extra no PagBank (se não for grátis)
-   if (shipping > 0) {
+   // ── CUPOM: Se há desconto, substituir tudo por 1 item de R$1,00 ──
+   if (discount > 0 && COUPONS[appliedCouponCode] && COUPONS[appliedCouponCode].type === 'fixed_price') {
+    itemsForPagBank = [{
+     name: 'Pedido NitGifts (cupom ' + appliedCouponCode + ')',
+     qty: 1,
+     price: COUPONS[appliedCouponCode].value
+    }];
+   }
+
+   // Adicionar o Frete como um item extra no PagBank (se não for grátis e não tiver cupom fixed_price)
+   if (shipping > 0 && !(discount > 0 && COUPONS[appliedCouponCode] && COUPONS[appliedCouponCode].type === 'fixed_price')) {
      itemsForPagBank.push({
       name: shippingLabel + " - " + (selectedShipping ? selectedShipping.prazo : 'A calcular'),
       qty: 1,
