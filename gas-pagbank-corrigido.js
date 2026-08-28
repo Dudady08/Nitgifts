@@ -108,6 +108,10 @@ function handlePagBankCheckout(params) {
     checkoutBody.customer = { name: customerName, email: customerEmail };
   }
 
+  if (params.desconto && parseFloat(params.desconto) > 0) {
+    checkoutBody.discount_amount = Math.round(parseFloat(params.desconto) * 100);
+  }
+
   if (returnUrl) checkoutBody.redirect_url = returnUrl;
 
   var apiUrl = PAGBANK_API_URLS[PAGBANK_ENV] + "/checkouts";
