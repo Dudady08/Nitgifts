@@ -146,35 +146,39 @@ function loadProductDetail() {
    limitedBadge.style.display = product.is_limited_edition ? 'inline-block' : 'none';
   }
 
-  // Setup Gallery
+  // Setup Gallery Function
   const mainImg = document.getElementById('detail-main-img');
   const thumbsContainer = document.getElementById('detail-thumbs-list');
-  const images = [product.image_url, ...(product.gallery_urls || [])].filter(Boolean);
-
-  if (mainImg) {
-   mainImg.src = images[0];
-   mainImg.alt = product.name;
-  }
-
-  if (thumbsContainer) {
-   thumbsContainer.innerHTML = '';
-   if (images.length > 1) {
-    images.forEach((imgSrc, i) => {
-     const btn = document.createElement('button');
-     btn.className = `product-thumb-btn ${i === 0 ? 'active' : ''}`;
-     btn.innerHTML = `<img src="${imgSrc}" alt="">`;
-     btn.addEventListener('click', () => {
-      selectedImageIdx = i;
-      if (mainImg) mainImg.src = imgSrc;
-      // Highlight active thumb
-      thumbsContainer.querySelectorAll('.product-thumb-btn').forEach((b, idx) => {
-       b.classList.toggle('active', idx === i);
-      });
-     });
-     thumbsContainer.appendChild(btn);
-    });
+  
+  const renderGallery = (imgs) => {
+   const validImgs = imgs.filter(Boolean);
+   if (validImgs.length === 0) return;
+   
+   if (mainImg) {
+    mainImg.src = validImgs[0];
+    mainImg.alt = product.name;
    }
-  }
+   
+   if (thumbsContainer) {
+    thumbsContainer.innerHTML = '';
+    if (validImgs.length > 1) {
+     validImgs.forEach((imgSrc, i) => {
+      const btn = document.createElement('button');
+      btn.className = `product-thumb-btn ${i === 0 ? 'active' : ''}`;
+      btn.innerHTML = `<img src="${imgSrc}" alt="">`;
+      btn.addEventListener('click', () => {
+       selectedImageIdx = i;
+       if (mainImg) mainImg.src = imgSrc;
+       // Highlight active thumb
+       thumbsContainer.querySelectorAll('.product-thumb-btn').forEach((b, idx) => {
+        b.classList.toggle('active', idx === i);
+       });
+      });
+      thumbsContainer.appendChild(btn);
+     });
+    }
+   }
+  };
 
   // Setup Colors Selector
   const colorsSection = document.getElementById('detail-colors-section');
@@ -290,6 +294,13 @@ function loadProductDetail() {
    selectedVariant = product.variants[0];
    if (variantSpan) variantSpan.textContent = selectedVariant.name;
 
+   // Render gallery for the first variant initially
+   if (selectedVariant.gallery_urls && selectedVariant.gallery_urls.length > 0) {
+    renderGallery(selectedVariant.gallery_urls);
+   } else {
+    renderGallery([selectedVariant.image_url]);
+   }
+
    if (variantsList) {
     variantsList.innerHTML = '';
     product.variants.forEach((vrnt, i) => {
@@ -303,8 +314,12 @@ function loadProductDetail() {
       selectedVariant = vrnt;
       if (variantSpan) variantSpan.textContent = vrnt.name;
       
-      // Update main image
-      if (mainImg) mainImg.src = vrnt.image_url;
+      // Update gallery to show only this variant's images
+      if (vrnt.gallery_urls && vrnt.gallery_urls.length > 0) {
+       renderGallery(vrnt.gallery_urls);
+      } else {
+       renderGallery([vrnt.image_url]);
+      }
 
       variantsList.querySelectorAll('.variant-option-btn').forEach((b) => {
        b.classList.remove('active');
@@ -317,6 +332,9 @@ function loadProductDetail() {
   } else {
    if (variantsSection) variantsSection.style.display = 'none';
    selectedVariant = null;
+   
+   // Render default gallery
+   renderGallery([product.image_url, ...(product.gallery_urls || [])]);
   }
 
   // Setup Customization CTA
@@ -356,6 +374,15 @@ function loadProductDetail() {
   if (product.dimensions && specDimensionsItem && specDimensionsVal) {
    specDimensionsVal.textContent = product.dimensions;
    specDimensionsItem.style.display = 'flex';
+   
+   const specDimensionsLabel = document.getElementById('spec-dimensions-label');
+   if (specDimensionsLabel) {
+    if (product.category === 'gifts' && product.id.startsWith('gift-grande')) {
+     specDimensionsLabel.textContent = 'Altura';
+    } else {
+     specDimensionsLabel.textContent = 'Dimensões';
+    }
+   }
   } else if (specDimensionsItem) {
    specDimensionsItem.style.display = 'none';
   }

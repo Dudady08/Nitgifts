@@ -51,8 +51,16 @@
     <section class="products-content-area">
 
      <!-- Desktop Upper Status Bar -->
-     <div class="products-count-bar">
+     <div class="products-count-bar" style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
       <p id="products-count-text-desktop">Carregando produtos...</p>
+      <select id="sort-select-desktop" class="sort-select" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-white); cursor: pointer; outline: none; font-size: 14px; font-weight: 500; font-family: inherit;">
+       <option value="random">Aleatório</option>
+       <option value="recent">Recentes</option>
+       <option value="price-asc">Menor Preço</option>
+       <option value="price-desc">Maior Preço</option>
+       <option value="alpha-asc">Ordem Alfabética (A-Z)</option>
+       <option value="alpha-desc">Ordem Alfabética (Z-A)</option>
+      </select>
      </div>
 
      <!-- Mobile Filter Trigger Bar -->

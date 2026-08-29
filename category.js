@@ -328,6 +328,28 @@ function updateProductsDisplay() {
   return true;
  });
 
+ // Apply Sort
+ const sortSelect = document.getElementById('sort-select-desktop');
+ const sortVal = sortSelect ? sortSelect.value : 'random';
+ 
+ if (sortVal === 'random') {
+   // Fisher-Yates shuffle
+   for (let i = filteredList.length - 1; i > 0; i--) {
+     const j = Math.floor(Math.random() * (i + 1));
+     [filteredList[i], filteredList[j]] = [filteredList[j], filteredList[i]];
+   }
+ } else if (sortVal === 'price-asc') {
+   filteredList.sort((a, b) => a.price - b.price);
+ } else if (sortVal === 'price-desc') {
+   filteredList.sort((a, b) => b.price - a.price);
+ } else if (sortVal === 'alpha-asc') {
+   filteredList.sort((a, b) => a.name.localeCompare(b.name));
+ } else if (sortVal === 'alpha-desc') {
+   filteredList.sort((a, b) => b.name.localeCompare(a.name));
+ } else if (sortVal === 'recent') {
+   filteredList.sort((a, b) => (b.is_new === true ? 1 : 0) - (a.is_new === true ? 1 : 0));
+ }
+
  // Calculate rendering timing: first load gets transition skeletons, sub-filters load instantly
  const renderDelay = isFirstLoad ? 1200 : 0;
  if (isFirstLoad) {
@@ -497,8 +519,16 @@ function initCategoryPage() {
   updateCategoryHeader({ title: activeCategory, desc: "", showSizes: false });
  }
 
- // Preload category hovers
- preloadCategoryHovers(activeCategory);
+  // Preload category hovers
+  preloadCategoryHovers(activeCategory);
+
+  // Setup Event listener for sorting
+  const sortSelect = document.getElementById('sort-select-desktop');
+  if (sortSelect) {
+   sortSelect.addEventListener('change', () => {
+    updateProductsDisplay();
+   });
+  }
 
  // Setup reactive sidebar and drawer templates
  syncFiltersUI();

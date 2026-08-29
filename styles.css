@@ -3767,3 +3767,6 @@ textarea.form-input {
  font-weight: 600;
  line-height: 1.2;
 }
+
+.zoom-on-hover { transition: transform 0.3s ease; cursor: zoom-in; }
+.zoom-on-hover:hover { transform: scale(1.4); }
