@@ -149,9 +149,64 @@ function loadProductDetail() {
   // Setup Gallery Function
   const mainImg = document.getElementById('detail-main-img');
   const thumbsContainer = document.getElementById('detail-thumbs-list');
+  const mainImgContainer = document.querySelector('.product-main-image');
+
+  // Lupa / Zoom function
+  let isZoomed = false;
+  if (mainImgContainer && mainImg) {
+    mainImgContainer.style.cursor = 'zoom-in';
+
+    mainImgContainer.addEventListener('click', (e) => {
+      isZoomed = !isZoomed;
+      if (isZoomed) {
+        mainImgContainer.style.cursor = 'zoom-out';
+        mainImg.style.transform = 'scale(2.5)';
+        
+        const rect = mainImgContainer.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        mainImg.style.transformOrigin = `${x}% ${y}%`;
+      } else {
+        mainImgContainer.style.cursor = 'zoom-in';
+        mainImg.style.transform = 'scale(1)';
+        mainImg.style.transformOrigin = 'center center';
+      }
+    });
+
+    mainImgContainer.addEventListener('mousemove', (e) => {
+      if (isZoomed) {
+        const rect = mainImgContainer.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        mainImg.style.transformOrigin = `${x}% ${y}%`;
+      }
+    });
+
+    mainImgContainer.addEventListener('mouseleave', () => {
+      if (isZoomed) {
+        isZoomed = false;
+        mainImgContainer.style.cursor = 'zoom-in';
+        mainImg.style.transform = 'scale(1)';
+        mainImg.style.transformOrigin = 'center center';
+      }
+    });
+  }
   
+  const syncThumbsHeight = () => {
+    if (thumbsContainer && window.innerWidth >= 1024) {
+      thumbsContainer.style.maxHeight = `${mainImg.clientHeight}px`;
+    } else if (thumbsContainer) {
+      thumbsContainer.style.maxHeight = 'none';
+    }
+  };
+
+  if (mainImg) {
+    mainImg.addEventListener('load', syncThumbsHeight);
+    window.addEventListener('resize', syncThumbsHeight);
+  }
+
   const renderGallery = (imgs) => {
-   const validImgs = imgs.filter(Boolean);
+   const validImgs = [...new Set(imgs.filter(Boolean))];
    if (validImgs.length === 0) return;
    
    if (mainImg) {

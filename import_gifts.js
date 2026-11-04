@@ -65,11 +65,13 @@ for (const folder of folders) {
   
   // First, generate the common variants array for this folder
   for (const [baseName, groupFiles] of Object.entries(groups)) {
-    groupFiles.sort((a, b) => {
-      if (a.toLowerCase().includes('capa')) return -1;
-      if (b.toLowerCase().includes('capa')) return 1;
-      return 0;
-    });
+    const capaUrls = groupFiles.filter(url => url.toLowerCase().includes('capa'));
+    const otherUrls = groupFiles.filter(url => !url.toLowerCase().includes('capa'));
+    otherUrls.sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+    
+    // Empty array then push back in order to modify in place or just map
+    groupFiles.length = 0;
+    groupFiles.push(...capaUrls, ...otherUrls);
     
     const variantImageUrl = `gifts-grandes/${folder}/${groupFiles[0]}`;
     
@@ -88,11 +90,13 @@ for (const folder of folders) {
   // Second, for EACH variant, create a full product
   for (const [baseName, groupFiles] of Object.entries(groups)) {
     
-    groupFiles.sort((a, b) => {
-      if (a.toLowerCase().includes('capa')) return -1;
-      if (b.toLowerCase().includes('capa')) return 1;
-      return 0;
-    });
+    const capaUrls = groupFiles.filter(url => url.toLowerCase().includes('capa'));
+    const otherUrls = groupFiles.filter(url => !url.toLowerCase().includes('capa'));
+    otherUrls.sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+    
+    // Empty array then push back in order to modify in place or just map
+    groupFiles.length = 0;
+    groupFiles.push(...capaUrls, ...otherUrls);
     
     const imageUrl = `gifts-grandes/${folder}/${groupFiles[0]}`;
     const hoverUrl = groupFiles.length > 1 ? `gifts-grandes/${folder}/${groupFiles[1]}` : null;
