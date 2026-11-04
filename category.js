@@ -351,7 +351,7 @@ function updateProductsDisplay() {
  }
 
  // Calculate rendering timing: first load gets transition skeletons, sub-filters load instantly
- const renderDelay = isFirstLoad ? 1200 : 0;
+ const renderDelay = isFirstLoad ? 150 : 0;
  if (isFirstLoad) {
   grid.innerHTML = `
    <div class="skeleton-card"><div class="skeleton-image"></div><div class="skeleton-line short"></div><div class="skeleton-line long"></div></div>
@@ -424,7 +424,7 @@ function updateProductsDisplay() {
    cardWrapper.innerHTML = `
     <a href="product.html?id=${product.id}" class="product-card">
      <div class="product-image-container">
-      <img src="${product.image_url}" alt="${product.name}" class="product-img" data-original="${product.image_url}" data-hover="${product.hover_image_url || ''}">
+      <img src="${product.image_url}" alt="${product.name}" class="product-img" loading="lazy" decoding="async" data-original="${product.image_url}" data-hover="${product.hover_image_url || ''}">
       <div class="badge-list">
        ${badgesHTML}
       </div>

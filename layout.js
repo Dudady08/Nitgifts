@@ -4,10 +4,10 @@
 
 // 1. Dynamic HTML Templates
 const navbarHTML = `
- <header id="global-navbar" class="py-5 bg-transparent">
+ <header id="global-navbar" class="py-4 bg-transparent">
   <div class="max-w-[1400px] mx-auto px-5 md:px-10 flex items-center justify-between">
-   <a href="index.html" class="font-display text-xl md:text-2xl font-extrabold tracking-tight text-[#1A1A1A]" style="font-family: var(--font-display); text-decoration: none;">
-    NIT GIFTS
+   <a href="index.html" class="navbar-brand-link" aria-label="Nit Gifts">
+    <img src="icone-nitgifts.png" alt="Nit Gifts" class="navbar-brand-logo">
    </a>
 
    <nav class="hidden lg:flex items-center gap-8">
@@ -33,22 +33,20 @@ const navbarHTML = `
 
  <!-- Full-screen Mobile Menu Drawer -->
  <div id="mobile-menu-drawer">
-  <div class="flex items-center justify-between px-5 py-5">
-   <span class="font-display text-xl font-extrabold text-[#1A1A1A]" style="font-family: var(--font-display);">
-    NIT GIFTS
-   </span>
+  <div class="flex items-center justify-between px-5 py-4">
+   <a href="index.html" class="navbar-brand-link" aria-label="Nit Gifts">
+    <img src="icone-nitgifts.png" alt="Nit Gifts" class="navbar-brand-logo">
+   </a>
    <button class="p-2 flex items-center justify-center" id="mobile-menu-close" style="background: none; border: none; cursor: pointer;">
     <i data-lucide="x" style="width: 24px; height: 24px; stroke-width: 1.5; color: var(--color-dark);"></i>
    </button>
   </div>
-  <nav class="flex-1 flex flex-col justify-center px-10 gap-6">
-   <div class="mobile-nav-item" style="transition-delay: 0.0s;"><a href="category.html?c=canecas" class="text-3xl md:text-5xl font-display font-extrabold text-[#1A1A1A] hover:text-[#D4AF37] transition-colors" style="font-family: var(--font-display); text-decoration: none;">Canecas</a></div>
-   <div class="mobile-nav-item" style="transition-delay: 0.06s;"><a href="category.html?c=placas-mdf" class="text-3xl md:text-5xl font-display font-extrabold text-[#1A1A1A] hover:text-[#D4AF37] transition-colors" style="font-family: var(--font-display); text-decoration: none;">Placas MDF</a></div>
-   <div class="mobile-nav-item" style="transition-delay: 0.12s;"><a href="category.html?c=gifts" class="text-3xl md:text-5xl font-display font-extrabold text-[#1A1A1A] hover:text-[#D4AF37] transition-colors" style="font-family: var(--font-display); text-decoration: none;">GIFTS</a></div>
-   <div class="mobile-nav-item" style="transition-delay: 0.18s;"><a href="account.html" class="text-3xl md:text-5xl font-display font-extrabold text-[#1A1A1A] hover:text-[#D4AF37] transition-colors" style="font-family: var(--font-display); text-decoration: none;">Minha Conta</a></div>
-   <div class="mobile-nav-item" style="transition-delay: 0.24s;"></div>
-   <div class="mobile-nav-item" style="transition-delay: 0.3s;"></div>
-   <div class="mobile-nav-item" style="transition-delay: 0.36s;"><a href="contact.html" class="text-3xl md:text-5xl font-display font-extrabold text-[#1A1A1A]/50 hover:text-[#D4AF37] transition-colors" style="font-family: var(--font-display); text-decoration: none;">Contato</a></div>
+  <nav class="mobile-menu-nav flex-1 flex flex-col justify-center items-center px-10 gap-6">
+   <div class="mobile-nav-item" style="transition-delay: 0.0s;"><a href="category.html?c=canecas" class="mobile-drawer-link">Canecas</a></div>
+   <div class="mobile-nav-item" style="transition-delay: 0.06s;"><a href="category.html?c=placas-mdf" class="mobile-drawer-link">Placas MDF</a></div>
+   <div class="mobile-nav-item" style="transition-delay: 0.12s;"><a href="category.html?c=gifts" class="mobile-drawer-link">GIFTS</a></div>
+   <div class="mobile-nav-item" style="transition-delay: 0.18s;"><a href="account.html" class="mobile-drawer-link">Minha Conta</a></div>
+   <div class="mobile-nav-item" style="transition-delay: 0.24s;"><a href="contact.html" class="mobile-drawer-link">Contato</a></div>
   </nav>
  </div>
 `;
@@ -176,16 +174,21 @@ function injectGlobalLayout() {
  updateNavbarCartCount();
 
  // Scroll Header background change trigger
- window.addEventListener('scroll', () => {
+ const updateNavbarScrollState = () => {
   const navbar = document.getElementById('global-navbar');
-  if (navbar) {
-   if (window.scrollY > 40) {
-    navbar.classList.add('scrolled');
-   } else {
-    navbar.classList.remove('scrolled');
-   }
+  if (!navbar) return;
+  const hero = document.getElementById('hero');
+  const threshold = hero ? Math.max(40, hero.offsetHeight - navbar.offsetHeight) : 40;
+  if (window.scrollY >= threshold) {
+   navbar.classList.add('scrolled');
+  } else {
+   navbar.classList.remove('scrolled');
   }
- });
+ };
+
+ window.addEventListener('scroll', updateNavbarScrollState, { passive: true });
+ window.addEventListener('resize', updateNavbarScrollState);
+ updateNavbarScrollState();
 
  // Mobile Menu Trigger bindings
  const openTrigger = document.getElementById('mobile-menu-trigger');

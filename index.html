@@ -34,7 +34,7 @@
  <link rel="preconnect" href="https://fonts.googleapis.com">
  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
  <link
-  href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+  href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
   rel="stylesheet">
 
  <!-- Tailwind CSS -->
@@ -52,7 +52,7 @@
     <!-- Slide 1 -->
     <div class="hero-slide active" data-index="0">
      <img src="capa/capa nit 1.jpeg"
-      alt="que contam histórias" class="slide-bg">
+      alt="que contam histórias" class="slide-bg" fetchpriority="high" decoding="async">
      <div class="slide-overlay"></div>
      <div class="hero-content">
       <h1 class="hero-title">Histórias<br>Genuínas</h1>
@@ -66,7 +66,7 @@
     <!-- Slide 2 -->
     <div class="hero-slide" data-index="1">
      <img src="capa/capa nit 2.jpeg"
-      alt="Arte em cada detalhe" class="slide-bg">
+      alt="Arte em cada detalhe" class="slide-bg" decoding="async">
      <div class="slide-overlay"></div>
      <div class="hero-content">
       <h1 class="hero-title">Arte em cada<br>detalhe</h1>
@@ -83,7 +83,7 @@
     <!-- Slide 3 -->
     <div class="hero-slide" data-index="2">
      <img src="capa/capa nit 3.jpeg"
-      alt="Sua ideia, nossa arte" class="slide-bg">
+      alt="Sua ideia, nossa arte" class="slide-bg" decoding="async">
      <div class="slide-overlay"></div>
      <div class="hero-content">
       <h1 class="hero-title">Sua ideia,<br>nossa arte</h1>
@@ -248,12 +248,12 @@
   </section>
 
   <!-- Mercado Livre Banner -->
-  <section style="background-color: #D4AF37; padding: 50px 20px; text-align: center; margin-top: 40px; border-radius: 12px; margin-left: 20px; margin-right: 20px;">
-   <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 16px;">
-    <img src="ml-logo.png" alt="Mercado Livre Logo" style="height: 90px; object-fit: contain; margin-bottom: 8px;">
-    <h2 style="font-family: var(--font-display); font-size: 28px; color: #1A1A1A; font-weight: bold; margin: 0;">Também estamos no Mercado Livre!</h2>
-    <p style="color: #1A1A1A; font-size: 16px; margin: 0; opacity: 0.9;">Prefere comprar pela nossa loja oficial no Mercado Livre? Acesse agora e confira nossos produtos por lá também.</p>
-    <a href="https://lista.mercadolivre.com.br/_CustId_2125905437" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; background-color: #1A1A1A; color: #D4AF37; padding: 12px 24px; border-radius: 8px; font-weight: 500; text-decoration: none; margin-top: 12px; transition: transform 0.2s;">
+  <section style="background-color: #D4AF37; padding: 36px 20px; text-align: center; margin-top: 32px; border-radius: 12px; margin-left: 16px; margin-right: 16px;">
+   <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 12px;">
+    <img src="ml-logo.png" alt="Mercado Livre Logo" loading="lazy" decoding="async" style="height: 72px; object-fit: contain; margin-bottom: 4px;">
+    <h2 style="font-family: var(--font-display); font-size: clamp(20px, 5vw, 28px); color: #1A1A1A; font-weight: 700; margin: 0;">Também estamos no Mercado Livre!</h2>
+    <p style="color: #1A1A1A; font-size: 15px; margin: 0; opacity: 0.9;">Prefere comprar pela nossa loja oficial no Mercado Livre? Acesse agora e confira nossos produtos por lá também.</p>
+    <a href="https://lista.mercadolivre.com.br/_CustId_2125905437" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; background-color: #1A1A1A; color: #D4AF37; padding: 12px 24px; border-radius: 8px; font-weight: 600; text-decoration: none; margin-top: 8px; transition: transform 0.2s;">
      <i data-lucide="external-link" style="width: 20px; height: 20px;"></i> Visitar Loja Oficial
     </a>
    </div>

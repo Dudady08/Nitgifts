@@ -4,10 +4,15 @@
 
 
 
-// Preload hover images for zero-delay, flicker-free UX
+// Preload hover images for showcased items on desktop only
 function preloadHoverImages() {
- if (typeof mockProducts === 'undefined') return;
- mockProducts.forEach(product => {
+ if (typeof mockProducts === 'undefined' || window.innerWidth < 768) return;
+ const showcased = [
+  ...mockProducts.filter(p => p.category === 'canecas' && p.cabo_tipo !== 'magica').slice(0, 4),
+  ...mockProducts.filter(p => p.category === 'placas-mdf').slice(0, 4),
+  ...mockProducts.filter(p => p.category === 'gifts').slice(0, 4)
+ ];
+ showcased.forEach(product => {
   if (product.hover_image_url) {
    const img = new Image();
    img.src = product.hover_image_url;
@@ -132,7 +137,7 @@ function renderShowcase(sectionId, filterFn) {
    cardWrapper.innerHTML = `
     <a href="product.html?id=${product.id}" class="product-card">
      <div class="product-image-container">
-      <img src="${product.image_url}" alt="${product.name}" class="product-img" data-original="${product.image_url}" data-hover="${product.hover_image_url || ''}">
+      <img src="${product.image_url}" alt="${product.name}" class="product-img" loading="lazy" decoding="async" data-original="${product.image_url}" data-hover="${product.hover_image_url || ''}">
       <div class="badge-list">
        ${badgesHTML}
       </div>
@@ -174,7 +179,7 @@ function renderShowcase(sectionId, filterFn) {
   if (window.lucide) {
    window.lucide.createIcons();
   }
- }, 1200); // 1.2s loading state mimic
+ }, 150);
 }
 
 // 4. Toast Notification helper for checkout redirect success messages
